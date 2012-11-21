@@ -197,6 +197,9 @@ float FloatSwap( const float *f );
 
 #ifdef MACOS_X
 
+	#include <sys/mman.h>
+	#include <unistd.h>
+
 	#define __cdecl
 	#define __declspec(x)
 	#define stricmp strcasecmp
@@ -280,6 +283,9 @@ float FloatSwap( const float *f );
 // ================================================================
 
 #ifdef __linux__
+
+	#include <sys/mman.h>
+	#include <unistd.h>
 
 	// bk001205 - from Makefile
 	#define stricmp strcasecmp
@@ -393,7 +399,7 @@ typedef int		clipHandle_t;
 
 	// vsnprintf is ISO/IEC 9899:1999
 	// abstracting this to make it portable
-	int Q_vsnprintf( char *dest, int size, const char *fmt, va_list argptr );
+	int Q_vsnprintf( char *str, size_t size, const char *format, va_list args );
 
 #elif defined (_MSC_VER)
 
@@ -410,7 +416,7 @@ typedef int		clipHandle_t;
 
 	// vsnprintf is ISO/IEC 9899:1999
 	// abstracting this to make it portable
-	int Q_vsnprintf( char *dest, int size, const char *fmt, va_list argptr );
+	int Q_vsnprintf( char *str, size_t size, const char *format, va_list args );
 #else // not using MSVC
 
 	#include <stdint.h>

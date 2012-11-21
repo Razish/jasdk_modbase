@@ -2,6 +2,7 @@
 //
 #include "g_local.h"
 #include "bg_saga.h"
+#include "g_engine.h"
 
 #include "../ui/menudef.h"			// for the voice chats
 

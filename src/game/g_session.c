@@ -95,21 +95,21 @@ Called on a reconnect
 */
 void G_ReadSessionData( gclient_t *client )
 {
-	char		s[MAX_CVAR_VALUE_STRING] = {0};
-	const char	*var;
-	int			i = 0;
+	char			s[MAX_CVAR_VALUE_STRING] = {0};
+	const char		*var;
+	int			i=0, tempSessionTeam=0, tempSpectatorState, tempTeamLeader;
 
 	var = va( "session%i", client - level.clients );
 	trap_Cvar_VariableStringBuffer( var, s, sizeof(s) );
 
 	sscanf( s, "%i %i %i %i %i %i %i %i %i %i %i %i %s %s %s %s",
-		&client->sess.sessionTeam,
+		&tempSessionTeam, //&client->sess.sessionTeam,
 		&client->sess.spectatorTime,
-		&client->sess.spectatorState,
+		&tempSpectatorState, //&client->sess.spectatorState,
 		&client->sess.spectatorClient,
 		&client->sess.wins,
 		&client->sess.losses,
-		&client->sess.teamLeader,
+		&tempTeamLeader, //&client->sess.teamLeader,
 		&client->sess.setForce,
 		&client->sess.saberLevel,
 		&client->sess.selectedFP,
@@ -120,6 +120,10 @@ void G_ReadSessionData( gclient_t *client )
 		client->sess.saber2Type,
 		client->sess.IP
 		);
+
+	client->sess.sessionTeam	= (team_t)tempSessionTeam;
+	client->sess.spectatorState	= (spectatorState_t)tempSpectatorState;
+	client->sess.teamLeader		= (qboolean)tempTeamLeader;
 
 	// convert back to spaces from unused chars, as session data is written that way.
 	for ( i=0; client->sess.siegeClass[i]; i++ )

@@ -1033,17 +1033,17 @@ Q_vsnprintf: always appends a trailing '\0', returns number of characters writte
 or returns -1 on failure or if the buffer would be overflowed.
 ============
 */
-int Q_vsnprintf( char *dest, int size, const char *fmt, va_list argptr )
+int Q_vsnprintf( char *str, size_t size, const char *format, va_list args )
 {
 	int ret;
 
 #ifdef _WIN32
-	ret = _vsnprintf( dest, size-1, fmt, argptr );
+	ret = _vsnprintf( str, size-1, format, args );
 #else
-	ret = vsnprintf( dest, size, fmt, argptr );
+	ret = vsnprintf( str, size, format, args );
 #endif
 
-	dest[size-1] = '\0';
+	str[size-1] = '\0';
 
 	if ( ret < 0 || ret >= size )
 		return -1;
