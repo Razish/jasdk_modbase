@@ -1,5 +1,5 @@
 # Linux Makefile for GCC for Jedi Academy SDK
-#     - JA Coders (http://jacoders.co.cc)
+#     - JA Coders (http://jacoders.org)
 #     - Raz0r, TrippHop, Xycaleth
 
 # Compiler - GCC
