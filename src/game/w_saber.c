@@ -46,7 +46,7 @@ float RandFloat( float min, float max ) {
 	if ( g_randFix.integer == 2 )
 		randActual = (randActual<<16)|randActual;
 #elif defined(__GCC__)
-	if ( japp_randFix.integer == 1 )
+	if ( g_randFix.integer == 1 )
 		randMax = RAND_MAX;
 #endif
 	return ((randActual * (max - min)) / randMax) + min;
