@@ -2225,7 +2225,10 @@ void Cmd_CallTeamVote_f( gentity_t *ent ) {
 		trap_Argv( i, &arg2[strlen(arg2)], sizeof( arg2 ) - strlen(arg2) );
 	}
 
-	if( strchr( arg1, ';' ) || strchr( arg2, ';' ) ) {
+	if ( strchr( arg1, ';' ) || strchr( arg2, ';' ) ||
+		 strchr( arg1, '\r' ) || strchr( arg2, '\r' ) ||
+		 strchr( arg1, '\n' ) || strchr( arg2, '\n' ) )
+	{
 		trap_SendServerCommand( ent-g_entities, "print \"Invalid vote string.\n\"" );
 		return;
 	}
