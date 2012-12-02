@@ -82,6 +82,8 @@ extern vec3_t gPainPoint;
 #define DEBUG_SABER_BOX
 #endif
 
+#define EC "\x19"
+
 #define	MAX_G_SHARED_BUFFER_SIZE		8192
 extern char gSharedBuffer[MAX_G_SHARED_BUFFER_SIZE];
 
@@ -424,6 +426,9 @@ typedef struct {
 	char		saber2Type[64];
 	int			duelTeam;
 	int			siegeDesiredTeam;
+
+	//JAC: Added
+	char		IP[32];
 } clientSession_t;
 
 // playerstate mGameFlags
@@ -451,6 +456,9 @@ typedef struct {
 	int			voteCount;			// to prevent people from constantly calling votes
 	int			teamVoteCount;		// to prevent people from constantly calling votes
 	qboolean	teamInfo;			// send team overlay updates?
+
+	//JAC: Added
+	int			connectTime;
 } clientPersistant_t;
 
 typedef struct renderInfo_s
@@ -918,6 +926,11 @@ typedef struct {
 
 	char		mTeamFilter[MAX_QPATH];
 
+	//JAC: added
+	struct {
+		qboolean isPatched;
+		qboolean clientConnectionActive[MAX_CLIENTS];
+	} security;
 } level_locals_t;
 
 
@@ -1660,7 +1673,9 @@ extern	vmCvar_t	g_powerDuelEndHealth;
 
 extern vmCvar_t		g_showDuelHealths;
 
-extern vmCvar_t		g_randFix;
+#define XCVAR_PROTO
+	#include "g_xcvar.h"
+#undef XCVAR_PROTO
 
 
 void	trap_Printf( const char *fmt );

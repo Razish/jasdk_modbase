@@ -5,6 +5,7 @@
 #include "g_ICARUScb.h"
 #include "g_nav.h"
 #include "bg_saga.h"
+#include "g_engine.h"
 
 level_locals_t	level;
 
@@ -218,7 +219,10 @@ vmCvar_t	g_powerDuelEndHealth;
 // DUEL_HEALTH
 vmCvar_t		g_showDuelHealths;
 
-vmCvar_t		g_randFix;
+#define XCVAR_DECL
+	#include "g_xcvar.h"
+#undef XCVAR_DECL
+
 
 // bk001129 - made static to avoid aliasing
 static cvarTable_t		gameCvarTable[] = {
@@ -461,7 +465,9 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_powerDuelStartHealth, "g_powerDuelStartHealth", "150", CVAR_ARCHIVE, 0, qtrue  },
 	{ &g_powerDuelEndHealth, "g_powerDuelEndHealth", "90", CVAR_ARCHIVE, 0, qtrue  },
 
-	{ &g_randFix, "g_randFix", "1", CVAR_ARCHIVE, 0, qtrue },
+	#define XCVAR_LIST
+		#include "g_xcvar.h"
+	#undef XCVAR_LIST
 };
 
 // bk001129 - made static to avoid aliasing
@@ -1104,6 +1110,9 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 			i++;
 		}
 	}
+
+	//JAC: Added
+	PatchEngine();
 }
 
 
@@ -1118,6 +1127,9 @@ void G_ShutdownGame( int restart ) {
 	gentity_t *ent;
 
 //	G_Printf ("==== ShutdownGame ====\n");
+
+	//JAC: Added
+	UnpatchEngine();
 
 	G_CleanAllFakeClients(); //get rid of dynamically allocated fake client structs.
 
@@ -3626,6 +3638,37 @@ void G_RunFrame( int levelTime ) {
 		g_siegeRespawnCheck = level.time + g_siegeRespawn.integer * 1000;
 	}
 
+	#ifdef PATCH_ENGINE
+		//Raz: fake client detected, client didn't validate themselves
+		if ( g_antiFakePlayer.integer && level.security.isPatched )
+		{//Patched, check for q3fill (Connection activity check)
+			gclient_t	*cl;
+			for (i=0; i<MAX_CLIENTS; i++)
+			{
+				cl = &level.clients[i];
+				if ( cl->pers.connected != CON_DISCONNECTED )
+				{
+					if ( !level.security.clientConnectionActive[i] && level.time > (cl->pers.connectTime + 5000) )
+					{
+						char buf[MAX_TOKEN_CHARS] = {0};
+
+						if ( svs->clients[i].netchan.remoteAddress.type == NA_LOOPBACK ||
+							 svs->clients[i].netchan.remoteAddress.type == NA_BOT )
+						{//localhost. don't kick. ever.
+							level.security.clientConnectionActive[i] = qtrue;
+							continue;
+						}
+
+						NET_AddrToString( buf, sizeof( buf ), &svs->clients[i].netchan.remoteAddress );
+						G_LogPrintf( "**SECURITY** Client %i (%s) kicked for q3fill [IP: %s]\n", i, cl->pers.netname, buf );
+						trap_DropClient( i, "Fake client detected" );
+						cl->pers.connected = CON_DISCONNECTED;
+					}
+				}
+			}
+		}
+	#endif
+	
 	if (gDoSlowMoDuel)
 	{
 		if (level.restarted)

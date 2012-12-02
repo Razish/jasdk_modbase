@@ -11,6 +11,26 @@
 
 #define MAX_TEAMNAME 32
 
+#ifdef QAGAME
+
+	// server-side conditional compiling
+//	#define IOJAMP // ensure iojamp compatibility (disables engine modifications, new vmMain/trap functionality, etc)
+	
+	#ifndef IOJAMP
+		#define PATCH_ENGINE
+	#endif
+
+#else
+
+	// client-side conditional compiling
+//	#define IOJAMP // ensure iojamp compatibility (disables engine modifications, new vmMain/trap functionality, etc)
+
+	#ifndef IOJAMP
+		#define PATCH_ENGINE
+	#endif
+
+#endif
+
 #include "qcommon/disablewarnings.h"
 #include "qcommon/asmdefines.h" //JAC: Added
 
@@ -3196,6 +3216,7 @@ enum {
 	FONT_SMALL2
 };
 
+void NET_AddrToString( char *out, size_t size, void *addr );
 
 
 #endif	// __Q_SHARED_H

@@ -13,6 +13,8 @@ and tournament restarts.
 =======================================================================
 */
 
+//TODO: Replace with reading/writing to file(s)
+
 /*
 ================
 G_WriteClientSessionData
@@ -20,75 +22,64 @@ G_WriteClientSessionData
 Called on game shutdown
 ================
 */
-void G_WriteClientSessionData( gclient_t *client ) {
-	const char	*s;
+void G_WriteClientSessionData( gclient_t *client )
+{
+	char		s[MAX_CVAR_VALUE_STRING] = {0},
+				siegeClass[64] = {0}, saberType[64] = {0}, saber2Type[64] = {0}, IP[32] = {0};
 	const char	*var;
 	int			i = 0;
-	char		siegeClass[64];
-	char		saberType[64];
-	char		saber2Type[64];
 
-	strcpy(siegeClass, client->sess.siegeClass);
+	// for the strings, replace ' ' with 1
 
-	while (siegeClass[i])
-	{ //sort of a hack.. we don't want spaces by siege class names have spaces so convert them all to unused chars
+	Q_strncpyz( siegeClass, client->sess.siegeClass, sizeof( siegeClass ) );
+	for ( i=0; siegeClass[i]; i++ ) {
 		if (siegeClass[i] == ' ')
-		{
 			siegeClass[i] = 1;
-		}
-
-		i++;
 	}
+	if ( !siegeClass[0] )
+		Q_strncpyz( siegeClass, "none", sizeof( siegeClass ) );
 
-	if (!siegeClass[0])
-	{ //make sure there's at least something
-		strcpy(siegeClass, "none");
-	}
-
-	//Do the same for the saber
-	strcpy(saberType, client->sess.saberType);
-
-	i = 0;
-	while (saberType[i])
-	{
+	Q_strncpyz( saberType, client->sess.saberType, sizeof( saberType ) );
+	for ( i=0; saberType[i]; i++ ) {
 		if (saberType[i] == ' ')
-		{
 			saberType[i] = 1;
-		}
-
-		i++;
 	}
+	if ( !saberType[0] )
+		Q_strncpyz( saberType, "none", sizeof( saberType ) );
 
-	strcpy(saber2Type, client->sess.saber2Type);
-
-	i = 0;
-	while (saber2Type[i])
-	{
+	Q_strncpyz( saber2Type, client->sess.saber2Type, sizeof( saber2Type ) );
+	for ( i=0; saber2Type[i]; i++ ) {
 		if (saber2Type[i] == ' ')
-		{
 			saber2Type[i] = 1;
-		}
-
-		i++;
 	}
+	if ( !saber2Type[0] )
+		Q_strncpyz( saber2Type, "none", sizeof( saber2Type ) );
 
-	s = va("%i %i %i %i %i %i %i %i %i %i %i %i %s %s %s", 
-		client->sess.sessionTeam,
-		client->sess.spectatorTime,
-		client->sess.spectatorState,
-		client->sess.spectatorClient,
-		client->sess.wins,
-		client->sess.losses,
-		client->sess.teamLeader,
-		client->sess.setForce,
-		client->sess.saberLevel,
-		client->sess.selectedFP,
-		client->sess.duelTeam,
-		client->sess.siegeDesiredTeam,
-		siegeClass,
-		saberType,
-		saber2Type
-		);
+	Q_strncpyz( IP, client->sess.IP, sizeof( IP ) );
+	for ( i=0; IP[i]; i++ ) {
+		if (IP[i] == ' ')
+			IP[i] = 1;
+	}
+	if ( !IP[0] )
+		Q_strncpyz( IP, "none", sizeof( IP ) );
+
+	// Make sure there is no space on the last entry
+	Q_strcat( s, sizeof( s ), va( "%i ", client->sess.sessionTeam ) );
+	Q_strcat( s, sizeof( s ), va( "%i ", client->sess.spectatorTime ) );
+	Q_strcat( s, sizeof( s ), va( "%i ", client->sess.spectatorState ) );
+	Q_strcat( s, sizeof( s ), va( "%i ", client->sess.spectatorClient ) );
+	Q_strcat( s, sizeof( s ), va( "%i ", client->sess.wins ) );
+	Q_strcat( s, sizeof( s ), va( "%i ", client->sess.losses ) );
+	Q_strcat( s, sizeof( s ), va( "%i ", client->sess.teamLeader ) );
+	Q_strcat( s, sizeof( s ), va( "%i ", client->sess.setForce ) );
+	Q_strcat( s, sizeof( s ), va( "%i ", client->sess.saberLevel ) );
+	Q_strcat( s, sizeof( s ), va( "%i ", client->sess.selectedFP ) );
+	Q_strcat( s, sizeof( s ), va( "%i ", client->sess.duelTeam ) );
+	Q_strcat( s, sizeof( s ), va( "%i ", client->sess.siegeDesiredTeam ) );
+	Q_strcat( s, sizeof( s ), va( "%s ", siegeClass ) );
+	Q_strcat( s, sizeof( s ), va( "%s ", saberType ) );
+	Q_strcat( s, sizeof( s ), va( "%s ", saber2Type ) );
+	Q_strcat( s, sizeof( s ), va( "%s", IP ) );
 
 	var = va( "session%i", client - level.clients );
 
@@ -102,27 +93,23 @@ G_ReadSessionData
 Called on a reconnect
 ================
 */
-void G_ReadSessionData( gclient_t *client ) {
-	char	s[MAX_STRING_CHARS];
+void G_ReadSessionData( gclient_t *client )
+{
+	char		s[MAX_CVAR_VALUE_STRING] = {0};
 	const char	*var;
 	int			i = 0;
-
-	// bk001205 - format
-	int teamLeader;
-	int spectatorState;
-	int sessionTeam;
 
 	var = va( "session%i", client - level.clients );
 	trap_Cvar_VariableStringBuffer( var, s, sizeof(s) );
 
-	sscanf( s, "%i %i %i %i %i %i %i %i %i %i %i %i %s %s %s",
-		&sessionTeam,                 // bk010221 - format
+	sscanf( s, "%i %i %i %i %i %i %i %i %i %i %i %i %s %s %s %s",
+		&client->sess.sessionTeam,
 		&client->sess.spectatorTime,
-		&spectatorState,              // bk010221 - format
+		&client->sess.spectatorState,
 		&client->sess.spectatorClient,
 		&client->sess.wins,
 		&client->sess.losses,
-		&teamLeader,                   // bk010221 - format
+		&client->sess.teamLeader,
 		&client->sess.setForce,
 		&client->sess.saberLevel,
 		&client->sess.selectedFP,
@@ -130,46 +117,34 @@ void G_ReadSessionData( gclient_t *client ) {
 		&client->sess.siegeDesiredTeam,
 		client->sess.siegeClass,
 		client->sess.saberType,
-		client->sess.saber2Type
+		client->sess.saber2Type,
+		client->sess.IP
 		);
 
-	while (client->sess.siegeClass[i])
-	{ //convert back to spaces from unused chars, as session data is written that way.
+	// convert back to spaces from unused chars, as session data is written that way.
+	for ( i=0; client->sess.siegeClass[i]; i++ )
+	{
 		if (client->sess.siegeClass[i] == 1)
-		{
 			client->sess.siegeClass[i] = ' ';
-		}
-
-		i++;
 	}
 
-	i = 0;
-	//And do the same for the saber type
-	while (client->sess.saberType[i])
+	for ( i=0; client->sess.saberType[i]; i++ )
 	{
 		if (client->sess.saberType[i] == 1)
-		{
 			client->sess.saberType[i] = ' ';
-		}
-
-		i++;
 	}
 
-	i = 0;
-	while (client->sess.saber2Type[i])
+	for ( i=0; client->sess.saber2Type[i]; i++ )
 	{
 		if (client->sess.saber2Type[i] == 1)
-		{
 			client->sess.saber2Type[i] = ' ';
-		}
-
-		i++;
 	}
 
-	// bk001205 - format issues
-	client->sess.sessionTeam = (team_t)sessionTeam;
-	client->sess.spectatorState = (spectatorState_t)spectatorState;
-	client->sess.teamLeader = (qboolean)teamLeader;
+	for ( i=0; client->sess.IP[i]; i++ )
+	{
+		if (client->sess.IP[i] == 1)
+			client->sess.IP[i] = ' ';
+	}
 
 	client->ps.fd.saberAnimLevel = client->sess.saberLevel;
 	client->ps.fd.saberDrawAnimLevel = client->sess.saberLevel;

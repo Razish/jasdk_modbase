@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\shared\q_engine.c" />
     <ClCompile Include="ai_main.c" />
     <ClCompile Include="ai_util.c" />
     <ClCompile Include="ai_wpnav.c" />
@@ -172,6 +173,7 @@
     <ClCompile Include="g_client.c" />
     <ClCompile Include="g_cmds.c" />
     <ClCompile Include="g_combat.c" />
+    <ClCompile Include="g_engine.c" />
     <ClCompile Include="g_exphysics.c" />
     <ClCompile Include="g_ICARUScb.c" />
     <ClCompile Include="g_items.c" />
@@ -241,6 +243,7 @@
     <ClCompile Include="WalkerNPC.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\shared\q_engine.h" />
     <ClInclude Include="ai.h" />
     <ClInclude Include="ai_main.h" />
     <ClInclude Include="anims.h" />
@@ -267,6 +270,7 @@
     <ClInclude Include="chars.h" />
     <ClInclude Include="..\shared\qcommon\disablewarnings.h" />
     <ClInclude Include="..\shared\Ghoul2\G2.h" />
+    <ClInclude Include="g_engine.h" />
     <ClInclude Include="g_headers.h" />
     <ClInclude Include="g_ICARUScb.h" />
     <ClInclude Include="g_local.h" />
@@ -274,6 +278,7 @@
     <ClInclude Include="g_public.h" />
     <ClInclude Include="g_team.h" />
     <ClInclude Include="..\shared\ICARUS\interpreter.h" />
+    <ClInclude Include="g_xcvar.h" />
     <ClInclude Include="inv.h" />
     <ClInclude Include="match.h" />
     <ClInclude Include="..\ui\menudef.h" />

@@ -2293,16 +2293,56 @@ to the server machine, but qfalse on map changes and tournement
 restarts.
 ============
 */
+
+#include "g_engine.h"
+
+static int CompareIPs( int clientnum1, int clientnum2 )
+{
+	#ifdef PATCH_ENGINE
+		if ( *(unsigned int *)&svs->clients[clientnum1].netchan.remoteAddress.ip == *(unsigned int *)&svs->clients[clientnum2].netchan.remoteAddress.ip )
+			 return 1;
+
+		return 0;
+	#else
+		const char *ip1 = NULL, *ip2 = NULL;
+
+		if ( clientnum1 < 0 || clientnum1 >= MAX_CLIENTS )
+			return 0;
+		if ( clientnum2 < 0 || clientnum2 >= MAX_CLIENTS )
+			return 0;
+
+		ip1 = level.clients[clientnum1].sess.IP;
+		ip2 = level.clients[clientnum2].sess.IP;
+
+		while ( 1 )
+		{
+			if ( *ip1 != *ip2 )
+				return 0;
+			if ( !*ip1 || *ip1 == ':' )
+				break;
+			ip1++;
+			ip2++;
+		}
+
+		return 1;
+	#endif
+}
+
 char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 	char		*value;
-//	char		*areabits;
+	gentity_t	*ent = NULL, *te = NULL;
 	gclient_t	*client;
-	char		userinfo[MAX_INFO_STRING];
-	gentity_t	*ent;
-	gentity_t	*te;
+	char		userinfo[MAX_INFO_STRING] = {0},
+				tmpIP[32] = {0};
+#ifdef PATCH_ENGINE
+	char		realIP[32] = {0};
+
+	NET_AddrToString( realIP, sizeof( realIP ), &svs->clients[clientNum].netchan.remoteAddress );
+#endif
 
 	ent = &g_entities[ clientNum ];
 
+	level.security.clientConnectionActive[clientNum] = qfalse;
 	ent->s.number = clientNum;
 	ent->classname = "connecting";
 
@@ -2310,6 +2350,7 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 
 	// check to see if they are on the banned IP list
 	value = Info_ValueForKey (userinfo, "ip");
+	Q_strncpyz( tmpIP, isBot ? "Bot" : value, sizeof( tmpIP ) );
 	if ( G_FilterPacket( value ) ) {
 		return "Banned.";
 	}
@@ -2337,6 +2378,7 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 	memset( client, 0, sizeof(*client) );
 
 	client->pers.connected = CON_CONNECTING;
+	client->pers.connectTime = level.time; //JAC: Added
 
 	// read or initialize the session data
 	if ( firstTime || level.newSession ) {
@@ -2375,9 +2417,68 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 			return "BotConnectfailed";
 		}
 	}
+	else
+	{
+		if ( firstTime )
+		{
+			if ( !tmpIP[0] )
+			{//No IP sent when connecting, probably an unban hack attempt
+				client->pers.connected = CON_DISCONNECTED;
+				#ifdef PATCH_ENGINE
+					G_LogPrintf( "**SECURITY** Client %i (%s) sent no IP when connecting. Real IP is: %s", clientNum, client->pers.netname, realIP );
+				#else
+					G_LogPrintf( "**SECURITY** Client %i (%s) sent no IP when connecting.", clientNum, client->pers.netname );
+				#endif
+				return "Invalid userinfo detected";
+			}
+
+			#ifdef PATCH_ENGINE
+				if ( Q_stricmp( tmpIP, realIP ) )
+					G_LogPrintf( "**SECURITY** Client %i (%s) mismatching IP. %s / %s\n", clientNum, client->pers.netname, tmpIP, realIP );
+			#endif
+		}
+	}
+
+	//JAC: multiple connections per IP
+#ifdef PATCH_ENGINE
+	if ( level.security.isPatched && g_antiFakePlayer.integer && !isBot && svs->clients[clientNum].netchan.remoteAddress.type != NA_LOOPBACK && firstTime )
+#else
+	if ( g_antiFakePlayer.integer && !isBot && firstTime )
+#endif
+	{// patched, check for > g_maxConnPerIP connections from same IP
+		int count=0, i=0;
+		for ( i=0; i<g_maxclients.integer; i++ )
+		{
+			#if 0
+				if ( level.clients[i].pers.connected != CON_DISCONNECTED && i != clientNum )
+				{
+					if ( CompareIPs( clientNum, i ) )
+					{
+						if ( !level.security.clientConnectionActive[i] )
+						{//This IP has a dead connection pending, wait for it to time out
+							client->pers.connected = CON_DISCONNECTED;
+							return "Please wait, another connection from this IP is still pending...";
+						}
+					}
+				}
+			#else
+				if ( CompareIPs( clientNum, i ) )
+					count++;
+			#endif
+		}
+		if ( count > g_maxConnPerIP.integer )
+		{
+			client->pers.connected = CON_DISCONNECTED;
+			return "Too many connections from the same IP";
+		}
+	}
 
 	// get and distribute relevent paramters
-	G_LogPrintf( "ClientConnect: %i\n", clientNum );
+	#ifdef PATCH_ENGINE
+		G_LogPrintf( "ClientConnect: %i (%s) [IP: %s]\n", clientNum, client->pers.netname, realIP);
+	#else
+		G_LogPrintf( "ClientConnect: %i (%s) [IP: %s]\n", clientNum, client->pers.netname, tmpIP  );
+	#endif
 	ClientUserinfoChanged( clientNum );
 
 	// don't do the "xxx connected" messages if they were caried over from previous level
@@ -3983,6 +4084,8 @@ void ClientDisconnect( int clientNum ) {
 	ent->client->ps.persistant[PERS_TEAM] = TEAM_FREE;
 	ent->client->sess.sessionTeam = TEAM_FREE;
 	ent->r.contents = 0;
+
+	level.security.clientConnectionActive[clientNum] = qfalse;
 
 	if (ent->client->holdingObjectiveItem > 0)
 	{ //carrying a siege objective item - make sure it updates and removes itself from us now in case this is an instant death-respawn situation
