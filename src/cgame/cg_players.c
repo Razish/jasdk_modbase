@@ -465,7 +465,11 @@ retryModel:
 		ci->colorOverride[0] = ci->colorOverride[1] = ci->colorOverride[2] = 0.0f;
 	}
 
-	if (strchr(skinName, '|'))
+	// fix for transparent custom skin parts
+	if (strchr(skinName, '|')
+		&& strstr(skinName,"head")
+		&& strstr(skinName,"torso")
+		&& strstr(skinName,"lower"))
 	{//three part skin
 		useSkinName = va("models/players/%s/|%s", modelName, skinName);
 	}
