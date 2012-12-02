@@ -4696,40 +4696,7 @@ UI_LoadDemos
 ===============
 */
 
-//Raz: improved demo support
-#if 0
-
-static void UI_LoadDemos() {
-	char	demolist[4096];
-	char demoExt[32];
-	char	*demoname;
-	int		i, len;
-
-	Com_sprintf(demoExt, sizeof(demoExt), "dm_%d", (int)trap_Cvar_VariableValue("protocol"));
-
-	uiInfo.demoCount = trap_FS_GetFileList( "demos", demoExt, demolist, 4096 );
-
-	Com_sprintf(demoExt, sizeof(demoExt), ".dm_%d", (int)trap_Cvar_VariableValue("protocol"));
-
-	if (uiInfo.demoCount) {
-		if (uiInfo.demoCount > MAX_DEMOS) {
-			uiInfo.demoCount = MAX_DEMOS;
-		}
-		demoname = demolist;
-		for ( i = 0; i < uiInfo.demoCount; i++ ) {
-			len = strlen( demoname );
-			if (!Q_stricmp(demoname +  len - strlen(demoExt), demoExt)) {
-				demoname[len-strlen(demoExt)] = '\0';
-			}
-			Q_strupr(demoname);
-			uiInfo.demoList[i] = String_Alloc(demoname);
-			demoname += len + 1;
-		}
-	}
-
-}
-
-#else
+#ifdef IOJAMP
 
 #define NAMEBUFSIZE (MAX_DEMOS * 32)
 #define DEMOEXT "dm_"
@@ -4744,6 +4711,8 @@ static void UI_LoadDemos( void ) {
 	char	*demoname = NULL;
 	int		i=0, j=0, len=0;
 	int		protocol = trap_Cvar_VariableValue( "com_protocol" ), protocolLegacy = trap_Cvar_VariableValue( "com_legacyprotocol" );
+
+	//FIXME: Fallback to "protocol" if com_protocol doesn't exist?
 
 	Com_sprintf( demoExt, sizeof( demoExt ), ".%s%d", DEMOEXT, protocol);
 	uiInfo.demoCount = trap_FS_GetFileList( "demos", demoExt, demolist, sizeof( demolist ) );
@@ -4772,6 +4741,35 @@ static void UI_LoadDemos( void ) {
 			}
 			else
 				break;
+		}
+	}
+}
+
+#else
+
+static void UI_LoadDemos( void )
+{
+	char	demolist[4096] = {0};
+	char	demoExt[8] = {0};
+	char	*demoname = NULL;
+	int		i, len, extLen;
+
+	Com_sprintf( demoExt, sizeof( demoExt ), "dm_%d", (int)trap_Cvar_VariableValue( "protocol" ) );
+	uiInfo.demoCount = Com_Clampi( 0, MAX_DEMOS, trap_FS_GetFileList( "demos", demoExt, demolist, sizeof( demolist ) ) );
+	Com_sprintf( demoExt, sizeof( demoExt ), ".dm_%d", (int)trap_Cvar_VariableValue( "protocol" ) );
+	extLen = strlen( demoExt );
+
+	if ( uiInfo.demoCount )
+	{
+		demoname = demolist;
+		for ( i=0; i<uiInfo.demoCount; i++ )
+		{
+			len = strlen( demoname );
+			if ( !Q_stricmp( demoname + len - extLen, demoExt) )
+				demoname[len-extLen] = '\0';
+			Q_strupr( demoname );
+			uiInfo.demoList[i] = String_Alloc( demoname );
+			demoname += len + 1;
 		}
 	}
 }
