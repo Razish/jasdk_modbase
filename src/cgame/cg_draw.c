@@ -3798,6 +3798,10 @@ static float CG_DrawTeamOverlay( float y, qboolean right, qboolean upper ) {
 		return y; // Not on any team
 	}
 
+	if (cg.snap->ps.pm_flags & PMF_FOLLOW){
+		return y; // following in spec, not valid info provided
+	}
+
 	plyrs = 0;
 
 	// max player name width
