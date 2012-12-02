@@ -1976,16 +1976,17 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 		return;
 	}
 
-	if ( !Q_stricmp( arg1, "map_restart" ) ) {
-	} else if ( !Q_stricmp( arg1, "nextmap" ) ) {
-	} else if ( !Q_stricmp( arg1, "map" ) ) {
-	} else if ( !Q_stricmp( arg1, "g_gametype" ) ) {
-	} else if ( !Q_stricmp( arg1, "kick" ) ) {
-	} else if ( !Q_stricmp( arg1, "clientkick" ) ) {
-	} else if ( !Q_stricmp( arg1, "g_doWarmup" ) ) {
-	} else if ( !Q_stricmp( arg1, "timelimit" ) ) {
-	} else if ( !Q_stricmp( arg1, "fraglimit" ) ) {
-	} else {
+	if ( Q_stricmp( arg1, "map_restart" ) &&
+		 Q_stricmp( arg1, "nextmap" ) &&
+		 Q_stricmp( arg1, "map" ) &&
+		 Q_stricmp( arg1, "g_gametype" ) &&
+		 Q_stricmp( arg1, "kick" ) &&
+		 Q_stricmp( arg1, "clientkick" ) &&
+		 Q_stricmp( arg1, "g_doWarmup" ) &&
+		 Q_stricmp( arg1, "timelimit" ) &&
+		 Q_stricmp( arg1, "fraglimit" ) &&
+		 Q_stricmp( arg1, "capturelimit" ) )
+	{
 		trap_SendServerCommand( ent-g_entities, "print \"Invalid vote string.\n\"" );
 		trap_SendServerCommand( ent-g_entities, "print \"Vote commands are: map_restart, nextmap, map <mapname>, g_gametype <n>, kick <player>, clientkick <clientnum>, g_doWarmup, timelimit <time>, fraglimit <frags>.\n\"" );
 		return;
