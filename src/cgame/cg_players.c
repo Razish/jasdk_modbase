@@ -182,7 +182,7 @@ sfxHandle_t	CG_CustomSound( int clientNum, const char *soundName ) {
 		return trap_S_RegisterSound( soundName );
 	}
 
-	COM_StripExtension(soundName, lSoundName, strlen( soundName ));
+	COM_StripExtension( soundName, lSoundName, sizeof( lSoundName ) );
 
 	if ( clientNum < 0 )
 	{

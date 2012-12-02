@@ -9833,7 +9833,7 @@ nextSearch:
 	for (j=0; j<numfiles && uiInfo.forceConfigCount < MAX_FORCE_CONFIGS;j++,fileptr+=filelen+1)
 	{
 		filelen = strlen(fileptr);
-		COM_StripExtension(fileptr, configname, filelen);
+		COM_StripExtension(fileptr, configname, sizeof( configname ) );
 
 		if (lightSearch)
 		{
@@ -9938,7 +9938,7 @@ static void UI_BuildQ3Model_List( void )
 
 			filelen = strlen(fileptr);
 
-			COM_StripExtension(fileptr,skinname,filelen);
+			COM_StripExtension(fileptr,skinname,, sizeof( skinname ) );
 
 			skinLen = strlen(skinname);
 			k = 0;
@@ -10158,7 +10158,7 @@ static void UI_BuildPlayerModel_List( qboolean inGameLoad )
 				}
 
 				filelen = strlen(fileptr);
-				COM_StripExtension(fileptr,skinname,filelen);
+				COM_StripExtension(fileptr,skinname,sizeof(skinname));
 
 				if (bIsImageFile(dirptr, skinname))
 				{ //if it exists
