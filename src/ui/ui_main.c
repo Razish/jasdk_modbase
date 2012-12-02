@@ -9938,7 +9938,7 @@ static void UI_BuildQ3Model_List( void )
 
 			filelen = strlen(fileptr);
 
-			COM_StripExtension(fileptr,skinname,, sizeof( skinname ) );
+			COM_StripExtension(fileptr,skinname, sizeof( skinname ) );
 
 			skinLen = strlen(skinname);
 			k = 0;
