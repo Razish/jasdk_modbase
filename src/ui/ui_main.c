@@ -5799,13 +5799,13 @@ static void UI_ResetCharacterListBoxes( void )
 	}
 }
 
-#define MAX_SABER_HILTS	64
+//#define MAX_SABER_HILTS	64
 
 char *saberSingleHiltInfo [MAX_SABER_HILTS];
 char *saberStaffHiltInfo [MAX_SABER_HILTS];
 
 qboolean UI_SaberProperNameForSaber( const char *saberName, char *saberProperName );
-void UI_SaberGetHiltInfo( char *singleHilts[MAX_SABER_HILTS],char *staffHilts[MAX_SABER_HILTS] );
+void UI_SaberGetHiltInfo( const char *singleHilts[MAX_SABER_HILTS], const char *staffHilts[MAX_SABER_HILTS] );
 
 
 static void UI_UpdateCharacter( qboolean changedModel )

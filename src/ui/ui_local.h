@@ -102,6 +102,9 @@ extern vmCvar_t ui_bypassMainMenuLoad;
 
 #define MAX_FORCE_CONFIGS		128
 
+//JAC: Moved from ui_main.c and ui_saber.c, also increased drastically
+#define MAX_SABER_HILTS			256 //64
+
 #define MTYPE_NULL				0
 #define MTYPE_SLIDER			1	
 #define MTYPE_ACTION			2

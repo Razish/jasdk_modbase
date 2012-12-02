@@ -1074,7 +1074,7 @@ void UI_SaberAttachToChar( itemDef_t *item )
 	}
 }
 
-#define MAX_SABER_HILTS	64
+//#define MAX_SABER_HILTS	64
 
 // Fill in with saber hilts
 void UI_SaberGetHiltInfo( const char *singleHilts[MAX_SABER_HILTS], const char *staffHilts[MAX_SABER_HILTS] )
