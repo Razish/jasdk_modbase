@@ -10697,7 +10697,7 @@ static void UI_DisplayDownloadInfo( const char *downloadName, float centerPoint,
 	Text_PaintCenter(centerPoint, yStart + 248, scale, colorWhite, sTransferRate, 0, iMenuFont);
 
 	if (downloadSize > 0) {
-		s = va( "%s (%d%%)", downloadName, downloadCount * 100 / downloadSize );
+		s = va( "%s (%d%%)", downloadName, (int)( (float)downloadCount * 100.0f / downloadSize ) );
 	} else {
 		s = downloadName;
 	}
