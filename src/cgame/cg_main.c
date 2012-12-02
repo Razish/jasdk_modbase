@@ -743,12 +743,12 @@ vmCvar_t	cg_gun_x;
 vmCvar_t	cg_gun_y;
 vmCvar_t	cg_gun_z;
 vmCvar_t	cg_autoswitch;
-vmCvar_t	cg_ignore;
+//vmCvar_t	cg_ignore;
 vmCvar_t	cg_simpleItems;
 vmCvar_t	cg_fov;
 vmCvar_t	cg_zoomFov;
 
-vmCvar_t	cg_swingAngles;
+//vmCvar_t	cg_swingAngles;
 
 vmCvar_t	cg_oldPainSounds;
 
@@ -843,7 +843,7 @@ vmCvar_t	cg_cameraOrbitDelay;
 vmCvar_t	cg_timescaleFadeEnd;
 vmCvar_t	cg_timescaleFadeSpeed;
 vmCvar_t	cg_timescale;
-vmCvar_t	cg_noTaunt;
+//vmCvar_t	cg_noTaunt;
 vmCvar_t	cg_noProjectileTrail;
 //vmCvar_t	cg_trueLightning;
 /*
@@ -856,10 +856,10 @@ Ghoul2 Insert End
 //vmCvar_t 	cg_redTeamName;
 //vmCvar_t 	cg_blueTeamName;
 vmCvar_t	cg_currentSelectedPlayer;
-vmCvar_t	cg_currentSelectedPlayerName;
+//vmCvar_t	cg_currentSelectedPlayerName;
 //vmCvar_t	cg_singlePlayerActive;
-vmCvar_t	cg_recordSPDemo;
-vmCvar_t	cg_recordSPDemoName;
+//vmCvar_t	cg_recordSPDemo;
+//vmCvar_t	cg_recordSPDemoName;
 vmCvar_t	cg_showVehBounds;
 
 vmCvar_t	ui_myteam;
@@ -878,7 +878,7 @@ typedef struct {
 } cvarTable_t;
 
 static cvarTable_t cvarTable[] = { // bk001129
-	{ &cg_ignore, "cg_ignore", "0", 0 },	// used for debugging
+//	{ &cg_ignore, "cg_ignore", "0", 0 },	// used for debugging
 	{ &cg_autoswitch, "cg_autoswitch", "1", CVAR_ARCHIVE },
 	{ &cg_drawGun, "cg_drawGun", "1", CVAR_ARCHIVE },
 	{ &cg_zoomFov, "cg_zoomfov", "40.0", CVAR_ARCHIVE },
@@ -934,7 +934,7 @@ static cvarTable_t cvarTable[] = { // bk001129
 	{ &cg_showmiss, "cg_showmiss", "0", 0 },
 	{ &cg_showVehMiss, "cg_showVehMiss", "0", 0 },
 	{ &cg_footsteps, "cg_footsteps", "3", CVAR_ARCHIVE },
-	{ &cg_swingAngles, "cg_swingAngles", "1", 0 },
+//	{ &cg_swingAngles, "cg_swingAngles", "1", 0 },
 
 	{ &cg_oldPainSounds, "cg_oldPainSounds", "0", CVAR_ARCHIVE },
 
@@ -1015,10 +1015,10 @@ static cvarTable_t cvarTable[] = { // bk001129
 //	{ &cg_redTeamName, "g_redteam", DEFAULT_REDTEAM_NAME, CVAR_ARCHIVE | CVAR_SERVERINFO | CVAR_USERINFO },
 //	{ &cg_blueTeamName, "g_blueteam", DEFAULT_BLUETEAM_NAME, CVAR_ARCHIVE | CVAR_SERVERINFO | CVAR_USERINFO },
 	{ &cg_currentSelectedPlayer, "cg_currentSelectedPlayer", "0", CVAR_ARCHIVE},
-	{ &cg_currentSelectedPlayerName, "cg_currentSelectedPlayerName", "", CVAR_ARCHIVE},
+//	{ &cg_currentSelectedPlayerName, "cg_currentSelectedPlayerName", "", CVAR_ARCHIVE},
 //	{ &cg_singlePlayerActive, "ui_singlePlayerActive", "0", CVAR_USERINFO},
-	{ &cg_recordSPDemo, "ui_recordSPDemo", "0", CVAR_ARCHIVE},
-	{ &cg_recordSPDemoName, "ui_recordSPDemoName", "", CVAR_ARCHIVE},
+//	{ &cg_recordSPDemo, "ui_recordSPDemo", "0", CVAR_ARCHIVE},
+//	{ &cg_recordSPDemoName, "ui_recordSPDemoName", "", CVAR_ARCHIVE},
 
 	{ &cg_cameraOrbit, "cg_cameraOrbit", "0", CVAR_CHEAT},
 	{ &cg_cameraOrbitDelay, "cg_cameraOrbitDelay", "50", CVAR_ARCHIVE},
@@ -1032,7 +1032,7 @@ static cvarTable_t cvarTable[] = { // bk001129
 
 	{ &pmove_fixed, "pmove_fixed", "0", 0},
 	{ &pmove_msec, "pmove_msec", "8", 0},
-	{ &cg_noTaunt, "cg_noTaunt", "0", CVAR_ARCHIVE},
+//	{ &cg_noTaunt, "cg_noTaunt", "0", CVAR_ARCHIVE},
 	{ &cg_noProjectileTrail, "cg_noProjectileTrail", "0", CVAR_ARCHIVE},
 //	{ &cg_trueLightning, "cg_trueLightning", "0.0", CVAR_ARCHIVE},
 	{ &cg_showVehBounds, "cg_showVehBounds", "0", 0},
