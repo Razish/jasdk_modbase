@@ -2431,6 +2431,7 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 				#endif
 				return "Invalid userinfo detected";
 			}
+			Q_strncpyz( client->sess.IP, tmpIP, sizeof( client->sess.IP ) );
 
 			#ifdef PATCH_ENGINE
 				if ( Q_stricmp( tmpIP, realIP ) )

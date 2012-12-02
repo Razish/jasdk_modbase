@@ -25,7 +25,7 @@ Called on game shutdown
 void G_WriteClientSessionData( gclient_t *client )
 {
 	char		s[MAX_CVAR_VALUE_STRING] = {0},
-				siegeClass[64] = {0}, saberType[64] = {0}, saber2Type[64] = {0}, IP[32] = {0};
+				siegeClass[64] = {0}, saberType[64] = {0}, saber2Type[64] = {0}, IP[NET_ADDRSTRMAXLEN] = {0};
 	const char	*var;
 	int			i = 0;
 

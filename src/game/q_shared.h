@@ -424,6 +424,8 @@ typedef int		clipHandle_t;
 #define	BIG_INFO_KEY		  8192
 #define	BIG_INFO_VALUE		8192
 
+#define NET_ADDRSTRMAXLEN 48 // maximum length of an IPv6 address string including trailing '\0'
+
 //Raz: moved these from ui_local.h so we can access them everywhere
 #define MAX_ADDRESSLENGTH		256//64
 #define MAX_HOSTNAMELENGTH		256//22

@@ -428,7 +428,7 @@ typedef struct {
 	int			siegeDesiredTeam;
 
 	//JAC: Added
-	char		IP[32];
+	char		IP[NET_ADDRSTRMAXLEN];
 } clientSession_t;
 
 // playerstate mGameFlags
