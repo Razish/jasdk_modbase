@@ -8530,7 +8530,10 @@ void CG_Player( centity_t *cent ) {
 					checkDroidShields = qtrue;
 				}
 			}
-			else if ( veh->currentState.owner != ENTITYNUM_NONE)
+			// fix for screen blinking when spectating person on vehicle and then
+			// switching to someone else, often happens on siege
+			else if ( veh->currentState.owner != ENTITYNUM_NONE &&
+				(cent->playerState->clientNum != cg.snap->ps.clientNum))
 			{//has a pilot...???
 				vec3_t oldPSOrg;
 
