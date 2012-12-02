@@ -11,4 +11,7 @@
 	#define XCVAR_DEF( name, defVal, flags ) { & name , #name , defVal , flags },
 #endif
 
+		// name						default value	cvar flags
+XCVAR_DEF( cg_smoothCamera,			"0",			CVAR_ARCHIVE )
+
 #undef XCVAR_DEF
