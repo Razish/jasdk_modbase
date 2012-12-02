@@ -469,6 +469,9 @@ void CG_CheckLocalSounds( playerState_t *ps, playerState_t *ops ) {
 	// fraglimit warnings
 	if ( cgs.fraglimit > 0 && cgs.gametype < GT_CTF && cgs.gametype != GT_DUEL && cgs.gametype != GT_POWERDUEL && cgs.gametype != GT_SIEGE && cgAnnouncerTime < cg.time) {
 		highScore = cgs.scores1;
+		if ( cgs.gametype == GT_TEAM && cgs.scores2 > highScore )
+			highScore = cgs.scores2;
+
 		if ( !( cg.fraglimitWarnings & 4 ) && highScore == (cgs.fraglimit - 1) ) {
 			cg.fraglimitWarnings |= 1 | 2 | 4;
 			CG_AddBufferedSound(cgs.media.oneFragSound);
