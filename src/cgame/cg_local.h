@@ -1804,6 +1804,10 @@ extern	vmCvar_t		cg_debugBB;
 Ghoul2 Insert End
 */
 
+#define XCVAR_PROTO
+	#include "cg_xcvar.h"
+#undef XCVAR_PROTO
+
 //
 // cg_main.c
 //

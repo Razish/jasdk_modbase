@@ -866,6 +866,10 @@ vmCvar_t	ui_myteam;
 
 vmCvar_t	cg_snapshotTimeout;
 
+#define XCVAR_DECL
+	#include "cg_xcvar.h"
+#undef XCVAR_DECL
+
 typedef struct {
 	vmCvar_t	*vmCvar;
 	char		*cvarName;
@@ -1044,6 +1048,11 @@ Ghoul2 Insert Start
 /*
 Ghoul2 Insert End
 */
+
+	#define XCVAR_LIST
+		#include "cg_xcvar.h"
+	#undef XCVAR_LIST
+
 };
 
 static int  cvarTableSize = sizeof( cvarTable ) / sizeof( cvarTable[0] );
