@@ -2333,9 +2333,9 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 	gentity_t	*ent = NULL, *te = NULL;
 	gclient_t	*client;
 	char		userinfo[MAX_INFO_STRING] = {0},
-				tmpIP[32] = {0};
+				tmpIP[NET_ADDRSTRMAXLEN] = {0};
 #ifdef PATCH_ENGINE
-	char		realIP[32] = {0};
+	char		realIP[NET_ADDRSTRMAXLEN] = {0};
 
 	NET_AddrToString( realIP, sizeof( realIP ), &svs->clients[clientNum].netchan.remoteAddress );
 #endif
@@ -2409,12 +2409,14 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 		}
 	}
 
+#if 0 // FIXME: this is broken, not sure why
 	if ( ent->inuse )
 	{// if a player reconnects quickly after a disconnect, the client disconnect may never be called, thus flag can get lost in the ether
 		G_LogPrintf( "Forcing disconnect on active client: %i\n", clientNum );
 		// so lets just fix up anything that should happen on a disconnect
 		ClientDisconnect( clientNum );
 	}
+#endif
 
 	// they can connect
 	ent->client = level.clients + clientNum;
