@@ -2453,6 +2453,11 @@ int G_ItemUsable(playerState_t *ps, int forcedUse)
 	vec3_t trtest;
 	trace_t tr;
 
+	// fix: dead players shouldn't use items
+	if (ps->stats[STAT_HEALTH] <= 0){
+		return 0;
+	}
+
 	if (ps->m_iVehicleNum)
 	{
 		return 0;
