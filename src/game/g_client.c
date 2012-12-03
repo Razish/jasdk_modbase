@@ -2244,7 +2244,7 @@ void ClientUserinfoChanged( int clientNum ) {
 		}
 		else
 		{
-			s = va("n\\%s\\t\\%i\\model\\%s\\ds\\%c\\c1\\%s\\c2\\%s\\hc\\%i\\w\\%i\\l\\%i\\tt\\%d\\tl\\%d\\st\\%s\\st2\\%s\\dt\\%i",
+			s = va("n\\%s\\t\\%i\\model\\%s\\c1\\%s\\c2\\%s\\ds\\%c\\hc\\%i\\w\\%i\\l\\%i\\tt\\%d\\tl\\%d\\st\\%s\\st2\\%s\\dt\\%i",
 				client->pers.netname, client->sess.sessionTeam, model, c1, c2, (female?'f':'m'),
 				client->pers.maxHealth, client->sess.wins, client->sess.losses, teamTask, teamLeader, saberName, saber2Name, client->sess.duelTeam);
 		}
@@ -2425,9 +2425,9 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 			{//No IP sent when connecting, probably an unban hack attempt
 				client->pers.connected = CON_DISCONNECTED;
 				#ifdef PATCH_ENGINE
-					G_LogPrintf( "**SECURITY** Client %i (%s) sent no IP when connecting. Real IP is: %s", clientNum, client->pers.netname, realIP );
+					G_LogPrintf( "**SECURITY** Client %i sent no IP when connecting. Real IP is: %s", clientNum, realIP );
 				#else
-					G_LogPrintf( "**SECURITY** Client %i (%s) sent no IP when connecting.", clientNum, client->pers.netname );
+					G_LogPrintf( "**SECURITY** Client %i sent no IP when connecting.", clientNum );
 				#endif
 				return "Invalid userinfo detected";
 			}
@@ -2435,7 +2435,7 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 
 			#ifdef PATCH_ENGINE
 				if ( Q_stricmp( tmpIP, realIP ) )
-					G_LogPrintf( "**SECURITY** Client %i (%s) mismatching IP. %s / %s\n", clientNum, client->pers.netname, tmpIP, realIP );
+					G_LogPrintf( "**SECURITY** Client %i mismatching IP. %s / %s\n", clientNum, tmpIP, realIP );
 			#endif
 		}
 	}
@@ -2475,12 +2475,12 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 	}
 
 	// get and distribute relevent paramters
+	ClientUserinfoChanged( clientNum );
 	#ifdef PATCH_ENGINE
 		G_LogPrintf( "ClientConnect: %i (%s) [IP: %s]\n", clientNum, client->pers.netname, realIP);
 	#else
 		G_LogPrintf( "ClientConnect: %i (%s) [IP: %s]\n", clientNum, client->pers.netname, tmpIP  );
 	#endif
-	ClientUserinfoChanged( clientNum );
 
 	// don't do the "xxx connected" messages if they were caried over from previous level
 	if ( firstTime ) {
