@@ -714,6 +714,10 @@ void WP_DisruptorAltFire( gentity_t *ent )
 			trap_Trace( &tr, start, NULL, NULL, end, skip, MASK_SHOT );
 		}
 
+		// fix: shooting ourselves shouldn't be allowed 
+		if (tr.entityNum == ent->s.number)
+			break;
+
 		traceEnt = &g_entities[tr.entityNum];
 
 		if (d_projectileGhoul2Collision.integer && traceEnt->inuse && traceEnt->client)
