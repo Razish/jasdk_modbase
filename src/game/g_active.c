@@ -358,7 +358,7 @@ void DoImpact( gentity_t *self, gentity_t *other, qboolean damageSelf )
 			//if(self.classname!="monster_mezzoman"&&self.netname!="spider")//Cats always land on their feet
 				if( ( magnitude >= 100 + self->health && self->s.number != 0 && self->s.weapon != WP_SABER ) || ( magnitude >= 700 ) )//&& self.safe_time < level.time ))//health here is used to simulate structural integrity
 				{
-					if ( (self->s.weapon == WP_SABER || self->s.number == 0) && self->client && self->client->ps.groundEntityNum < ENTITYNUM_NONE && magnitude < 1000 )
+					if ( (self->s.weapon == WP_SABER) && self->client && self->client->ps.groundEntityNum < ENTITYNUM_NONE && magnitude < 1000 )
 					{//players and jedi take less impact damage
 						//allow for some lenience on high falls
 						magnitude /= 2;
