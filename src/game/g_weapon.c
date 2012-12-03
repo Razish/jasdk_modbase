@@ -1838,7 +1838,7 @@ static void WP_FireRocket( gentity_t *ent, qboolean altFire )
 		vel *= 0.5f;
 	}
 
-	missile = CreateMissile( muzzle, forward, vel, 10000, ent, altFire );
+	missile = CreateMissile( muzzle, forward, vel, 30000, ent, altFire );
 
 	if (ent->client && ent->client->ps.rocketLockIndex != ENTITYNUM_NONE)
 	{
