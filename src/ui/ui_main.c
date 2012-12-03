@@ -4696,26 +4696,30 @@ UI_LoadDemos
 ===============
 */
 
-#ifdef IOJAMP
-
-#define NAMEBUFSIZE (MAX_DEMOS * 32)
-#define DEMOEXT "dm_"
+#if 1
 
 /*
 ===============
 UI_LoadDemos
 ===============
 */
-static void UI_LoadDemos( void ) {
-	char	demolist[NAMEBUFSIZE] = {0}, demoExt[32] = {0};
-	char	*demoname = NULL;
-	int		i=0, j=0, len=0;
+
+static void UI_LoadDemosInDirectory( const char *directory )
+{
+	char	demolist[MAX_DEMOLIST] = {0}, *demoname = NULL;
+	char	fileList[MAX_DEMOLIST] = {0}, *fileName = NULL;
+	char	demoExt[32] = {0};
+	int		i=0, j=0, len=0, numFiles=0;
 	int		protocol = trap_Cvar_VariableValue( "com_protocol" ), protocolLegacy = trap_Cvar_VariableValue( "com_legacyprotocol" );
 
-	//FIXME: Fallback to "protocol" if com_protocol doesn't exist?
+	if ( !protocol )
+		protocol = trap_Cvar_VariableValue( "protocol" );
+	if ( protocolLegacy == protocol )
+		protocolLegacy = 0;
 
-	Com_sprintf( demoExt, sizeof( demoExt ), ".%s%d", DEMOEXT, protocol);
-	uiInfo.demoCount = trap_FS_GetFileList( "demos", demoExt, demolist, sizeof( demolist ) );
+	Com_sprintf( demoExt, sizeof( demoExt ), ".%s%d", DEMO_EXTENSION, protocol);
+
+	uiInfo.demoCount += trap_FS_GetFileList( directory, demoExt, demolist, sizeof( demolist ) );
 
 	demoname = demolist;
 
@@ -4724,10 +4728,10 @@ static void UI_LoadDemos( void ) {
 		if ( uiInfo.demoCount > MAX_DEMOS )
 			uiInfo.demoCount = MAX_DEMOS;
 
-		for( ; i <uiInfo.demoCount; i++)
+		for( ; uiInfo.loadedDemos<uiInfo.demoCount; uiInfo.loadedDemos++)
 		{
 			len = strlen( demoname );
-			uiInfo.demoList[i] = String_Alloc( demoname );
+			Com_sprintf( uiInfo.demoList[uiInfo.loadedDemos], sizeof( uiInfo.demoList[0] ), "%s/%s", directory + strlen( DEMO_DIRECTORY )+1, demoname );
 			demoname += len + 1;
 		}
 
@@ -4735,14 +4739,32 @@ static void UI_LoadDemos( void ) {
 		{
 			if ( protocolLegacy > 0 && uiInfo.demoCount < MAX_DEMOS )
 			{
-				Com_sprintf( demoExt, sizeof( demoExt ), ".%s%d", DEMOEXT, protocolLegacy );
-				uiInfo.demoCount += trap_FS_GetFileList( "demos", demoExt, demolist, sizeof( demolist ) );
+				Com_sprintf( demoExt, sizeof( demoExt ), ".%s%d", DEMO_EXTENSION, protocolLegacy );
+				uiInfo.demoCount += trap_FS_GetFileList( directory, demoExt, demolist, sizeof( demolist ) );
 				demoname = demolist;
 			}
 			else
 				break;
 		}
 	}
+
+	numFiles = trap_FS_GetFileList( directory, "/", fileList, sizeof( fileList ) );
+
+	fileName = fileList;
+	for ( i=0; i<numFiles; i++ )
+	{
+		len = strlen( fileName );
+		fileName[len] = '\0';
+		if ( Q_stricmp( fileName, "." ) && Q_stricmp( fileName, ".." ) )
+			UI_LoadDemosInDirectory( va( "%s/%s", directory, fileName ) );
+		fileName += len+1;
+	}
+
+}
+
+static void UI_LoadDemos( void )
+{
+	UI_LoadDemosInDirectory( DEMO_DIRECTORY );
 }
 
 #else

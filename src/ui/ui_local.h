@@ -607,6 +607,11 @@ typedef struct {
 #define MAX_Q3PLAYERMODELS 1024
 #define MAX_PLAYERMODELS 512
 
+//JAC: Added
+#define DEMO_DIRECTORY "demos/"
+#define DEMO_EXTENSION "dm_"
+#define MAX_DEMOLIST (MAX_DEMOS * MAX_QPATH)
+
 #define MAX_SCROLLTEXT_SIZE		4096
 #define MAX_SCROLLTEXT_LINES		64
 
@@ -792,9 +797,10 @@ typedef struct {
 	int modCount;
 	int modIndex;
 
-	const char *demoList[MAX_DEMOS];
+	char demoList[MAX_DEMOS][MAX_QPATH];
 	int demoCount;
 	int demoIndex;
+	int loadedDemos;
 
 	const char *movieList[MAX_MOVIES];
 	int movieCount;
