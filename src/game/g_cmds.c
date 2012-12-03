@@ -986,8 +986,9 @@ void Cmd_Team_f( gentity_t *ent ) {
 	int			oldTeam;
 	char		s[MAX_TOKEN_CHARS];
 
-	if ( trap_Argc() != 2 ) {
-		oldTeam = ent->client->sess.sessionTeam;
+	oldTeam = ent->client->sess.sessionTeam;
+
+	if ( trap_Argc() != 2 ) {		
 		switch ( oldTeam ) {
 		case TEAM_BLUE:
 			trap_SendServerCommand( ent-g_entities, va("print \"%s\n\"", G_GetStringEdString("MP_SVGAME", "PRINTBLUETEAM")) );
@@ -1035,7 +1036,9 @@ void Cmd_Team_f( gentity_t *ent ) {
 
 	SetTeam( ent, s );
 
-	ent->client->switchTeamTime = level.time + 5000;
+	// fix: update team switch time only if team change really happend
+	if (oldTeam != ent->client->sess.sessionTeam)
+		ent->client->switchTeamTime = level.time + 5000;
 }
 
 /*
