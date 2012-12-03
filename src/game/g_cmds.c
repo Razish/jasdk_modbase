@@ -2099,16 +2099,31 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 	else if ( !Q_stricmp( arg1, "timelimit" ) )
 	{
 		int n = Com_Clampi( 0, 35790, atoi( arg2 ) );
+		if ( trap_Argc() < 3 )
+		{
+			trap_SendServerCommand( ent-g_entities, "print \"Usage: /callvote timelimit <time>.\n\"" );
+			return;
+		}
 		Com_sprintf( level.voteString, sizeof( level.voteString ), "%s %i", arg1, n );
 	}
 	else if ( !Q_stricmp( arg1, "fraglimit" ) )
 	{
 		int n = Com_Clampi( 0, 0x7FFFFFFF, atoi( arg2 ) );
+		if ( trap_Argc() < 3 )
+		{
+			trap_SendServerCommand( ent-g_entities, "print \"Usage: /callvote fraglimit <frags>.\n\"" );
+			return;
+		}
 		Com_sprintf( level.voteString, sizeof( level.voteString ), "%s %i", arg1, n );
 	}
 	else if ( !Q_stricmp( arg1, "capturelimit" ) )
 	{
 		int n = Com_Clampi( 0, 0x7FFFFFFF, atoi( arg2 ) );
+		if ( trap_Argc() < 3 )
+		{
+			trap_SendServerCommand( ent-g_entities, "print \"Usage: /callvote capturelimit <captures>.\n\"" );
+			return;
+		}
 		Com_sprintf( level.voteString, sizeof( level.voteString ), "%s %i", arg1, n );
 	}
 
