@@ -664,6 +664,12 @@ void SetTeam( gentity_t *ent, char *s ) {
 	int					specClient;
 	int					teamLeader;
 
+	// fix: this prevents rare creation of invalid players
+	if (!ent->inuse)
+	{
+		return;
+	}
+
 	//
 	// see what change is requested
 	//
