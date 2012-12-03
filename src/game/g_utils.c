@@ -1365,6 +1365,9 @@ void G_Sound( gentity_t *ent, int channel, int soundIndex ) {
 		ent->client->ps.fd.killSoundEntIndex[channel-50] = te->s.number;
 		te->s.trickedentindex = ent->s.number;
 		te->s.eFlags = EF_SOUNDTRACKER;
+		// fix: let other players know about this
+		// for case that they will meet this one
+		te->r.svFlags |= SVF_BROADCAST;
 		//te->freeAfterEvent = qfalse;
 	}
 }
