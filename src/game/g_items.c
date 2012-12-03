@@ -2692,11 +2692,11 @@ gentity_t *LaunchItem( gitem_t *item, vec3_t origin, vec3_t velocity ) {
 		Team_CheckDroppedItem( dropped );
 
 		//rww - so bots know
-		if (strcmp(dropped->classname, "team_CTF_redflag") == 0)
+		if (dropped->item->giTag == PW_REDFLAG)	
 		{
 			droppedRedFlag = dropped;
-		}
-		else if (strcmp(dropped->classname, "team_CTF_blueflag") == 0)
+		} 
+		else if (dropped->item->giTag == PW_BLUEFLAG)	
 		{
 			droppedBlueFlag = dropped;
 		}
