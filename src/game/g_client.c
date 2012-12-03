@@ -2366,6 +2366,56 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 		}
 	}
 
+	if ( !isBot && firstTime )
+	{
+		#ifdef PATCH_ENGINE
+			if ( Q_stricmp( tmpIP, realIP ) )
+				G_LogPrintf( "**SECURITY** Client %i mismatching IP. %s / %s\n", clientNum, tmpIP, realIP );
+		#endif
+			
+		#ifdef PATCH_ENGINE
+		if ( level.security.isPatched && g_antiFakePlayer.integer
+			&& svs->clients[clientNum].netchan.remoteAddress.type != NA_LOOPBACK
+			&& svs->clients[clientNum].netchan.remoteAddress.type != NA_BOT )
+		#else
+		if ( g_antiFakePlayer.integer )
+		#endif
+		{// patched, check for > g_maxConnPerIP connections from same IP
+			int count=0, i=0;
+			for ( i=0; i<g_maxclients.integer; i++ )
+			{
+				#if 0
+					if ( level.clients[i].pers.connected != CON_DISCONNECTED && i != clientNum )
+					{
+						if ( CompareIPs( clientNum, i ) )
+						{
+							if ( !level.security.clientConnectionActive[i] )
+							{//This IP has a dead connection pending, wait for it to time out
+							//	client->pers.connected = CON_DISCONNECTED;
+								return "Please wait, another connection from this IP is still pending...";
+							}
+						}
+					}
+				#else
+					if ( CompareIPs( clientNum, i ) )
+						count++;
+				#endif
+			}
+			if ( count > g_maxConnPerIP.integer )
+			{
+			//	client->pers.connected = CON_DISCONNECTED;
+				return "Too many connections from the same IP";
+			}
+		}
+	}
+
+	if ( ent->inuse )
+	{// if a player reconnects quickly after a disconnect, the client disconnect may never be called, thus flag can get lost in the ether
+		G_LogPrintf( "Forcing disconnect on active client: %i\n", clientNum );
+		// so lets just fix up anything that should happen on a disconnect
+		ClientDisconnect( clientNum );
+	}
+
 	// they can connect
 	ent->client = level.clients + clientNum;
 	client = ent->client;
@@ -2417,65 +2467,25 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 			return "BotConnectfailed";
 		}
 	}
-	else
-	{
-		if ( firstTime )
-		{
-			if ( !tmpIP[0] )
-			{//No IP sent when connecting, probably an unban hack attempt
-				client->pers.connected = CON_DISCONNECTED;
-				#ifdef PATCH_ENGINE
-					G_LogPrintf( "**SECURITY** Client %i sent no IP when connecting. Real IP is: %s", clientNum, realIP );
-				#else
-					G_LogPrintf( "**SECURITY** Client %i sent no IP when connecting.", clientNum );
-				#endif
-				return "Invalid userinfo detected";
-			}
-			Q_strncpyz( client->sess.IP, tmpIP, sizeof( client->sess.IP ) );
-
-			#ifdef PATCH_ENGINE
-				if ( Q_stricmp( tmpIP, realIP ) )
-					G_LogPrintf( "**SECURITY** Client %i mismatching IP. %s / %s\n", clientNum, tmpIP, realIP );
-			#endif
-		}
-	}
-
-	//JAC: multiple connections per IP
-#ifdef PATCH_ENGINE
-	if ( level.security.isPatched && g_antiFakePlayer.integer && !isBot && svs->clients[clientNum].netchan.remoteAddress.type != NA_LOOPBACK && firstTime )
-#else
-	if ( g_antiFakePlayer.integer && !isBot && firstTime )
-#endif
-	{// patched, check for > g_maxConnPerIP connections from same IP
-		int count=0, i=0;
-		for ( i=0; i<g_maxclients.integer; i++ )
-		{
-			#if 0
-				if ( level.clients[i].pers.connected != CON_DISCONNECTED && i != clientNum )
-				{
-					if ( CompareIPs( clientNum, i ) )
-					{
-						if ( !level.security.clientConnectionActive[i] )
-						{//This IP has a dead connection pending, wait for it to time out
-							client->pers.connected = CON_DISCONNECTED;
-							return "Please wait, another connection from this IP is still pending...";
-						}
-					}
-				}
-			#else
-				if ( CompareIPs( clientNum, i ) )
-					count++;
-			#endif
-		}
-		if ( count > g_maxConnPerIP.integer )
-		{
-			client->pers.connected = CON_DISCONNECTED;
-			return "Too many connections from the same IP";
-		}
-	}
 
 	// get and distribute relevent paramters
 	ClientUserinfoChanged( clientNum );
+
+	if ( !isBot && firstTime )
+	{
+		if ( !tmpIP[0] )
+		{//No IP sent when connecting, probably an unban hack attempt
+			client->pers.connected = CON_DISCONNECTED;
+			#ifdef PATCH_ENGINE
+				G_LogPrintf( "**SECURITY** Client %i (%s) sent no IP when connecting. Real IP is: %s", clientNum, client->pers.netname, realIP );
+			#else
+				G_LogPrintf( "**SECURITY** Client %i (%s) sent no IP when connecting.", clientNum, client->pers.netname );
+			#endif
+			return "Invalid userinfo detected";
+		}
+		Q_strncpyz( client->sess.IP, tmpIP, sizeof( client->sess.IP ) );
+	}
+
 	#ifdef PATCH_ENGINE
 		G_LogPrintf( "ClientConnect: %i (%s) [IP: %s]\n", clientNum, client->pers.netname, realIP);
 	#else
