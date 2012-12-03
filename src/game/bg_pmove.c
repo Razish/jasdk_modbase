@@ -4398,6 +4398,37 @@ void PM_CheckFixMins( void )
 	}
 }
 
+static qboolean PM_CanStand ( void )
+{
+    qboolean canStand = qtrue;
+    float x, y;
+    trace_t trace;
+
+    const vec3_t lineMins = { -5.0f, -5.0f, -2.5f };
+    const vec3_t lineMaxs = { 5.0f, 5.0f, 0.0f };
+
+    for ( x = pm->mins[0] + 5.0f; canStand && x <= (pm->maxs[0] - 5.0f); x += 10.0f )
+    {
+        for ( y = pm->mins[1] + 5.0f; y <= (pm->maxs[1] - 5.0f); y += 10.0f )
+        {
+            vec3_t start = { x, y, pm->maxs[2] };
+            vec3_t end = { x, y, pm->ps->standheight };
+
+            VectorAdd (start, pm->ps->origin, start);
+            VectorAdd (end, pm->ps->origin, end);
+
+            pm->trace (&trace, start, lineMins, lineMaxs, end, pm->ps->clientNum, pm->tracemask);
+		    if ( trace.allsolid || trace.fraction < 1.0f )
+		    {
+			    canStand = qfalse;
+			    break;
+		    }
+        }
+    }
+	
+    return canStand;
+}
+
 /*
 ==============
 PM_CheckDuck
@@ -4496,11 +4527,12 @@ static void PM_CheckDuck (void)
 		}
 		else if (pm->ps->pm_flags & PMF_ROLLING)
 		{
-			// try to stand up
-			pm->maxs[2] = pm->ps->standheight;//DEFAULT_MAXS_2;
-			pm->trace (&trace, pm->ps->origin, pm->mins, pm->maxs, pm->ps->origin, pm->ps->clientNum, pm->tracemask );
-			if (!trace.allsolid)
-				pm->ps->pm_flags &= ~PMF_ROLLING;
+			// Xycaleth's fix for crochjumping through roof
+            if ( PM_CanStand() )
+            {
+                pm->maxs[2] = pm->ps->standheight;
+                pm->ps->pm_flags &= ~PMF_ROLLING;
+            }
 		}
 		else if (pm->cmd.upmove < 0 ||
 			pm->ps->forceHandExtend == HANDEXTEND_KNOCKDOWN ||
@@ -4513,11 +4545,12 @@ static void PM_CheckDuck (void)
 		{	// stand up if possible 
 			if (pm->ps->pm_flags & PMF_DUCKED)
 			{
-				// try to stand up
-				pm->maxs[2] = pm->ps->standheight;//DEFAULT_MAXS_2;
-				pm->trace (&trace, pm->ps->origin, pm->mins, pm->maxs, pm->ps->origin, pm->ps->clientNum, pm->tracemask );
-				if (!trace.allsolid)
-					pm->ps->pm_flags &= ~PMF_DUCKED;
+				// Xycaleth's fix for crochjumping through roof
+                if ( PM_CanStand() )
+	            {
+		            pm->maxs[2] = pm->ps->standheight;
+		            pm->ps->pm_flags &= ~PMF_DUCKED;
+	            }
 			}
 		}
 	}
