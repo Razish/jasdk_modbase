@@ -1795,6 +1795,9 @@ void ForceLightning( gentity_t *self )
 		return;
 	}
 
+	// fix: rocket lock bug
+	BG_ClearRocketLock(&self->client->ps);
+
 	//Shoot lightning from hand
 	//using grip anim now, to extend the burst time
 	self->client->ps.forceHandExtend = HANDEXTEND_FORCE_HOLD;
@@ -2760,6 +2763,9 @@ void ForceTelepathy(gentity_t *self)
 		return;
 	}
 
+	// fix: rocket lock bug
+	BG_ClearRocketLock(&self->client->ps);
+
 	if ( ForceTelepathyCheckDirectNPCTarget( self, &tr, &tookPower ) )
 	{//hit an NPC directly
 		self->client->ps.forceAllowDeactivateTime = level.time + 1500;
@@ -3112,6 +3118,9 @@ void ForceThrow( gentity_t *self, qboolean pull )
 	{
 		return;
 	}
+
+	// fix: rocket lock bug
+	BG_ClearRocketLock(&self->client->ps);
 
 	if (!pull && self->client->ps.saberLockTime > level.time && self->client->ps.saberLockFrame)
 	{
