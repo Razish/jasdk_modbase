@@ -232,9 +232,12 @@ void CG_SetConfigValues( void )
 	cgs.scores2 = atoi( CG_ConfigString( CS_SCORES2 ) );
 	cgs.levelStartTime = atoi( CG_ConfigString( CS_LEVEL_START_TIME ) );
 	if( cgs.gametype == GT_CTF || cgs.gametype == GT_CTY ) {
-		int redflagId = s[0] - '0', blueflagId = s[1] - '0';
+		int redflagId = 0, blueflagId = 0;
 
 		s = CG_ConfigString( CS_FLAGSTATUS );
+
+		redflagId = s[0] - '0';
+		blueflagId = s[1] - '0';
 
 		// fix: proper flag statuses mapping for dropped flag
 		if ( redflagId >= 0 && redflagId < ARRAY_LEN( ctfFlagStatusRemap ) ) 
