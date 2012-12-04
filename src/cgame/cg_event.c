@@ -824,7 +824,7 @@ void CG_PrintCTFMessage(clientInfo_t *ci, const char *teamName, int ctfMessage)
 
 			if (ci)
 			{
-				Com_sprintf(printMsg, sizeof(printMsg), "%s ", ci->name);
+				Com_sprintf(printMsg, sizeof(printMsg), "%s^7 ", ci->name);
 				strLen = strlen(printMsg);
 			}
 
@@ -856,7 +856,7 @@ void CG_PrintCTFMessage(clientInfo_t *ci, const char *teamName, int ctfMessage)
 
 	if (ci)
 	{
-		Com_sprintf(printMsg, sizeof(printMsg), "%s %s", ci->name, psStringEDString);
+		Com_sprintf(printMsg, sizeof(printMsg), "%s^7 %s", ci->name, psStringEDString);
 	}
 	else
 	{
