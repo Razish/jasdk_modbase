@@ -7774,8 +7774,6 @@ static void PM_DropTimers( void ) {
 // which includes files that are also compiled in SP. We do need to make
 // sure we only get one copy in the linker, though.
 
-
-#if !defined(_XBOX) || defined(QAGAME)
 extern	vmCvar_t	bg_fighterAltControl;
 qboolean BG_UnrestrainedPitchRoll( playerState_t *ps, Vehicle_t *pVeh )
 {
@@ -7792,9 +7790,6 @@ qboolean BG_UnrestrainedPitchRoll( playerState_t *ps, Vehicle_t *pVeh )
 	}
 	return qfalse;
 }
-#else
-extern qboolean BG_UnrestrainedPitchRoll( playerState_t *ps, Vehicle_t *pVeh );
-#endif
 
 
 /*

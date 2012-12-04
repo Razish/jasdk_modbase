@@ -308,18 +308,10 @@ typedef struct {
 
 	int			superSmoothTime; //do crazy amount of smoothing
 
-#ifdef _XBOX
-	int			friendshipStatus;
-#endif
-	
 } clientInfo_t;
 
 //rww - cheap looping sound struct
-#ifdef _XBOX
-#define MAX_CG_LOOPSOUNDS 2
-#else
 #define MAX_CG_LOOPSOUNDS 8
-#endif
 
 typedef struct cgLoopSound_s {
 	int entityNum;
@@ -835,7 +827,7 @@ typedef struct {
 	// view rendering
 	refdef_t	refdef;
 
-#ifdef _XBOX
+#ifdef USE_WIDESCREEN
 	qboolean widescreen;
 #endif
 
