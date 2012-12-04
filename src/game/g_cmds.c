@@ -530,7 +530,7 @@ void Cmd_Kill_f( gentity_t *ent ) {
 	if ( ent->client->sess.sessionTeam == TEAM_SPECTATOR || ent->client->tempSpectate >= level.time ) {
 		return;
 	}
-	if (ent->health <= 0 || ent->client->ps.fallingToDeath) {
+	if (ent->health <= 0) {
 		return;
 	}
 
