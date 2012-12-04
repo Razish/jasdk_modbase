@@ -4438,7 +4438,7 @@ Sets mins, maxs, and pm->ps->viewheight
 */
 static void PM_CheckDuck (void)
 {
-	trace_t	trace;
+//	trace_t	trace;
 
 	if ( pm->ps->m_iVehicleNum > 0 && pm->ps->m_iVehicleNum < ENTITYNUM_NONE )
 	{//riding a vehicle or are a vehicle

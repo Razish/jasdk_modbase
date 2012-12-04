@@ -3274,7 +3274,6 @@ void ClientCommand( int clientNum ) {
 	// ignore all other commands when at intermission
 	if (level.intermissiontime)
 	{
-		qboolean giveError = qfalse;
 		//rwwFIXMEFIXME: This is terrible, write it differently
 
 		//Raz: ^ Rewrote this differently, we also don't want to send commands as chat...!

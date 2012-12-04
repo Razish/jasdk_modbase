@@ -1045,7 +1045,7 @@ int Q_vsnprintf( char *str, size_t size, const char *format, va_list args )
 
 	str[size-1] = '\0';
 
-	if ( ret < 0 || ret >= size )
+	if ( ret < 0 || ret >= (signed)size )
 		return -1;
 
 	return ret;
