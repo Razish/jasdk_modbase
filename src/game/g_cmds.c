@@ -4017,16 +4017,13 @@ void ClientCommand( int clientNum ) {
 		G_SetVehDamageFlags( &g_entities[ent->s.m_iVehicleNum], shipSurf, damageLevel );
 	}
 #endif
+	else if (Q_stricmp(cmd, "addbot") == 0)
+	{ //because addbot isn't a recognized command unless you're the server, but it is in the menus regardless
+//		trap_SendServerCommand( clientNum, va("print \"You can only add bots as the server.\n\"" ) );
+		trap_SendServerCommand( clientNum, va("print \"%s.\n\"", G_GetStringEdString("MP_SVGAME", "ONLY_ADD_BOTS_AS_SERVER")));
+	}
 	else
 	{
-		if (Q_stricmp(cmd, "addbot") == 0)
-		{ //because addbot isn't a recognized command unless you're the server, but it is in the menus regardless
-//			trap_SendServerCommand( clientNum, va("print \"You can only add bots as the server.\n\"" ) );
-			trap_SendServerCommand( clientNum, va("print \"%s.\n\"", G_GetStringEdString("MP_SVGAME", "ONLY_ADD_BOTS_AS_SERVER")));
-		}
-		else
-		{
-			trap_SendServerCommand( clientNum, va("print \"unknown cmd %s\n\"", cmd ) );
-		}
+		trap_SendServerCommand( clientNum, va("print \"unknown cmd %s\n\"", cmd ) );
 	}
 }
