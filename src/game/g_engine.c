@@ -112,11 +112,9 @@
 
 		if ( !Q_stricmp( cmd, "getstatus" ) || !Q_stricmp( cmd, "getinfo" ) )
 		{//	We got a risky function here, get arg 1 and truncate if needed
-			
-			// 32 chars should be more than enough for the challenge number
 			if ( strlen( s ) > 32 )
-			{
-				s[32] = 0;
+			{// 32 chars should be more than enough for the challenge number
+				s[32] = '\0';
 				G_SecurityLogPrintf( "Attempted q3infoboom from %s with command %s\n", ip, cmd );
 			}
 		}
@@ -125,7 +123,7 @@
 		{
 			if ( strlen( s ) > 980 )
 			{
-				s[980] = 0;
+				s[980] = '\0';
 				G_SecurityLogPrintf( "Attempted q3infoboom from %s with command %s\n", ip, cmd );
 			}
 		}

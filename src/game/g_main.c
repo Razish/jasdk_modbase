@@ -3699,7 +3699,7 @@ void G_RunFrame( int levelTime ) {
 						}
 
 						NET_AddrToString( buf, sizeof( buf ), &svs->clients[i].netchan.remoteAddress );
-						G_LogPrintf( "Client %i (%s) kicked for q3fill [IP: %s]\n", i, cl->pers.netname, buf );
+						G_SecurityLogPrintf( "Client %i (%s) kicked for q3fill [IP: %s]\n", i, cl->pers.netname, buf );
 						trap_DropClient( i, "Fake client detected" );
 						cl->pers.connected = CON_DISCONNECTED;
 					}

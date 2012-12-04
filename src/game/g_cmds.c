@@ -1658,13 +1658,13 @@ static void Cmd_Say_f( gentity_t *ent, int mode, qboolean arg0 ) {
 		return;
 	}
 
-	if (arg0)
+	p = ConcatArgs( arg0 ? 0 : 1 );
+
+	//Raz: BOF
+	if ( strlen( p ) > MAX_SAY_TEXT )
 	{
-		p = ConcatArgs( 0 );
-	}
-	else
-	{
-		p = ConcatArgs( 1 );
+		p[MAX_SAY_TEXT-1] = '\0';
+		G_SecurityLogPrintf( "Cmd_Say_f from %d (%s) has been truncated: %s\n", ent->s.number, ent->client->pers.netname, p );
 	}
 
 	G_Say( ent, NULL, mode, p );
@@ -1697,6 +1697,13 @@ static void Cmd_Tell_f( gentity_t *ent ) {
 	}
 
 	p = ConcatArgs( 2 );
+
+	//Raz: BOF
+	if ( strlen( p ) > MAX_SAY_TEXT )
+	{
+		p[MAX_SAY_TEXT-1] = '\0';
+		G_SecurityLogPrintf( "Cmd_Tell_f from %d (%s) has been truncated: %s\n", ent->s.number, ent->client->pers.netname, p );
+	}
 
 	G_LogPrintf( "tell: %s to %s: %s\n", ent->client->pers.netname, target->client->pers.netname, p );
 	G_Say( ent, target, SAY_TELL, p );
@@ -3208,6 +3215,13 @@ void ClientCommand( int clientNum ) {
 
 	ent = g_entities + clientNum;
 	if ( !ent->client ) {
+		#ifdef PATCH_ENGINE
+			char tmpIP[NET_ADDRSTRMAXLEN] = {0};
+			NET_AddrToString( tmpIP, sizeof( tmpIP ), &svs->clients[clientNum].netchan.remoteAddress );
+		#else
+			char *tmpIP = "Unknown";
+		#endif
+		G_SecurityLogPrintf( "ClientCommand(%d) without an active connection [IP: %s]\n", clientNum, tmpIP );
 		return;		// not fully in game yet
 	}
 
@@ -3220,6 +3234,10 @@ void ClientCommand( int clientNum ) {
 		return;
 	}
 	//end rww
+
+	//Raz: Don't let connecting clients get beyond this point
+	if ( level.clients[clientNum].pers.connected != CON_CONNECTED || ent->client->pers.connected != CON_CONNECTED )
+		return;
 
 	if (Q_stricmp (cmd, "say") == 0) {
 		Cmd_Say_f (ent, SAY_ALL, qfalse);
@@ -3258,107 +3276,37 @@ void ClientCommand( int clientNum ) {
 		qboolean giveError = qfalse;
 		//rwwFIXMEFIXME: This is terrible, write it differently
 
-		if (!Q_stricmp(cmd, "give"))
+		//Raz: ^ Rewrote this differently, we also don't want to send commands as chat...!
+		if ( !Q_stricmp( cmd, "forcechanged" ) )
 		{
-			giveError = qtrue;
-		}
-		else if (!Q_stricmp(cmd, "giveother"))
-		{
-			giveError = qtrue;
-		}
-		else if (!Q_stricmp(cmd, "god"))
-		{
-			giveError = qtrue;
-		}
-		else if (!Q_stricmp(cmd, "notarget"))
-		{
-			giveError = qtrue;
-		}
-		else if (!Q_stricmp(cmd, "noclip"))
-		{
-			giveError = qtrue;
-		}
-		else if (!Q_stricmp(cmd, "kill"))
-		{
-			giveError = qtrue;
-		}
-		else if (!Q_stricmp(cmd, "teamtask"))
-		{
-			giveError = qtrue;
-		}
-		else if (!Q_stricmp(cmd, "levelshot"))
-		{
-			giveError = qtrue;
-		}
-		else if (!Q_stricmp(cmd, "follow"))
-		{
-			giveError = qtrue;
-		}
-		else if (!Q_stricmp(cmd, "follownext"))
-		{
-			giveError = qtrue;
-		}
-		else if (!Q_stricmp(cmd, "followprev"))
-		{
-			giveError = qtrue;
-		}
-		else if (!Q_stricmp(cmd, "team"))
-		{
-			giveError = qtrue;
-		}
-		else if (!Q_stricmp(cmd, "duelteam"))
-		{
-			giveError = qtrue;
-		}
-		else if (!Q_stricmp(cmd, "siegeclass"))
-		{
-			giveError = qtrue;
-		}
-		else if (!Q_stricmp(cmd, "forcechanged"))
-		{ //special case: still update force change
 			Cmd_ForceChanged_f (ent);
 			return;
 		}
-		else if (!Q_stricmp(cmd, "where"))
-		{
-			giveError = qtrue;
-		}
-		else if (!Q_stricmp(cmd, "callvote"))
-		{
-			giveError = qtrue;
-		}
-		else if (!Q_stricmp(cmd, "vote"))
-		{
-			giveError = qtrue;
-		}
-		else if (!Q_stricmp(cmd, "callteamvote"))
-		{
-			giveError = qtrue;
-		}
-		else if (!Q_stricmp(cmd, "teamvote"))
-		{
-			giveError = qtrue;
-		}
-		else if (!Q_stricmp(cmd, "gc"))
-		{
-			giveError = qtrue;
-		}
-		else if (!Q_stricmp(cmd, "setviewpos"))
-		{
-			giveError = qtrue;
-		}
-		else if (!Q_stricmp(cmd, "stats"))
-		{
-			giveError = qtrue;
-		}
-
-		if (giveError)
+		else if (
+			!Q_stricmp( cmd, "give" ) ||
+			!Q_stricmp( cmd, "giveother" ) ||
+			!Q_stricmp( cmd, "god" ) ||
+			!Q_stricmp( cmd, "notarget" ) ||
+			!Q_stricmp( cmd, "noclip" ) ||
+			!Q_stricmp( cmd, "kill" ) ||
+			!Q_stricmp( cmd, "teamtask" ) ||
+			!Q_stricmp( cmd, "levelshot" ) ||
+			!Q_stricmp( cmd, "follow" ) ||
+			!Q_stricmp( cmd, "follownext" ) ||
+			!Q_stricmp( cmd, "followprev" ) ||
+			!Q_stricmp( cmd, "team" ) ||
+			!Q_stricmp( cmd, "duelteam" ) ||
+			!Q_stricmp( cmd, "siegeclass" ) ||
+			!Q_stricmp( cmd, "where" ) ||
+			!Q_stricmp( cmd, "callvote" ) ||
+			!Q_stricmp( cmd, "vote" ) ||
+			!Q_stricmp( cmd, "callteamvote" ) ||
+			!Q_stricmp( cmd, "teamvote" ) ||
+			!Q_stricmp( cmd, "gc" ) ||
+			!Q_stricmp( cmd, "setviewpos" ) ||
+			!Q_stricmp( cmd, "stats" ) )
 		{
 			trap_SendServerCommand( clientNum, va("print \"%s (%s) \n\"", G_GetStringEdString("MP_SVGAME", "CANNOT_TASK_INTERMISSION"), cmd ) );
-		}
-		else
-		{
-			Cmd_Say_f (ent, qfalse, qtrue);
 		}
 		return;
 	}
