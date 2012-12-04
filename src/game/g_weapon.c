@@ -714,6 +714,10 @@ void WP_DisruptorAltFire( gentity_t *ent )
 			trap_Trace( &tr, start, NULL, NULL, end, skip, MASK_SHOT );
 		}
 
+		// fix: shooting ourselves shouldn't be allowed 
+		if (tr.entityNum == ent->s.number)
+			break;
+
 		traceEnt = &g_entities[tr.entityNum];
 
 		if (d_projectileGhoul2Collision.integer && traceEnt->inuse && traceEnt->client)
@@ -1834,7 +1838,7 @@ static void WP_FireRocket( gentity_t *ent, qboolean altFire )
 		vel *= 0.5f;
 	}
 
-	missile = CreateMissile( muzzle, forward, vel, 10000, ent, altFire );
+	missile = CreateMissile( muzzle, forward, vel, 30000, ent, altFire );
 
 	if (ent->client && ent->client->ps.rocketLockIndex != ENTITYNUM_NONE)
 	{
@@ -2698,11 +2702,14 @@ void charge_stick (gentity_t *self, gentity_t *other, trace_t *trace)
 		return;
 	}
 
+	// fix: annoying det packs bug caused det packs to sometimes 
+	// not detonating when owner player dies
 	//if we get here I guess we hit hte world so we can stick to it
-
-	self->touch = 0;
-	self->think = DetPackBlow;
-	self->nextthink = level.time + 30000;
+	if (self->think == G_RunObject){
+		self->touch = 0;
+		self->think = DetPackBlow;
+		self->nextthink = level.time + 30000;
+	}
 
 	VectorClear(self->s.apos.trDelta);
 	self->s.apos.trType = TR_STATIONARY;

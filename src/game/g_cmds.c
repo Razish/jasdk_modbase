@@ -664,6 +664,12 @@ void SetTeam( gentity_t *ent, char *s ) {
 	int					specClient;
 	int					teamLeader;
 
+	// fix: this prevents rare creation of invalid players
+	if (!ent->inuse)
+	{
+		return;
+	}
+
 	//
 	// see what change is requested
 	//
@@ -968,7 +974,8 @@ void StopFollowing( gentity_t *ent ) {
 	ent->client->ps.cloakFuel = 100; // so that fuel goes away after stop following them
 	ent->client->ps.jetpackFuel = 100; // so that fuel goes away after stop following them
 	ent->health = ent->client->ps.stats[STAT_HEALTH] = 100; // so that you don't keep dead angles if you were spectating a dead person
-	}
+	ent->client->ps.bobCycle = 0; 
+}
 
 /*
 =================
@@ -979,8 +986,9 @@ void Cmd_Team_f( gentity_t *ent ) {
 	int			oldTeam;
 	char		s[MAX_TOKEN_CHARS];
 
-	if ( trap_Argc() != 2 ) {
-		oldTeam = ent->client->sess.sessionTeam;
+	oldTeam = ent->client->sess.sessionTeam;
+
+	if ( trap_Argc() != 2 ) {		
 		switch ( oldTeam ) {
 		case TEAM_BLUE:
 			trap_SendServerCommand( ent-g_entities, va("print \"%s\n\"", G_GetStringEdString("MP_SVGAME", "PRINTBLUETEAM")) );
@@ -1028,7 +1036,9 @@ void Cmd_Team_f( gentity_t *ent ) {
 
 	SetTeam( ent, s );
 
-	ent->client->switchTeamTime = level.time + 5000;
+	// fix: update team switch time only if team change really happend
+	if (oldTeam != ent->client->sess.sessionTeam)
+		ent->client->switchTeamTime = level.time + 5000;
 }
 
 /*
@@ -2457,6 +2467,11 @@ int G_ItemUsable(playerState_t *ps, int forcedUse)
 	vec3_t mins, maxs;
 	vec3_t trtest;
 	trace_t tr;
+
+	// fix: dead players shouldn't use items
+	if (ps->stats[STAT_HEALTH] <= 0){
+		return 0;
+	}
 
 	if (ps->m_iVehicleNum)
 	{

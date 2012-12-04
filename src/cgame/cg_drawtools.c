@@ -398,6 +398,11 @@ float *CG_FadeColor( int startMsec, int totalMsec ) {
 		return NULL;
 	}
 
+	// this color shouldn't be visible yet
+	if (t < 0){
+		return NULL;
+	}
+
 	// fade out
 	if ( totalMsec - t < FADE_TIME ) {
 		color[3] = ( totalMsec - t ) * 1.0/FADE_TIME;

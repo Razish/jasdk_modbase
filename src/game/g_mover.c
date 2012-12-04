@@ -1060,11 +1060,11 @@ static void Touch_DoorTriggerSpectator( gentity_t *ent, gentity_t *other, trace_
 	VectorClear(dir);
 	if (fabs(other->s.origin[axis] - ent->r.absmax[axis]) <
 		fabs(other->s.origin[axis] - ent->r.absmin[axis])) {
-		origin[axis] = ent->r.absmin[axis] - 10;
+		origin[axis] = ent->r.absmin[axis] - 25;
 		dir[axis] = -1;
 	}
 	else {
-		origin[axis] = ent->r.absmax[axis] + 10;
+		origin[axis] = ent->r.absmax[axis] + 25;
 		dir[axis] = 1;
 	}
 	for (i = 0; i < 3; i++) {
