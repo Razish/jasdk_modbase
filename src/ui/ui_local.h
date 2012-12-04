@@ -44,15 +44,6 @@ extern vmCvar_t	ui_gameType;
 extern vmCvar_t	ui_netGameType;
 extern vmCvar_t	ui_actualNetGameType;
 extern vmCvar_t	ui_joinGameType;
-#ifdef _XBOX
-extern vmCvar_t ui_optiGameType;
-extern vmCvar_t ui_optiCurrentMap;
-extern vmCvar_t ui_optiMinPlayers;
-extern vmCvar_t ui_optiMaxPlayers;
-extern vmCvar_t ui_optiFriendlyFire;
-extern vmCvar_t ui_optiJediMastery;
-extern vmCvar_t ui_optiSaberOnly;
-#endif
 extern vmCvar_t	ui_netSource;
 extern vmCvar_t	ui_serverFilterType;
 extern vmCvar_t	ui_dedicated;
@@ -607,6 +598,11 @@ typedef struct {
 #define MAX_Q3PLAYERMODELS 1024
 #define MAX_PLAYERMODELS 512
 
+//JAC: Added
+#define DEMO_DIRECTORY "demos/"
+#define DEMO_EXTENSION "dm_"
+#define MAX_DEMOLIST (MAX_DEMOS * MAX_QPATH)
+
 #define MAX_SCROLLTEXT_SIZE		4096
 #define MAX_SCROLLTEXT_LINES		64
 
@@ -792,9 +788,10 @@ typedef struct {
 	int modCount;
 	int modIndex;
 
-	const char *demoList[MAX_DEMOS];
+	char demoList[MAX_DEMOS][MAX_QPATH];
 	int demoCount;
 	int demoIndex;
+	int loadedDemos;
 
 	const char *movieList[MAX_MOVIES];
 	int movieCount;

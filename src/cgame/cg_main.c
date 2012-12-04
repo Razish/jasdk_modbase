@@ -132,11 +132,7 @@ static int	CG_RagCallback(int callType);
 static void C_GetBoltPos(void);
 static void C_ImpactMark(void);
 
-#ifdef _XBOX
-#define MAX_MISC_ENTS	500
-#else
 #define MAX_MISC_ENTS	4000
-#endif
 
 //static refEntity_t	*MiscEnts = 0;
 //static float		*Radius = 0;
@@ -762,9 +758,7 @@ vmCvar_t	cg_autoMapY;
 vmCvar_t	cg_autoMapW;
 vmCvar_t	cg_autoMapH;
 
-#ifndef _XBOX	// Hmmm. This is also in game. I think this is safe.
 vmCvar_t	bg_fighterAltControl;
-#endif
 
 vmCvar_t	cg_chatBox;
 vmCvar_t	cg_chatBoxHeight;
@@ -1971,9 +1965,7 @@ static void CG_RegisterGraphics( void ) {
 
 	CG_LoadingString( cgs.mapname );        
 
-//#ifndef _XBOX
 	trap_R_LoadWorldMap( cgs.mapname );
-//#endif
 
 	// precache status bar pics
 //	CG_LoadingString( "game media" );
@@ -2559,7 +2551,6 @@ void CG_StartMusic( qboolean bForceStart ) {
 	trap_S_StartBackgroundTrack( parm1, parm2, !bForceStart );
 }
 
-#ifndef _XBOX
 char *CG_GetMenuBuffer(const char *filename) {
 	int	len;
 	fileHandle_t	f;
@@ -2582,7 +2573,6 @@ char *CG_GetMenuBuffer(const char *filename) {
 
 	return buf;
 }
-#endif
 
 //
 // ==============================
@@ -3253,16 +3243,16 @@ Ghoul2 Insert Start
 // initialise the cg_entities structure - take into account the ghoul2 stl stuff in the active snap shots
 void CG_Init_CG(void)
 {
-#ifdef _XBOX
+#ifdef USE_WIDESCREEN
 	qboolean widescreen = cg.widescreen;
 #endif
 	memset( &cg, 0, sizeof(cg));
-#ifdef _XBOX
+#ifdef USE_WIDESCREEN
 	cg.widescreen = widescreen;
 #endif
 }
 
-#ifdef _XBOX
+#ifdef USE_WIDESCREEN
 void CG_SetWidescreen(qboolean widescreen)
 {
 	cg.widescreen = widescreen;
@@ -3927,9 +3917,7 @@ Ghoul2 Insert End
 
 //	CG_LoadingString( "Creating automap data" );
 	//init automap
-#ifndef _XBOX
 	trap_R_InitWireframeAutomap();
-#endif
 
 	CG_LoadingString( "" );
 

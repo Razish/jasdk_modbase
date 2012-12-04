@@ -972,7 +972,6 @@ void _UI_Refresh( int realtime )
 		// refresh find player list
 		UI_BuildFindPlayerList(qfalse);
 	} 
-#ifndef _XBOX	
 	// draw cursor
 	UI_SetColor( NULL );
 	/* Raz: Don't draw cursor on loading screens
@@ -986,8 +985,6 @@ void _UI_Refresh( int realtime )
 		if ( cstate.connState <= CA_DISCONNECTED || cstate.connState >= CA_ACTIVE )
 			UI_DrawHandlePic( (float)uiInfo.uiDC.cursorx, (float)uiInfo.uiDC.cursory, 40.0f, 40.0f, uiInfo.uiDC.Assets.cursor);
 	}
-
-#endif
 
 #ifndef NDEBUG
 	if (uiInfo.uiDC.debug)
@@ -4003,18 +4000,10 @@ static qboolean UI_InSoloMenu( void )
 
 static qboolean UI_NetGameType_HandleKey(int flags, float *special, int key) 
 {
-#ifdef _XBOX
-  if (key == A_CURSOR_RIGHT || key == A_CURSOR_LEFT)
-#else
   if (key == A_MOUSE1 || key == A_MOUSE2 || key == A_ENTER || key == A_KP_ENTER) 
-#endif
   {
 
-#ifdef _XBOX
-	if (key == A_CURSOR_LEFT) 
-#else
 	if (key == A_MOUSE2) 
-#endif
 	{
 		ui_netGameType.integer--;
 		if (UI_InSoloMenu())
@@ -4696,26 +4685,30 @@ UI_LoadDemos
 ===============
 */
 
-#ifdef IOJAMP
-
-#define NAMEBUFSIZE (MAX_DEMOS * 32)
-#define DEMOEXT "dm_"
+#if 1
 
 /*
 ===============
 UI_LoadDemos
 ===============
 */
-static void UI_LoadDemos( void ) {
-	char	demolist[NAMEBUFSIZE] = {0}, demoExt[32] = {0};
-	char	*demoname = NULL;
-	int		i=0, j=0, len=0;
+
+static void UI_LoadDemosInDirectory( const char *directory )
+{
+	char	demolist[MAX_DEMOLIST] = {0}, *demoname = NULL;
+	char	fileList[MAX_DEMOLIST] = {0}, *fileName = NULL;
+	char	demoExt[32] = {0};
+	int		i=0, j=0, len=0, numFiles=0;
 	int		protocol = trap_Cvar_VariableValue( "com_protocol" ), protocolLegacy = trap_Cvar_VariableValue( "com_legacyprotocol" );
 
-	//FIXME: Fallback to "protocol" if com_protocol doesn't exist?
+	if ( !protocol )
+		protocol = trap_Cvar_VariableValue( "protocol" );
+	if ( protocolLegacy == protocol )
+		protocolLegacy = 0;
 
-	Com_sprintf( demoExt, sizeof( demoExt ), ".%s%d", DEMOEXT, protocol);
-	uiInfo.demoCount = trap_FS_GetFileList( "demos", demoExt, demolist, sizeof( demolist ) );
+	Com_sprintf( demoExt, sizeof( demoExt ), ".%s%d", DEMO_EXTENSION, protocol);
+
+	uiInfo.demoCount += trap_FS_GetFileList( directory, demoExt, demolist, sizeof( demolist ) );
 
 	demoname = demolist;
 
@@ -4724,10 +4717,10 @@ static void UI_LoadDemos( void ) {
 		if ( uiInfo.demoCount > MAX_DEMOS )
 			uiInfo.demoCount = MAX_DEMOS;
 
-		for( ; i <uiInfo.demoCount; i++)
+		for( ; uiInfo.loadedDemos<uiInfo.demoCount; uiInfo.loadedDemos++)
 		{
 			len = strlen( demoname );
-			uiInfo.demoList[i] = String_Alloc( demoname );
+			Com_sprintf( uiInfo.demoList[uiInfo.loadedDemos], sizeof( uiInfo.demoList[0] ), "%s/%s", directory + strlen( DEMO_DIRECTORY )+1, demoname );
 			demoname += len + 1;
 		}
 
@@ -4735,14 +4728,32 @@ static void UI_LoadDemos( void ) {
 		{
 			if ( protocolLegacy > 0 && uiInfo.demoCount < MAX_DEMOS )
 			{
-				Com_sprintf( demoExt, sizeof( demoExt ), ".%s%d", DEMOEXT, protocolLegacy );
-				uiInfo.demoCount += trap_FS_GetFileList( "demos", demoExt, demolist, sizeof( demolist ) );
+				Com_sprintf( demoExt, sizeof( demoExt ), ".%s%d", DEMO_EXTENSION, protocolLegacy );
+				uiInfo.demoCount += trap_FS_GetFileList( directory, demoExt, demolist, sizeof( demolist ) );
 				demoname = demolist;
 			}
 			else
 				break;
 		}
 	}
+
+	numFiles = trap_FS_GetFileList( directory, "/", fileList, sizeof( fileList ) );
+
+	fileName = fileList;
+	for ( i=0; i<numFiles; i++ )
+	{
+		len = strlen( fileName );
+		fileName[len] = '\0';
+		if ( Q_stricmp( fileName, "." ) && Q_stricmp( fileName, ".." ) )
+			UI_LoadDemosInDirectory( va( "%s/%s", directory, fileName ) );
+		fileName += len+1;
+	}
+
+}
+
+static void UI_LoadDemos( void )
+{
+	UI_LoadDemosInDirectory( DEMO_DIRECTORY );
 }
 
 #else
@@ -7554,22 +7565,11 @@ static void UI_JoinServer( void )
 	//trap_Cvar_Set("cg_thirdPerson", "0");
 	trap_Cvar_Set("cg_cameraOrbit", "0");
 	trap_Cvar_Set("ui_singlePlayerActive", "0");
-#ifdef _XBOX
-	if (logged_on)
-	{ // Live server
-		XBL_MM_JoinServer( uiInfo.serverStatus.displayServers[uiInfo.serverStatus.currentServer] );
-	}
-	else
-	{ // System link
-		SysLink_JoinServer( uiInfo.serverStatus.displayServers[uiInfo.serverStatus.currentServer] );
-	}
-#else
 	if (uiInfo.serverStatus.currentServer >= 0 && uiInfo.serverStatus.currentServer < uiInfo.serverStatus.numDisplayServers)
 	{
 		trap_LAN_GetServerAddressString(ui_netSource.integer, uiInfo.serverStatus.displayServers[uiInfo.serverStatus.currentServer], buff, sizeof( buff ) );
 		trap_Cmd_ExecuteText( EXEC_APPEND, va( "connect %s\n", buff ) );
 	}
-#endif
 	
 }
 
@@ -8235,25 +8235,6 @@ static int UI_FeederCount(float feederID)
 				}
 			}
 			return count;
-
-#ifdef _XBOX
-		// Get the count of xbl accounts
-		case FEEDER_XBL_ACCOUNTS:
-			// VVFIXME - Again, SOF2 had all kinds of silliness here. Do we need it?
-			return XBL_GetNumAccounts( false );
-
-		// Number of active players, plus number in history list, plus one for divider
-		case FEEDER_XBL_PLAYERS:
-			return XBL_PL_GetNumPlayers() + 1;
-
-		// Number of friends
-		case FEEDER_XBL_FRIENDS:
-			return XBL_F_GetNumFriends();
-
-		// Number of results from an optimatch query
-		case FEEDER_XBL_SERVERS:
-			return XBL_MM_GetNumServers();
-#endif
 	}
 
 	return 0;
@@ -8666,76 +8647,6 @@ static const char *UI_FeederItemText(float feederID, int index, int column,
 	{
 		return ""; 
 	}
-#ifdef _XBOX
-	else if (feederID == FEEDER_XBL_ACCOUNTS)
-	{
-		// VVFIXME - SOF2 keeps track of old number of accounts, to force a
-		// refresh when someone yanks an MU. Probably necessary
-		int numAccounts = XBL_GetNumAccounts( false );
-		if (index >= 0 && index < numAccounts)
-		{
-			XONLINE_USER *pUser = XBL_GetUserInfo( index );
-			if (pUser)
-			{
-				static char displayName[XONLINE_GAMERTAG_SIZE];
-				strcpy( displayName, pUser->szGamertag );
-				return displayName;
-			}
-		}
-	}
-	else if (feederID == FEEDER_XBL_PLAYERS)
-	{
-		int numEntries = XBL_PL_GetNumPlayers() + 1;
-
-		if (index >= 0 && index < numEntries)
-		{
-			if (column == 0)
-				return XBL_PL_GetPlayerName( index );
-			else if (column == 1)
-				return XBL_PL_GetStatusIcon( index );
-			else if (column == 2)
-				return XBL_PL_GetVoiceIcon( index );
-			else
-				return "";
-		}
-	}
-	else if (feederID == FEEDER_XBL_FRIENDS)
-	{
-		if (index >= 0 && index < XBL_F_GetNumFriends())
-		{
-			if (column == 0)
-				return XBL_F_GetFriendName( index );
-			else if (column == 1)
-				return XBL_F_GetStatusIcon( index );
-			else if (column == 2)
-				return XBL_F_GetVoiceIcon( index );
-			else
-				return "";
-		}
-	}
-	else if (feederID == FEEDER_XBL_SERVERS)
-	{
-		// We handle the optimatch results listbox separately from the rest
-		// of the UI server browser code. It's just nasty otherwise.
-		if (index >= 0 && index < XBL_MM_GetNumServers())
-		{
-			switch (column)
-			{
-				case SORT_HOST:
-					return XBL_MM_GetServerName( index );
-				case SORT_MAP:
-					return XBL_MM_GetServerMap( index );
-				case SORT_CLIENTS:
-					return XBL_MM_GetServerClients( index );
-				case SORT_GAME:
-					return XBL_MM_GetServerGametype( index );
-				case SORT_PING:
-					return XBL_MM_GetServerPing( index );
-			}
-		}
-	}
-#endif
-
 	return "";
 }
 
@@ -9542,25 +9453,6 @@ qboolean UI_FeederSelection(float feederFloat, int index, itemDef_t *item)
 			}
 		}
 	} 
-#ifdef _XBOX
-	else if (feederID == FEEDER_XBL_ACCOUNTS)
-	{
-		XBL_SetAccountIndex( index );
-	}
-	else if (feederID == FEEDER_XBL_PLAYERS)
-	{
-		XBL_PL_SetPlayerIndex( index );
-	}
-	else if (feederID == FEEDER_XBL_FRIENDS)
-	{
-		XBL_F_SetChosenFriendIndex( index );
-	}
-	else if (feederID == FEEDER_XBL_SERVERS)
-	{
-		XBL_MM_SetChosenServerIndex( index );
-	}
-#endif
-
 	return qtrue;
 }
 
@@ -9865,13 +9757,8 @@ static qboolean bIsImageFile(const char* dirptr, const char* skinname)
 	char fpath[MAX_QPATH];
 	int f;
 
-#ifdef _XBOX
-	Com_sprintf(fpath, MAX_QPATH, "models/players/%s/icon_%s.dds", dirptr, skinname);
-#else
 	Com_sprintf(fpath, MAX_QPATH, "models/players/%s/icon_%s.jpg", dirptr, skinname);
-#endif
 	trap_FS_FOpenFile(fpath, &f, FS_READ);
-#if !defined(_XBOX) || defined(_DEBUG)
 	if (!f)
 	{ //not there, try png
 		Com_sprintf(fpath, MAX_QPATH, "models/players/%s/icon_%s.png", dirptr, skinname);
@@ -9882,7 +9769,6 @@ static qboolean bIsImageFile(const char* dirptr, const char* skinname)
 		Com_sprintf(fpath, MAX_QPATH, "models/players/%s/icon_%s.tga", dirptr, skinname);
 		trap_FS_FOpenFile(fpath, &f, FS_READ);
 	}
-#endif
 	if (f) 
 	{
 		trap_FS_FCloseFile(f);
@@ -9958,11 +9844,7 @@ static void UI_BuildQ3Model_List( void )
 			}
 
 			/*
-#ifdef _XBOX
-			Com_sprintf(fpath, 2048, "models/players/%s/icon%s.dds", dirptr, skinname);
-#else
 			Com_sprintf(fpath, 2048, "models/players/%s/icon%s.jpg", dirptr, skinname);
-#endif
 
 			trap_FS_FOpenFile(fpath, &f, FS_READ);
 
@@ -10402,10 +10284,6 @@ void _UI_Init( qboolean inGameLoad ) {
 	trap_Cvar_Set("ui_actualNetGameType", va("%d", ui_netGameType.integer));
 }
 
-#ifdef _XBOX
-extern void UpdateDemoTimer();
-#endif
-
 /*
 =================
 UI_KeyEvent
@@ -10416,12 +10294,6 @@ void _UI_KeyEvent( int key, qboolean down ) {
   if (Menu_Count() > 0) {
     menuDef_t *menu = Menu_GetFocused();
 		if (menu) {
-//JLF
-#ifdef _XBOX
-
-			UpdateDemoTimer();
-
-#endif
 			if (key == A_ESCAPE && down && !Menus_AnyFullScreenVisible()) {
 				Menus_CloseAll();
 			} else {
@@ -10515,12 +10387,7 @@ void _UI_SetActiveMenu( uiMenuCommand_t menu ) {
 			{
 				if (!ui_singlePlayerActive.integer) 
 				{
-#ifdef _XBOX
-					// Display Xbox popups after an ERR_DROP?
-					UI_xboxErrorPopup( XB_POPUP_COM_ERROR );
-#else
 					Menus_ActivateByName("error_popmenu");
-#endif
 					active = qtrue;
 				} 
 				else 
@@ -10923,15 +10790,6 @@ vmCvar_t	ui_gameType;
 vmCvar_t	ui_netGameType;
 vmCvar_t	ui_actualNetGameType;
 vmCvar_t	ui_joinGameType;
-#ifdef _XBOX
-vmCvar_t	ui_optiGameType;
-vmCvar_t	ui_optiCurrentMap;
-vmCvar_t	ui_optiMinPlayers;
-vmCvar_t	ui_optiMaxPlayers;
-vmCvar_t	ui_optiFriendlyFire;
-vmCvar_t	ui_optiJediMastery;
-vmCvar_t	ui_optiSaberOnly;
-#endif
 vmCvar_t	ui_netSource;
 vmCvar_t	ui_serverFilterType;
 vmCvar_t	ui_opponentName;
@@ -11035,15 +10893,6 @@ static cvarTable_t		cvarTable[] = {
 	{ &ui_joinGameType, "ui_joinGametype", "0", CVAR_ARCHIVE|CVAR_INTERNAL },
 	{ &ui_netGameType, "ui_netGametype", "0", CVAR_ARCHIVE|CVAR_INTERNAL },
 	{ &ui_actualNetGameType, "ui_actualNetGametype", "3", CVAR_ARCHIVE|CVAR_INTERNAL },
-#ifdef _XBOX
-	{ &ui_optiGameType, "ui_optiGameType", "0", CVAR_ARCHIVE },
-	{ &ui_optiCurrentMap, "ui_optiCurrentMap", "0", CVAR_ARCHIVE },
-	{ &ui_optiMinPlayers, "ui_optiMinPlayers", "0", CVAR_ARCHIVE },
-	{ &ui_optiMaxPlayers, "ui_optiMaxPlayers", "0", CVAR_ARCHIVE },
-	{ &ui_optiFriendlyFire, "ui_optiFriendlyFire", "0", CVAR_ARCHIVE },
-	{ &ui_optiJediMastery, "ui_optiJediMastery", "0", CVAR_ARCHIVE },
-	{ &ui_optiSaberOnly, "ui_optiSaberOnly", "0", CVAR_ARCHIVE },
-#endif
 	{ &ui_redteam1, "ui_redteam1", "1", CVAR_ARCHIVE|CVAR_INTERNAL }, //rww - these used to all default to 0 (closed).. I changed them to 1 (human)
 	{ &ui_redteam2, "ui_redteam2", "1", CVAR_ARCHIVE|CVAR_INTERNAL },
 	{ &ui_redteam3, "ui_redteam3", "1", CVAR_ARCHIVE|CVAR_INTERNAL },
@@ -11098,13 +10947,6 @@ static cvarTable_t		cvarTable[] = {
 	{ &se_language, "se_language","english", CVAR_ARCHIVE | CVAR_NORESTART},	//text (string ed)
 
 	{ &ui_bypassMainMenuLoad, "ui_bypassMainMenuLoad", "0", CVAR_INTERNAL },
-//JLFCALLOUT
-#ifdef _XBOX
-	{ &ui_hideAcallout,		"ui_hideAcallout",	"", 0}, 
-	{ &ui_hideBcallout,		"ui_hideBcallout",	"", 0}, 
-	{ &ui_hideXcallout,		"ui_hideXcallout",	"", 0}, 
-#endif
-//END JLFCALLOUT
 };
 
 // bk001129 - made static to avoid aliasing
@@ -11246,7 +11088,6 @@ static void UI_StartServerRefresh(qboolean full)
 	}
 
 	uiInfo.serverStatus.refreshtime = uiInfo.uiDC.realTime + 5000;
-#ifndef _XBOX	// Optimatch is handled elsewhere
 	if( ui_netSource.integer == AS_GLOBAL || ui_netSource.integer == AS_MPLAYER ) {
 		if( ui_netSource.integer == AS_GLOBAL ) {
 			i = 0;
@@ -11263,6 +11104,4 @@ static void UI_StartServerRefresh(qboolean full)
 			trap_Cmd_ExecuteText( EXEC_NOW, va( "globalservers %d %d\n", i, (int)trap_Cvar_VariableValue( "protocol" ) ) );
 		}
 	}
-#endif
 }
-

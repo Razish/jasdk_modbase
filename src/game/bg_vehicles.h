@@ -613,10 +613,10 @@ typedef struct Vehicle_s
 
 	//the guy who was previously the pilot
 	bgEntity_t *	m_pOldPilot;
-#ifdef __GCC__
-} _Vehicle_t;
+#if defined(__GCC__) || defined(MINGW32) || MAC_PORT
+	} _Vehicle_t;
 #else
-} Vehicle_t;
+	} Vehicle_t;
 #endif
 
 extern int BG_VehicleGetIndex( const char *vehicleName );

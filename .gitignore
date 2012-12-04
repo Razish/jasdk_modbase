@@ -17,11 +17,13 @@
 *.ncb
 *.suo
 Debug
+Final
 servercache.dat
 games.log
 jampconfig.cfg
 ipch
 *.sdf
+*.filters
 *.*.user
 *.bsc
 cgamex86.dll

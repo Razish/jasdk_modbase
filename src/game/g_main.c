@@ -890,13 +890,6 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	vmCvar_t	mapname;
 	vmCvar_t	ckSum;
 
-#ifdef _XBOX
-	if(restart) {
-		BG_ClearVehicleParseParms();
-		RemoveAllWP();
-	}
-#endif
-
 	//Init RMG to 0, it will be autoset to 1 if there is terrain on the level.
 	trap_Cvar_Set("RMG", "0");
 	g_RMG.integer = 0;
@@ -938,7 +931,6 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 
 	//trap_SP_RegisterServer("mp_svgame");
 
-#ifndef _XBOX
 	if ( g_log.string[0] ) {
 		if ( g_logSync.integer ) {
 			trap_FS_FOpenFile( g_log.string, &level.logFile, FS_APPEND_SYNC );
@@ -958,7 +950,6 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	} else {
 		G_Printf( "Not logging to disk.\n" );
 	}
-#endif
 
 	G_LogWeaponInit();
 
@@ -3564,12 +3555,10 @@ void NAV_CheckCalcPaths( void )
 		}
 		else 
 #endif
-#ifndef _XBOX
 		if ( trap_Nav_Save( mapname.string, ckSum.integer ) == qfalse )
 		{
 			Com_Printf("Unable to save navigations data for map \"%s\" (checksum:%d)\n", mapname.string, ckSum.integer );
 		}
-#endif
 		navCalcPathTime = 0;
 	}
 }

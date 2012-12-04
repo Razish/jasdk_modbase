@@ -41,11 +41,7 @@ typedef enum
 } siegeClassFlags_t;
 
 
-#ifdef _XBOX
-#define SIEGE_CLASS_DESC_LEN  512
-#else
 #define SIEGE_CLASS_DESC_LEN  4096
-#endif
 typedef struct
 {
 	char		desc[SIEGE_CLASS_DESC_LEN];

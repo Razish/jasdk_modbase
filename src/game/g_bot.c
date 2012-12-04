@@ -851,6 +851,15 @@ static void G_AddBot( const char *name, float skill, const char *team, int delay
 	// create the bot's userinfo
 	userinfo[0] = '\0';
 
+	// have the server allocate a client slot
+	clientNum = trap_BotAllocateClient();
+	if ( clientNum == -1 ) {
+//		G_Printf( S_COLOR_RED "Unable to add bot.  All player slots are in use.\n" );
+//		G_Printf( S_COLOR_RED "Start server with more 'open' slots.\n" );
+		trap_SendServerCommand( -1, va("print \"%s\n\"", G_GetStringEdString("MP_SVGAME", "UNABLE_TO_ADD_BOT")));
+		return;
+	}
+
 	botname = Info_ValueForKey( botinfo, "funname" );
 	if( !botname[0] ) {
 		botname = Info_ValueForKey( botinfo, "name" );
@@ -862,6 +871,7 @@ static void G_AddBot( const char *name, float skill, const char *team, int delay
 	Info_SetValueForKey( userinfo, "name", botname );
 	Info_SetValueForKey( userinfo, "rate", "25000" );
 	Info_SetValueForKey( userinfo, "snaps", "20" );
+	Info_SetValueForKey( userinfo, "ip", "localhost" );
 	Info_SetValueForKey( userinfo, "skill", va("%1.2f", skill) );
 
 	if ( skill >= 1 && skill < 2 ) {
@@ -935,15 +945,6 @@ static void G_AddBot( const char *name, float skill, const char *team, int delay
 		Info_SetValueForKey( userinfo, "personality", s );
 	}
 
-	// have the server allocate a client slot
-	clientNum = trap_BotAllocateClient();
-	if ( clientNum == -1 ) {
-//		G_Printf( S_COLOR_RED "Unable to add bot.  All player slots are in use.\n" );
-//		G_Printf( S_COLOR_RED "Start server with more 'open' slots.\n" );
-		trap_SendServerCommand( -1, va("print \"%s\n\"", G_GetStringEdString("MP_SVGAME", "UNABLE_TO_ADD_BOT")));
-		return;
-	}
-
 	// initialize the bot settings
 	if( !team || !*team ) {
 		if( g_gametype.integer >= GT_TEAM ) {
@@ -963,8 +964,8 @@ static void G_AddBot( const char *name, float skill, const char *team, int delay
 	Info_SetValueForKey( userinfo, "team", team );
 
 	bot = &g_entities[ clientNum ];
-	bot->r.svFlags |= SVF_BOT;
-	bot->inuse = qtrue;
+//	bot->r.svFlags |= SVF_BOT;
+//	bot->inuse = qtrue;
 
 	// register the userinfo
 	trap_SetUserinfo( clientNum, userinfo );

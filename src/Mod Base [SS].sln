@@ -13,8 +13,6 @@ Global
 		{5B587283-8429-4F8B-AECA-C09BF364B617}.Debug|Win32.Build.0 = Debug|Win32
 		{5B587283-8429-4F8B-AECA-C09BF364B617}.Final|Win32.ActiveCfg = Final|Win32
 		{5B587283-8429-4F8B-AECA-C09BF364B617}.Final|Win32.Build.0 = Final|Win32
-		{5B587283-8429-4F8B-AECA-C09BF364B617}.Release|Win32.ActiveCfg = Release|Win32
-		{5B587283-8429-4F8B-AECA-C09BF364B617}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -707,10 +707,10 @@ void BG_VehicleTurnRateForSpeed( Vehicle_t *pVeh, float speed, float *mPitchOver
 
 // Following couple things don't belong in the DLL namespace!
 #ifdef QAGAME
-#ifndef __GCC__
-typedef struct gentity_s gentity_t;
-#endif
-gentity_t *G_PlayEffectID(const int fxID, vec3_t org, vec3_t ang);
+	#if !MAC_PORT && !defined(__GCC__)
+		typedef struct gentity_s gentity_t;
+	#endif
+	gentity_t *G_PlayEffectID( const int fxID, vec3_t org, vec3_t ang );
 #endif
 
 
@@ -7810,8 +7810,6 @@ static void PM_DropTimers( void ) {
 // which includes files that are also compiled in SP. We do need to make
 // sure we only get one copy in the linker, though.
 
-
-#if !defined(_XBOX) || defined(QAGAME)
 extern	vmCvar_t	bg_fighterAltControl;
 qboolean BG_UnrestrainedPitchRoll( playerState_t *ps, Vehicle_t *pVeh )
 {
@@ -7828,9 +7826,6 @@ qboolean BG_UnrestrainedPitchRoll( playerState_t *ps, Vehicle_t *pVeh )
 	}
 	return qfalse;
 }
-#else
-extern qboolean BG_UnrestrainedPitchRoll( playerState_t *ps, Vehicle_t *pVeh );
-#endif
 
 
 /*
