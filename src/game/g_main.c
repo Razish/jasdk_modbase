@@ -889,6 +889,7 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	int					i;
 	vmCvar_t	mapname;
 	vmCvar_t	ckSum;
+	char serverinfo[MAX_INFO_STRING] = {0};
 
 	//Init RMG to 0, it will be autoset to 1 if there is terrain on the level.
 	trap_Cvar_Set("RMG", "0");
@@ -931,26 +932,37 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 
 	//trap_SP_RegisterServer("mp_svgame");
 
-	if ( g_log.string[0] ) {
-		if ( g_logSync.integer ) {
-			trap_FS_FOpenFile( g_log.string, &level.logFile, FS_APPEND_SYNC );
-		} else {
-			trap_FS_FOpenFile( g_log.string, &level.logFile, FS_APPEND );
-		}
-		if ( !level.logFile ) {
+	if ( g_log.string[0] )
+	{
+		trap_FS_FOpenFile( g_log.string, &level.logFile, g_logSync.integer ? FS_APPEND_SYNC : FS_APPEND );
+		if ( level.logFile )
+			G_Printf( "Logging to %s\n", g_log.string );
+		else
 			G_Printf( "WARNING: Couldn't open logfile: %s\n", g_log.string );
-		} else {
-			char	serverinfo[MAX_INFO_STRING];
-
-			trap_GetServerinfo( serverinfo, sizeof( serverinfo ) );
-
-			G_LogPrintf("------------------------------------------------------------\n" );
-			G_LogPrintf("InitGame: %s\n", serverinfo );
-		}
-	} else {
-		G_Printf( "Not logging to disk.\n" );
 	}
+	else
+		G_Printf( "Not logging game events to disk.\n" );
 
+	trap_GetServerinfo( serverinfo, sizeof( serverinfo ) );
+	G_LogPrintf( "------------------------------------------------------------\n" );
+	G_LogPrintf( "InitGame: %s\n", serverinfo );
+
+	if ( g_securityLog.integer )
+	{
+		if ( g_securityLog.integer == 1 )
+			trap_FS_FOpenFile( SECURITY_LOG, &level.security.log, FS_APPEND );
+		else if ( g_securityLog.integer == 2 )
+			trap_FS_FOpenFile( SECURITY_LOG, &level.security.log, FS_APPEND_SYNC );
+
+		if ( level.security.log )
+			G_Printf( "Logging to "SECURITY_LOG"\n" );
+		else
+			G_Printf( "WARNING: Couldn't open logfile: "SECURITY_LOG"\n" );
+	}
+	else
+		G_Printf( "Not logging security events to disk.\n" );
+
+	
 	G_LogWeaponInit();
 
 	G_InitWorldSession();
@@ -1171,9 +1183,16 @@ void G_ShutdownGame( int restart ) {
 	G_LogWeaponOutput();
 
 	if ( level.logFile ) {
-		G_LogPrintf("ShutdownGame:\n" );
-		G_LogPrintf("------------------------------------------------------------\n" );
+		G_LogPrintf( "ShutdownGame:\n------------------------------------------------------------\n" );
 		trap_FS_FCloseFile( level.logFile );
+		level.logFile = 0;
+	}
+
+	if ( level.security.log )
+	{
+		G_SecurityLogPrintf( "ShutdownGame\n\n" );
+		trap_FS_FCloseFile( level.security.log );
+		level.security.log = 0;
 	}
 
 	// write all the client session data so we can get it back
@@ -2215,31 +2234,62 @@ Print to the logfile with a time stamp if it is open
 */
 void QDECL G_LogPrintf( const char *fmt, ... ) {
 	va_list		argptr;
-	char		string[1024];
-	int			min, tens, sec;
+	char		string[1024] = {0};
+	int			mins, seconds, msec, l;
 
-	sec = level.time / 1000;
+	msec = level.time;
 
-	min = sec / 60;
-	sec -= min * 60;
-	tens = sec / 10;
-	sec -= tens * 10;
+	seconds = msec / 1000;
+	mins = seconds / 60;
+	seconds %= 60;
+	msec %= 1000;
 
-	Com_sprintf( string, sizeof(string), "%3i:%i%i ", min, tens, sec );
+	Com_sprintf( string, sizeof( string ), "%i:%02i ", mins, seconds );
+
+	l = strlen( string );
 
 	va_start( argptr, fmt );
-	Q_vsnprintf( string+7, sizeof( string ) - 7, fmt, argptr );
+	Q_vsnprintf( string + l, sizeof( string ) - l, fmt, argptr );
 	va_end( argptr );
 
-	if ( g_dedicated.integer ) {
-		G_Printf( "%s", string + 7 );
-	}
+	if ( g_dedicated.integer )
+		G_Printf( "%s", string + l );
 
-	if ( !level.logFile ) {
+	if ( !level.logFile )
 		return;
-	}
 
 	trap_FS_Write( string, strlen( string ), level.logFile );
+}
+/*
+=================
+G_SecurityLogPrintf
+
+Print to the security logfile with a time stamp if it is open
+=================
+*/
+void QDECL G_SecurityLogPrintf( const char *fmt, ... ) {
+	va_list		argptr;
+	char		string[1024] = {0};
+	time_t		rawtime;
+	struct tm	*timeinfo;
+	int			timeLen=0;
+
+	time( &rawtime );
+	timeinfo = localtime( &rawtime );
+	strftime( string, sizeof( string ), "[%Y-%m-%d] [%H:%M:%S] ", gmtime( &rawtime ) );
+	timeLen = strlen( string );
+
+	va_start( argptr, fmt );
+	Q_vsnprintf( string+timeLen, sizeof( string ) - timeLen, fmt, argptr );
+	va_end( argptr );
+
+	if ( g_dedicated.integer )
+		G_Printf( "%s", string + timeLen );
+
+	if ( !level.security.log )
+		return;
+
+	trap_FS_Write( string, strlen( string ), level.security.log );
 }
 
 /*
@@ -3649,7 +3699,7 @@ void G_RunFrame( int levelTime ) {
 						}
 
 						NET_AddrToString( buf, sizeof( buf ), &svs->clients[i].netchan.remoteAddress );
-						G_LogPrintf( "**SECURITY** Client %i (%s) kicked for q3fill [IP: %s]\n", i, cl->pers.netname, buf );
+						G_LogPrintf( "Client %i (%s) kicked for q3fill [IP: %s]\n", i, cl->pers.netname, buf );
 						trap_DropClient( i, "Fake client detected" );
 						cl->pers.connected = CON_DISCONNECTED;
 					}

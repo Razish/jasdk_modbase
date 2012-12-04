@@ -117,7 +117,7 @@
 			if ( strlen( s ) > 32 )
 			{
 				s[32] = 0;
-				G_LogPrintf( "**SECURITY** Attempted q3infoboom from %s with command %s\n", ip, cmd );
+				G_SecurityLogPrintf( "Attempted q3infoboom from %s with command %s\n", ip, cmd );
 			}
 		}
 
@@ -126,7 +126,7 @@
 			if ( strlen( s ) > 980 )
 			{
 				s[980] = 0;
-				G_LogPrintf( "**SECURITY** Attempted q3infoboom from %s with command %s\n", ip, cmd );
+				G_SecurityLogPrintf( "Attempted q3infoboom from %s with command %s\n", ip, cmd );
 			}
 		}
 	}

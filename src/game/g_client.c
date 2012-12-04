@@ -2370,7 +2370,7 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 	{
 		#ifdef PATCH_ENGINE
 			if ( Q_stricmp( tmpIP, realIP ) )
-				G_LogPrintf( "**SECURITY** Client %i mismatching IP. %s / %s\n", clientNum, tmpIP, realIP );
+				G_SecurityLogPrintf( "Client %i mismatching IP. %s / %s\n", clientNum, tmpIP, realIP );
 		#endif
 			
 		#ifdef PATCH_ENGINE
@@ -2477,9 +2477,9 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 		{//No IP sent when connecting, probably an unban hack attempt
 			client->pers.connected = CON_DISCONNECTED;
 			#ifdef PATCH_ENGINE
-				G_LogPrintf( "**SECURITY** Client %i (%s) sent no IP when connecting. Real IP is: %s", clientNum, client->pers.netname, realIP );
+				G_SecurityLogPrintf( "Client %i (%s) sent no IP when connecting. Real IP is: %s", clientNum, client->pers.netname, realIP );
 			#else
-				G_LogPrintf( "**SECURITY** Client %i (%s) sent no IP when connecting.", clientNum, client->pers.netname );
+				G_SecurityLogPrintf( "Client %i (%s) sent no IP when connecting.", clientNum, client->pers.netname );
 			#endif
 			return "Invalid userinfo detected";
 		}
