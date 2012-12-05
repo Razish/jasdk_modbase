@@ -3495,8 +3495,8 @@ void CG_CreateModelFromSpawnEnt(cgSpawnEnt_t *ent)
 	VectorCopy(ent->origin, RefEnt->origin);
 	VectorCopy(ent->origin, RefEnt->lightingOrigin);
 
-	VectorScaleVector(mins, RefEnt->scale, mins);
-	VectorScaleVector(maxs, RefEnt->scale, maxs);
+	VectorScaleVector(mins, RefEnt->modelScale, mins);
+	VectorScaleVector(maxs, RefEnt->modelScale, maxs);
 	*radius = Distance(mins, maxs);
 	*zOff = ent->zoffset;
 
