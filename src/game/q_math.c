@@ -1114,7 +1114,7 @@ void AddPointToBounds( const vec3_t v, vec3_t mins, vec3_t maxs ) {
 
 //JAC: Moved some math functions from q_shared.h
 
-ID_INLINE void VectorAdd( const vec3_t v1, const vec3_t v2, vec3_t out ) {
+ID_INLINE void VectorAdd( const vec3_t v1, const vec3_t v2, vec3_t vOut ) {
 #if !defined(__LCC__) && defined(USE_SSE)
 	__asm {
 		mov      ecx, v1
@@ -1127,18 +1127,18 @@ ID_INLINE void VectorAdd( const vec3_t v1, const vec3_t v2, vec3_t out ) {
 
 		addps    xmm0, xmm1
 
-		mov      eax, o
+		mov      eax, vOut
 		movss    [eax], xmm0
 		movhps   [eax+4], xmm0
 	}
 #else
-	out[0] = v1[0]+v2[0];
-	out[1] = v1[1]+v2[1];
-	out[2] = v1[2]+v2[2];
+	vOut[0] = v1[0]+v2[0];
+	vOut[1] = v1[1]+v2[1];
+	vOut[2] = v1[2]+v2[2];
 #endif
 }
 
-ID_INLINE void VectorSubtract( const vec3_t v1, const vec3_t v2, vec3_t out ) {
+ID_INLINE void VectorSubtract( const vec3_t v1, const vec3_t v2, vec3_t vOut ) {
 #if !defined(__LCC__) && defined(USE_SSE)
 	__asm {
 		mov      ecx, v1
@@ -1151,51 +1151,51 @@ ID_INLINE void VectorSubtract( const vec3_t v1, const vec3_t v2, vec3_t out ) {
 
 		subps    xmm0, xmm1
 
-		mov      eax, o
+		mov      eax, vOut
 		movss    [eax], xmm0
 		movhps   [eax+4], xmm0
 	}
 #else
-	out[0] = v1[0]-v2[0];
-	out[1] = v1[1]-v2[1];
-	out[2] = v1[2]-v2[2];
+	vOut[0] = v1[0]-v2[0];
+	vOut[1] = v1[1]-v2[1];
+	vOut[2] = v1[2]-v2[2];
 #endif
 }
 
-ID_INLINE void VectorScale( const vec3_t in, vec_t scale, vec3_t out ) {
+ID_INLINE void VectorScale( const vec3_t vIn, vec_t scale, vec3_t vOut ) {
 #if !defined(__LCC__) && defined(USE_SSE)
 	__asm {
 		movss	xmm0, scale
 		shufps	xmm0, xmm0, 0h
 
-		mov		edx, i
+		mov		edx, vIn
 		movss	xmm1, [edx]
 		movhps	xmm1, [edx+4]
 
 		mulps	xmm0, xmm1
 
-		mov		eax, o
+		mov		eax, vOut
 		movss	[eax], xmm0
 		movhps	[eax+4], xmm0
 	}
 #else
-	out[0] = in[0]*scale;
-	out[1] = in[1]*scale;
-	out[2] = in[2]*scale;
+	vOut[0] = vIn[0]*scale;
+	vOut[1] = vIn[1]*scale;
+	vOut[2] = vIn[2]*scale;
 #endif
 }
 
-void VectorScale4( const vec4_t in, vec_t scale, vec4_t out ) {
-	out[0] = in[0]*scale;
-	out[1] = in[1]*scale;
-	out[2] = in[2]*scale;
-	out[3] = in[3]*scale;
+void VectorScale4( const vec4_t vIn, vec_t scale, vec4_t vOut ) {
+	vOut[0] = vIn[0]*scale;
+	vOut[1] = vIn[1]*scale;
+	vOut[2] = vIn[2]*scale;
+	vOut[3] = vIn[3]*scale;
 }
 
-ID_INLINE void VectorMA( const vec3_t v1, float scale, const vec3_t v2, vec3_t out ) {
-	out[0] = v1[0] + scale*v2[0];
-	out[1] = v1[1] + scale*v2[1];
-	out[2] = v1[2] + scale*v2[2];
+ID_INLINE void VectorMA( const vec3_t v1, float scale, const vec3_t v2, vec3_t vOut ) {
+	vOut[0] = v1[0] + scale*v2[0];
+	vOut[1] = v1[1] + scale*v2[1];
+	vOut[2] = v1[2] + scale*v2[2];
 }
 
 ID_INLINE vec_t VectorLength( const vec3_t v ) {
@@ -1301,32 +1301,30 @@ ID_INLINE vec_t VectorNormalize( vec3_t v ) {
 	return length;
 }
 
-ID_INLINE vec_t VectorNormalize2( const vec3_t v, vec3_t out ) {
+ID_INLINE vec_t VectorNormalize2( const vec3_t v, vec3_t vOut ) {
 	float	length, ilength;
 
 	length = v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
-	length = sqrt (length);
+	length = sqrtf( length );
 
-	if (length)
-	{
+	if ( length ) {
 		ilength = 1/length;
-		out[0] = v[0]*ilength;
-		out[1] = v[1]*ilength;
-		out[2] = v[2]*ilength;
+		vOut[0] = v[0]*ilength;
+		vOut[1] = v[1]*ilength;
+		vOut[2] = v[2]*ilength;
 	}
-	else {
-		VectorClear( out );
-	}
+	else
+		VectorClear( vOut );
 
 	return length;
 }
 
-ID_INLINE void VectorCopy( const vec3_t in, vec3_t out ) {
-	out[0]=in[0]; out[1]=in[1]; out[2]=in[2];
+ID_INLINE void VectorCopy( const vec3_t vIn, vec3_t vOut ) {
+	vOut[0]=vIn[0]; vOut[1]=vIn[1]; vOut[2]=vIn[2];
 }
 
-ID_INLINE void VectorCopy4( const vec4_t in, vec4_t out ) {
-	out[0]=in[0]; out[1]=in[1]; out[2]=in[2]; out[3]=in[3];
+ID_INLINE void VectorCopy4( const vec4_t vIn, vec4_t vOut ) {
+	vOut[0]=vIn[0]; vOut[1]=vIn[1]; vOut[2]=vIn[2]; vOut[3]=vIn[3];
 }
 
 ID_INLINE void VectorSet( vec3_t v, vec_t x, vec_t y, vec_t z ) {
@@ -1361,10 +1359,10 @@ ID_INLINE void VectorInverse( vec3_t v ) {
 	v[0] = -v[0]; v[1] = -v[1]; v[2] = -v[2];
 }
 
-ID_INLINE void CrossProduct( const vec3_t v1, const vec3_t v2, vec3_t cross ) {
-	cross[0] = v1[1]*v2[2] - v1[2]*v2[1];
-	cross[1] = v1[2]*v2[0] - v1[0]*v2[2];
-	cross[2] = v1[0]*v2[1] - v1[1]*v2[0];
+ID_INLINE void CrossProduct( const vec3_t v1, const vec3_t v2, vec3_t vOut ) {
+	vOut[0] = v1[1]*v2[2] - v1[2]*v2[1];
+	vOut[1] = v1[2]*v2[0] - v1[0]*v2[2];
+	vOut[2] = v1[0]*v2[1] - v1[1]*v2[0];
 }
 
 ID_INLINE vec_t DotProduct( const vec3_t v1, const vec3_t v2 ) {

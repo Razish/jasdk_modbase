@@ -1297,20 +1297,20 @@ void ByteToDir( int b, vec3_t dir );
 #define DEG2RAD( deg ) ( ((deg)*M_PI) / 180.0f )
 #define RAD2DEG( rad ) ( ((rad)*180.0f) / M_PI )
 
-extern ID_INLINE void		VectorAdd( const vec3_t v1, const vec3_t v2, vec3_t out );
-extern ID_INLINE void		VectorSubtract( const vec3_t v1, const vec3_t v2, vec3_t out );
-extern ID_INLINE void		VectorScale( const vec3_t in, vec_t scale, vec3_t out );
-extern ID_INLINE void		VectorScale4( const vec4_t in, vec_t scale, vec4_t out );
-extern ID_INLINE void		VectorMA( const vec3_t v1, float scale, const vec3_t v2, vec3_t out );
+extern ID_INLINE void		VectorAdd( const vec3_t v1, const vec3_t v2, vec3_t vOut );
+extern ID_INLINE void		VectorSubtract( const vec3_t v1, const vec3_t v2, vec3_t vOut );
+extern ID_INLINE void		VectorScale( const vec3_t vIn, vec_t scale, vec3_t vOut );
+extern ID_INLINE void		VectorScale4( const vec4_t vIn, vec_t scale, vec4_t vOut );
+extern ID_INLINE void		VectorMA( const vec3_t v1, float scale, const vec3_t v2, vec3_t vOut );
 extern ID_INLINE vec_t		VectorLength( const vec3_t v );
 extern ID_INLINE vec_t		VectorLengthSquared( const vec3_t v );
 extern ID_INLINE vec_t		Distance( const vec3_t p1, const vec3_t p2 );
 extern ID_INLINE vec_t		DistanceSquared( const vec3_t p1, const vec3_t p2 );
 extern ID_INLINE void		VectorNormalizeFast( vec3_t v );
 extern ID_INLINE vec_t		VectorNormalize( vec3_t v );
-extern ID_INLINE vec_t		VectorNormalize2( const vec3_t v, vec3_t out );
-extern ID_INLINE void		VectorCopy( const vec3_t in, vec3_t out );
-extern ID_INLINE void		VectorCopy4( const vec4_t in, vec4_t out );
+extern ID_INLINE vec_t		VectorNormalize2( const vec3_t v, vec3_t vOut );
+extern ID_INLINE void		VectorCopy( const vec3_t vIn, vec3_t vOut );
+extern ID_INLINE void		VectorCopy4( const vec4_t vIn, vec4_t vOut );
 extern ID_INLINE void		VectorSet( vec3_t v, vec_t x, vec_t y, vec_t z );
 extern ID_INLINE void		VectorSet4( vec4_t v, vec_t x, vec_t y, vec_t z, vec_t w );
 extern ID_INLINE void		VectorSet5( vec5_t v, vec_t x, vec_t y, vec_t z, vec_t w, vec_t u );
@@ -1319,24 +1319,24 @@ extern ID_INLINE void		VectorClear4( vec4_t v );
 extern ID_INLINE void		VectorInc( vec3_t v );
 extern ID_INLINE void		VectorDec( vec3_t v );
 extern ID_INLINE void		VectorInverse( vec3_t v );
-extern ID_INLINE void		CrossProduct( const vec3_t v1, const vec3_t v2, vec3_t cross );
+extern ID_INLINE void		CrossProduct( const vec3_t v1, const vec3_t v2, vec3_t vOut );
 extern ID_INLINE vec_t		DotProduct( const vec3_t v1, const vec3_t v2 );
 extern ID_INLINE qboolean	VectorCompare( const vec3_t v1, const vec3_t v2 );
 
-#define				VectorAddM( v1, v2, out )				((out)[0]=(v1)[0]+(v2)[0], (out)[1]=(v1)[1]+(v2)[1], (out)[2]=(v1)[2]+(v2)[2])
-#define				VectorSubtractM( v1, v2, out )			((out)[0]=(v1)[0]-(v2)[0], (out)[1]=(v1)[1]-(v2)[1], (out)[2]=(v1)[2]-(v2)[2])
-#define				VectorScaleM( in, scale, out )			((out)[0]=(in)[0]*(scale), (out)[1]=(in)[1]*(scale), (out)[2]=(in)[2]*(scale))
-#define				VectorScale4M( in, scale, out )			((out)[0]=(in)[0]*(scale), (out)[1]=(in)[1]*(scale), (out)[2]=(in)[2]*(scale), (out)[3]=(in)[3]*(scale))
-#define				VectorMAM( v1, scale, v2, out )			((out)[0]=(v1)[0]+(v2)[0]*(scale), (out)[1]=(v1)[1]+(v2)[1]*(scale), (out)[2]=(v1)[2]+(v2)[2]*(scale))
+#define				VectorAddM( v1, v2, vOut )				((vOut)[0]=(v1)[0]+(v2)[0], (vOut)[1]=(v1)[1]+(v2)[1], (vOut)[2]=(v1)[2]+(v2)[2])
+#define				VectorSubtractM( v1, v2, vOut )			((vOut)[0]=(v1)[0]-(v2)[0], (vOut)[1]=(v1)[1]-(v2)[1], (vOut)[2]=(v1)[2]-(v2)[2])
+#define				VectorScaleM( vIn, scale, vOut )		((vOut)[0]=(vIn)[0]*(scale), (vOut)[1]=(vIn)[1]*(scale), (vOut)[2]=(vIn)[2]*(scale))
+#define				VectorScale4M( vIn, scale, vOut )		((vOut)[0]=(vIn)[0]*(scale), (vOut)[1]=(vIn)[1]*(scale), (vOut)[2]=(vIn)[2]*(scale), (vOut)[3]=(vIn)[3]*(scale))
+#define				VectorMAM( v1, scale, v2, vOut )		((vOut)[0]=(v1)[0]+(v2)[0]*(scale), (vOut)[1]=(v1)[1]+(v2)[1]*(scale), (vOut)[2]=(v1)[2]+(v2)[2]*(scale))
 #define				VectorLengthM( v )						VectorLength( v )
 #define				VectorLengthSquaredM( v )				VectorLengthSquared( v )
 #define				DistanceM( v )							Distance( v )
 #define				DistanceSquaredM( p1, p2 )				DistanceSquared( p1, p2 )
 #define				VectorNormalizeFastM( v )				VectorNormalizeFast( v )
 #define				VectorNormalizeM( v )					VectorNormalize( v )
-#define				VectorNormalize2M( v, out )				VectorNormalize2( v, out )
-#define				VectorCopyM( in, out )					((out)[0]=(in)[0], (out)[1]=(in)[1], (out)[2]=(in)[2])
-#define				VectorCopy4M( in, out )					((out)[0]=(in)[0], (out)[1]=(in)[1], (out)[2]=(in)[2], (out)[3]=(in)[3])
+#define				VectorNormalize2M( v, vOut )			VectorNormalize2( v, vOut )
+#define				VectorCopyM( vIn, vOut )				((vOut)[0]=(vIn)[0], (vOut)[1]=(vIn)[1], (vOut)[2]=(vIn)[2])
+#define				VectorCopy4M( vIn, vOut )				((vOut)[0]=(vIn)[0], (vOut)[1]=(vIn)[1], (vOut)[2]=(vIn)[2], (vOut)[3]=(vIn)[3])
 #define				VectorSetM( v, x, y, z )				((v)[0]=(x), (v)[1]=(y), (v)[2]=(z))
 #define				VectorSet4M( v, x, y, z, w )			((v)[0]=(x), (v)[1]=(y), (v)[2]=(z), (v)[3]=(w))
 #define				VectorSet5M( v, x, y, z, w, u )			((v)[0]=(x), (v)[1]=(y), (v)[2]=(z), (v)[3]=(w), (v)[4]=(u))
@@ -1345,7 +1345,7 @@ extern ID_INLINE qboolean	VectorCompare( const vec3_t v1, const vec3_t v2 );
 #define				VectorIncM( v )							((v)[0]+=1.0f, (v)[1]+=1.0f, (v)[2]+=1.0f)
 #define				VectorDecM( v )							((v)[0]-=1.0f, (v)[1]-=1.0f, (v)[2]-=1.0f)
 #define				VectorInverseM( v )						((v)[0]=-(v)[0], (v)[1]=-(v)[1], (v)[2]=-(v)[2])
-#define				CrossProductM( v1, v2, cross )			((cross)[0]=((v1)[1]*(v2)[2])-((v1)[2]*(v2)[1]), (cross)[1]=((v1)[2]*(v2)[0])-((v1)[0]*(v2)[2]), (cross)[2]=((v1)[0]*(v2)[1])-((v1)[1]*(v2)[0]))
+#define				CrossProductM( v1, v2, vOut )			((vOut)[0]=((v1)[1]*(v2)[2])-((v1)[2]*(v2)[1]), (vOut)[1]=((v1)[2]*(v2)[0])-((v1)[0]*(v2)[2]), (vOut)[2]=((v1)[0]*(v2)[1])-((v1)[1]*(v2)[0]))
 #define				DotProductM( x, y )						((x)[0]*(y)[0]+(x)[1]*(y)[1]+(x)[2]*(y)[2])
 #define				VectorCompareM( v1, v2 )				(!!((v1)[0]==(v2)[0] && (v1)[1]==(v2)[1] && (v1)[2]==(v2)[2]))
 
