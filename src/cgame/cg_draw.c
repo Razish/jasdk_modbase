@@ -590,22 +590,6 @@ void CG_DrawFlagModel( float x, float y, float w, float h, int team, qboolean fo
 
 /*
 ================
-DrawAmmo
-================
-*/
-void DrawAmmo()
-{
-	int x, y;
-
-	x = SCREEN_WIDTH-80;
-	y = SCREEN_HEIGHT-80;
-
-}
-
-
-
-/*
-================
 CG_DrawHealth
 ================
 */
@@ -701,7 +685,7 @@ void CG_DrawArmor( menuDef_t *menuHUD )
 {
 	vec4_t			calcColor;
 	playerState_t	*ps;
-	int				armor, maxArmor;
+	int				maxArmor;
 	itemDef_t		*focusItem;
 	float			percent,quarterArmor;
 	int				i,currValue,inc;
@@ -715,17 +699,9 @@ void CG_DrawArmor( menuDef_t *menuHUD )
 		return;
 	}
 
-	armor = ps->stats[STAT_ARMOR];
 	maxArmor = ps->stats[STAT_MAX_HEALTH];
 
-	/* Raz: Display real armor value on graphical HUD
-	if (armor> maxArmor)
-	{
-		armor = maxArmor;
-	}
-	*/
-
-	currValue = armor;
+	currValue = ps->stats[STAT_ARMOR];
 	inc = (float) maxArmor / MAX_HUD_TICS;
 
 	memcpy(calcColor, hudTintColor, sizeof(vec4_t));
@@ -790,7 +766,7 @@ void CG_DrawArmor( menuDef_t *menuHUD )
 			focusItem->window.rect.x, 
 			focusItem->window.rect.y, 
 			3, 
-			armor, 
+			ps->stats[STAT_ARMOR], 
 			focusItem->window.rect.w, 
 			focusItem->window.rect.h, 
 			NUM_FONT_SMALL,
@@ -798,7 +774,7 @@ void CG_DrawArmor( menuDef_t *menuHUD )
 	}
 
 	// If armor is low, flash a graphic to warn the player
-	if (armor)	// Is there armor? Draw the HUD Armor TIC
+	if (ps->stats[STAT_ARMOR])	// Is there armor? Draw the HUD Armor TIC
 	{
 		quarterArmor = (float) (ps->stats[STAT_MAX_HEALTH] / 4.0f);
 
@@ -5667,6 +5643,8 @@ static void CG_DrawActivePowers(void)
 	{
 		return;
 	}
+
+	trap_R_SetColor( NULL );
 
 	while (i < NUM_FORCE_POWERS)
 	{
