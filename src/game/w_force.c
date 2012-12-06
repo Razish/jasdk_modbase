@@ -4275,9 +4275,12 @@ static void WP_UpdateMindtrickEnts(gentity_t *self)
 	}
 }
 
-//JAC: sets the time between lightning hit shots on the server so that we can alter the sv_fps without issues.
+//JAC: sets the time between lightning/drain hit shots on the server so that we can alter the sv_fps without issues.
 static int LightningDebounceTime = 0;
 const int LIGHTNINGDEBOUNCE = 50;
+
+static int DrainDebounceTime = 0;
+const int DRAINDEBOUNCE = 50;
 
 static void WP_ForcePowerRun( gentity_t *self, forcePowers_t forcePower, usercmd_t *cmd )
 {
@@ -4427,9 +4430,14 @@ static void WP_ForcePowerRun( gentity_t *self, forcePowers_t forcePower, usercmd
 		{
 			WP_ForcePowerStop( self, forcePower );
 		}
-		else
+		//JAC: added server debouncer to make the drain...drain...consistent even with different sv_fps settings.
+		else if( DrainDebounceTime == level.time //someone already advanced the timer this frame
+			|| (level.time - DrainDebounceTime >= DRAINDEBOUNCE) )
 		{
 			ForceShootDrain( self );
+
+			//update the drain debouncer
+			DrainDebounceTime = level.time;
 		}
 		break;
 	case FP_LIGHTNING:
