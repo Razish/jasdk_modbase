@@ -1,9 +1,5 @@
 #include "q_shared.h"
 #include "q_engine.h"
-#if MAC_PORT
-#include <sys/mman.h>
-#include <unistd.h>
-#endif
 
 // ==================================================
 // UnlockMemory (WIN32 & Linux compatible)

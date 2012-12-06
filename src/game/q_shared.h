@@ -34,7 +34,6 @@
 #endif
 
 #include "qcommon/disablewarnings.h"
-#include "qcommon/asmdefines.h" //JAC: Added
 
 #include "teams.h" //npc team stuff
 
@@ -1322,31 +1321,31 @@ extern ID_INLINE void		CrossProduct( const vec3_t vec1, const vec3_t vec2, vec3_
 extern ID_INLINE vec_t		DotProduct( const vec3_t vec1, const vec3_t vec2 );
 extern ID_INLINE qboolean	VectorCompare( const vec3_t vec1, const vec3_t vec2 );
 
-#define				VectorAddM( vec1, vec2, vecOut )				((vecOut)[0]=(vec1)[0]+(vec2)[0], (vecOut)[1]=(vec1)[1]+(vec2)[1], (vecOut)[2]=(vec1)[2]+(vec2)[2])
-#define				VectorSubtractM( vec1, vec2, vecOut )			((vecOut)[0]=(vec1)[0]-(vec2)[0], (vecOut)[1]=(vec1)[1]-(vec2)[1], (vecOut)[2]=(vec1)[2]-(vec2)[2])
-#define				VectorScaleM( vecIn, scale, vecOut )		((vecOut)[0]=(vecIn)[0]*(scale), (vecOut)[1]=(vecIn)[1]*(scale), (vecOut)[2]=(vecIn)[2]*(scale))
-#define				VectorScale4M( vecIn, scale, vecOut )		((vecOut)[0]=(vecIn)[0]*(scale), (vecOut)[1]=(vecIn)[1]*(scale), (vecOut)[2]=(vecIn)[2]*(scale), (vecOut)[3]=(vecIn)[3]*(scale))
-#define				VectorMAM( vec1, scale, vec2, vecOut )		((vecOut)[0]=(vec1)[0]+(vec2)[0]*(scale), (vecOut)[1]=(vec1)[1]+(vec2)[1]*(scale), (vecOut)[2]=(vec1)[2]+(vec2)[2]*(scale))
-#define				VectorLengthM( vec )						VectorLength( vec )
+#define				VectorAddM( vec1, vec2, vecOut )		((vecOut)[0]=(vec1)[0]+(vec2)[0], (vecOut)[1]=(vec1)[1]+(vec2)[1], (vecOut)[2]=(vec1)[2]+(vec2)[2])
+#define				VectorSubtractM( vec1, vec2, vecOut )	((vecOut)[0]=(vec1)[0]-(vec2)[0], (vecOut)[1]=(vec1)[1]-(vec2)[1], (vecOut)[2]=(vec1)[2]-(vec2)[2])
+#define				VectorScaleM( vecIn, scale, vecOut )	((vecOut)[0]=(vecIn)[0]*(scale), (vecOut)[1]=(vecIn)[1]*(scale), (vecOut)[2]=(vecIn)[2]*(scale))
+#define				VectorScale4M( vecIn, scale, vecOut )	((vecOut)[0]=(vecIn)[0]*(scale), (vecOut)[1]=(vecIn)[1]*(scale), (vecOut)[2]=(vecIn)[2]*(scale), (vecOut)[3]=(vecIn)[3]*(scale))
+#define				VectorMAM( vec1, scale, vec2, vecOut )	((vecOut)[0]=(vec1)[0]+(vec2)[0]*(scale), (vecOut)[1]=(vec1)[1]+(vec2)[1]*(scale), (vecOut)[2]=(vec1)[2]+(vec2)[2]*(scale))
+#define				VectorLengthM( vec )					VectorLength( vec )
 #define				VectorLengthSquaredM( vec )				VectorLengthSquared( vec )
-#define				DistanceM( vec )							Distance( vec )
+#define				DistanceM( vec )						Distance( vec )
 #define				DistanceSquaredM( p1, p2 )				DistanceSquared( p1, p2 )
 #define				VectorNormalizeFastM( vec )				VectorNormalizeFast( vec )
 #define				VectorNormalizeM( vec )					VectorNormalize( vec )
-#define				VectorNormalize2M( vec, vecOut )			VectorNormalize2( vec, vecOut )
-#define				VectorCopyM( vecIn, vecOut )				((vecOut)[0]=(vecIn)[0], (vecOut)[1]=(vecIn)[1], (vecOut)[2]=(vecIn)[2])
-#define				VectorCopy4M( vecIn, vecOut )				((vecOut)[0]=(vecIn)[0], (vecOut)[1]=(vecIn)[1], (vecOut)[2]=(vecIn)[2], (vecOut)[3]=(vecIn)[3])
+#define				VectorNormalize2M( vec, vecOut )		VectorNormalize2( vec, vecOut )
+#define				VectorCopyM( vecIn, vecOut )			((vecOut)[0]=(vecIn)[0], (vecOut)[1]=(vecIn)[1], (vecOut)[2]=(vecIn)[2])
+#define				VectorCopy4M( vecIn, vecOut )			((vecOut)[0]=(vecIn)[0], (vecOut)[1]=(vecIn)[1], (vecOut)[2]=(vecIn)[2], (vecOut)[3]=(vecIn)[3])
 #define				VectorSetM( vec, x, y, z )				((vec)[0]=(x), (vec)[1]=(y), (vec)[2]=(z))
 #define				VectorSet4M( vec, x, y, z, w )			((vec)[0]=(x), (vec)[1]=(y), (vec)[2]=(z), (vec)[3]=(w))
-#define				VectorSet5M( vec, x, y, z, w, u )			((vec)[0]=(x), (vec)[1]=(y), (vec)[2]=(z), (vec)[3]=(w), (vec)[4]=(u))
+#define				VectorSet5M( vec, x, y, z, w, u )		((vec)[0]=(x), (vec)[1]=(y), (vec)[2]=(z), (vec)[3]=(w), (vec)[4]=(u))
 #define				VectorClearM( vec )						((vec)[0]=(vec)[1]=(vec)[2]=0)
-#define				VectorClear4M( vec )						((vec)[0]=(vec)[1]=(vec)[2]=(vec)[3]=0)
-#define				VectorIncM( vec )							((vec)[0]+=1.0f, (vec)[1]+=1.0f, (vec)[2]+=1.0f)
-#define				VectorDecM( vec )							((vec)[0]-=1.0f, (vec)[1]-=1.0f, (vec)[2]-=1.0f)
-#define				VectorInverseM( vec )						((vec)[0]=-(vec)[0], (vec)[1]=-(vec)[1], (vec)[2]=-(vec)[2])
-#define				CrossProductM( vec1, vec2, vecOut )			((vecOut)[0]=((vec1)[1]*(vec2)[2])-((vec1)[2]*(v2)[1]), (vecOut)[1]=((vec1)[2]*(vec2)[0])-((vec1)[0]*(vec2)[2]), (vecOut)[2]=((vec1)[0]*(vec2)[1])-((vec1)[1]*(vec2)[0]))
+#define				VectorClear4M( vec )					((vec)[0]=(vec)[1]=(vec)[2]=(vec)[3]=0)
+#define				VectorIncM( vec )						((vec)[0]+=1.0f, (vec)[1]+=1.0f, (vec)[2]+=1.0f)
+#define				VectorDecM( vec )						((vec)[0]-=1.0f, (vec)[1]-=1.0f, (vec)[2]-=1.0f)
+#define				VectorInverseM( vec )					((vec)[0]=-(vec)[0], (vec)[1]=-(vec)[1], (vec)[2]=-(vec)[2])
+#define				CrossProductM( vec1, vec2, vecOut )		((vecOut)[0]=((vec1)[1]*(vec2)[2])-((vec1)[2]*(v2)[1]), (vecOut)[1]=((vec1)[2]*(vec2)[0])-((vec1)[0]*(vec2)[2]), (vecOut)[2]=((vec1)[0]*(vec2)[1])-((vec1)[1]*(vec2)[0]))
 #define				DotProductM( x, y )						((x)[0]*(y)[0]+(x)[1]*(y)[1]+(x)[2]*(y)[2])
-#define				VectorCompareM( vec1, vec2 )				(!!((vec1)[0]==(vec2)[0] && (vec1)[1]==(vec2)[1] && (vec1)[2]==(vec2)[2]))
+#define				VectorCompareM( vec1, vec2 )			(!!((vec1)[0]==(vec2)[0] && (vec1)[1]==(vec2)[1] && (vec1)[2]==(vec2)[2]))
 
 // TODO
 #define VectorScaleVector(a,b,c)		(((c)[0]=(a)[0]*(b)[0]),((c)[1]=(a)[1]*(b)[1]),((c)[2]=(a)[2]*(b)[2]))
@@ -1375,22 +1374,23 @@ typedef struct {
 		//pitiful attempt to reduce _ftol2 calls -rww
 		static ID_INLINE void SnapVector( float *v )
 		{
+			//RAZTODO: q_math.c plz
 			static int i;
 			static float f;
 
 			f = *v;
-			__asm1__( fld f );
-			__asm1__( fistp	i );
+			__asm fld f
+			__asm fistp	i
 			*v = i;
 			v++;
 			f = *v;
-			__asm1__( fld f );
-			__asm1__( fistp i );
+			__asm fld f
+			__asm fistp i
 			*v = i;
 			v++;
 			f = *v;
-			__asm1__( fld f );
-			__asm1__( fistp i );
+			__asm fld f
+			__asm fistp i
 			*v = i;
 		}
 	#else
