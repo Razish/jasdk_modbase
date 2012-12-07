@@ -2237,7 +2237,7 @@ void QDECL G_LogPrintf( const char *fmt, ... ) {
 	char		string[1024] = {0};
 	int			mins, seconds, msec, l;
 
-	msec = level.time;
+	msec = level.time - level.startTime;
 
 	seconds = msec / 1000;
 	mins = seconds / 60;
