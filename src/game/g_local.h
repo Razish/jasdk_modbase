@@ -746,6 +746,12 @@ struct gclient_s {
 
 	int			lastGenCmd;
 	int			lastGenCmdTime;
+
+	struct force {
+		int		regenDebounce;
+		int		drainDebounce;
+		int		lightningDebounce;
+	} force;
 };
 
 //Interest points

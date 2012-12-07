@@ -4276,11 +4276,7 @@ static void WP_UpdateMindtrickEnts(gentity_t *self)
 }
 
 //JAC: sets the time between lightning/drain hit shots on the server so that we can alter the sv_fps without issues.
-static int LightningDebounceTime = 0;
-const int LIGHTNINGDEBOUNCE = 50;
-
-static int DrainDebounceTime = 0;
-const int DRAINDEBOUNCE = 50;
+#define FORCE_DEBOUNCE_TIME 50 // sv_fps 20 = 50msec frametime, basejka balance/timing
 
 static void WP_ForcePowerRun( gentity_t *self, forcePowers_t forcePower, usercmd_t *cmd )
 {
@@ -4430,14 +4426,14 @@ static void WP_ForcePowerRun( gentity_t *self, forcePowers_t forcePower, usercmd
 		{
 			WP_ForcePowerStop( self, forcePower );
 		}
-		//JAC: added server debouncer to make the drain...drain...consistent even with different sv_fps settings.
-		else if( DrainDebounceTime == level.time //someone already advanced the timer this frame
-			|| (level.time - DrainDebounceTime >= DRAINDEBOUNCE) )
+		//JAC: consistent drain regardless of sv_fps
+		else
 		{
-			ForceShootDrain( self );
-
-			//update the drain debouncer
-			DrainDebounceTime = level.time;
+			while ( self->client->force.drainDebounce < level.time )
+			{
+				ForceShootDrain( self );
+				self->client->force.drainDebounce += FORCE_DEBOUNCE_TIME;
+			}
 		}
 		break;
 	case FP_LIGHTNING:
@@ -4460,15 +4456,15 @@ static void WP_ForcePowerRun( gentity_t *self, forcePowers_t forcePower, usercmd
 		{
 			WP_ForcePowerStop( self, forcePower );
 		}
-		//JAC: added server debouncer to make the lightning damage consistant even with different sv_fps settings.
-		else if( LightningDebounceTime == level.time //someone already advanced the timer this frame
-			|| (level.time - LightningDebounceTime >= LIGHTNINGDEBOUNCE) )
+		//JAC: consistent lightning regardless of sv_fps
+		else
 		{
-			ForceShootLightning( self );
-			BG_ForcePowerDrain( &self->client->ps, forcePower, 0 );
-
-			//update the lightning shot debouncer
-			LightningDebounceTime = level.time;
+			while ( self->client->force.lightningDebounce < level.time )
+			{
+				ForceShootLightning( self );
+				BG_ForcePowerDrain( &self->client->ps, forcePower, 0 );
+				self->client->force.lightningDebounce += FORCE_DEBOUNCE_TIME;
+			}
 		}
 		break;
 	case FP_TELEPATHY:
@@ -5573,6 +5569,12 @@ void WP_ForcePowersUpdate( gentity_t *self, usercmd_t *ucmd )
 			WP_ForcePowerRun( self, (forcePowers_t)i, ucmd );
 		}
 	}
+
+	if ( !(self->client->ps.fd.forcePowersActive & (1<<FP_DRAIN)) )
+		self->client->force.drainDebounce = level.time;
+	if ( !(self->client->ps.fd.forcePowersActive & (1<<FP_LIGHTNING)) )
+		self->client->force.lightningDebounce = level.time;
+
 	if ( self->client->ps.saberInFlight && self->client->ps.saberEntityNum )
 	{//don't regen force power while throwing saber
 		if ( self->client->ps.saberEntityNum < ENTITYNUM_NONE && self->client->ps.saberEntityNum > 0 )//player is 0
@@ -5585,89 +5587,59 @@ void WP_ForcePowersUpdate( gentity_t *self, usercmd_t *ucmd )
 	}
 	if ( !self->client->ps.fd.forcePowersActive || self->client->ps.fd.forcePowersActive == (1 << FP_DRAIN) )
 	{//when not using the force, regenerate at 1 point per half second
-		if ( !self->client->ps.saberInFlight && self->client->ps.fd.forcePowerRegenDebounceTime < level.time &&
-			(self->client->ps.weapon != WP_SABER || !BG_SaberInSpecial(self->client->ps.saberMove)) )
+		if ( !self->client->ps.saberInFlight && (self->client->ps.weapon != WP_SABER || !BG_SaberInSpecial(self->client->ps.saberMove)) )
 		{
-			if (g_gametype.integer != GT_HOLOCRON || g_MaxHolocronCarry.value)
+			while ( self->client->ps.fd.forcePowerRegenDebounceTime < level.time )
 			{
-				//if (!g_trueJedi.integer || self->client->ps.weapon == WP_SABER)
-				//let non-jedi force regen since we're doing a more strict jedi/non-jedi thing... this gives dark jedi something to drain
+				if (g_gametype.integer != GT_HOLOCRON || g_MaxHolocronCarry.value)
 				{
-					if (self->client->ps.powerups[PW_FORCE_BOON])
-					{
+					if ( self->client->ps.powerups[PW_FORCE_BOON] )
 						WP_ForcePowerRegenerate( self, 6 );
-					}
-					else if (self->client->ps.isJediMaster && g_gametype.integer == GT_JEDIMASTER)
-					{
+					else if ( self->client->ps.isJediMaster && g_gametype.integer == GT_JEDIMASTER )
 						WP_ForcePowerRegenerate( self, 4 ); //jedi master regenerates 4 times as fast
-					}
 					else
-					{
 						WP_ForcePowerRegenerate( self, 0 );
-					}
 				}
-				/*
-				else if (g_trueJedi.integer && self->client->ps.weapon != WP_SABER)
-				{
-					self->client->ps.fd.forcePower = 0;
-				}
-				*/
-			}
-			else
-			{ //regenerate based on the number of holocrons carried
-				holoregen = 0;
-				holo = 0;
-				while (holo < NUM_FORCE_POWERS)
-				{
-					if (self->client->ps.holocronsCarried[holo])
+				else
+				{ //regenerate based on the number of holocrons carried
+					holoregen = 0;
+					holo = 0;
+					while (holo < NUM_FORCE_POWERS)
 					{
-						holoregen++;
+						if (self->client->ps.holocronsCarried[holo])
+							holoregen++;
+						holo++;
 					}
-					holo++;
+
+					WP_ForcePowerRegenerate(self, holoregen);
 				}
 
-				WP_ForcePowerRegenerate(self, holoregen);
-			}
-
-			if (g_gametype.integer == GT_SIEGE)
-			{
-				if (self->client->holdingObjectiveItem &&
-					g_entities[self->client->holdingObjectiveItem].inuse &&
-					g_entities[self->client->holdingObjectiveItem].genericValue15)
-				{ //1 point per 7 seconds.. super slow
-					self->client->ps.fd.forcePowerRegenDebounceTime = level.time + 7000;
-				}
-				else if (self->client->siegeClass != -1 &&
-					(bgSiegeClasses[self->client->siegeClass].classflags & (1<<CFL_FASTFORCEREGEN)))
-				{ //if this is siege and our player class has the fast force regen ability, then recharge with 1/5th the usual delay
-					self->client->ps.fd.forcePowerRegenDebounceTime = level.time + (g_forceRegenTime.integer*0.2);
+				if (g_gametype.integer == GT_SIEGE)
+				{
+					if ( self->client->holdingObjectiveItem && g_entities[self->client->holdingObjectiveItem].inuse && g_entities[self->client->holdingObjectiveItem].genericValue15 )
+						self->client->ps.fd.forcePowerRegenDebounceTime += 7000; //1 point per 7 seconds.. super slow
+					else if (self->client->siegeClass != -1 && (bgSiegeClasses[self->client->siegeClass].classflags & (1<<CFL_FASTFORCEREGEN)))
+						self->client->ps.fd.forcePowerRegenDebounceTime += (g_forceRegenTime.integer*0.2); //if this is siege and our player class has the fast force regen ability, then recharge with 1/5th the usual delay
+					else
+						self->client->ps.fd.forcePowerRegenDebounceTime += g_forceRegenTime.integer;
 				}
 				else
 				{
-					self->client->ps.fd.forcePowerRegenDebounceTime = level.time + g_forceRegenTime.integer;
-				}
-			}
-			else
-			{
-				if ( g_gametype.integer == GT_POWERDUEL && self->client->sess.duelTeam == DUELTEAM_LONE )
-				{
-					if ( g_duel_fraglimit.integer )
+					if ( g_gametype.integer == GT_POWERDUEL && self->client->sess.duelTeam == DUELTEAM_LONE )
 					{
-						self->client->ps.fd.forcePowerRegenDebounceTime = level.time + (g_forceRegenTime.integer*
-							(0.6 + (.3 * (float)self->client->sess.wins / (float)g_duel_fraglimit.integer)));
+						if ( g_duel_fraglimit.integer )
+							self->client->ps.fd.forcePowerRegenDebounceTime += (g_forceRegenTime.integer * (0.6 + (.3 * (float)self->client->sess.wins / (float)g_duel_fraglimit.integer)));
+						else
+							self->client->ps.fd.forcePowerRegenDebounceTime += (g_forceRegenTime.integer*0.7);
 					}
 					else
-					{
-						self->client->ps.fd.forcePowerRegenDebounceTime = level.time + (g_forceRegenTime.integer*0.7);
-					}
-				}
-				else
-				{
-					self->client->ps.fd.forcePowerRegenDebounceTime = level.time + g_forceRegenTime.integer;
+						self->client->ps.fd.forcePowerRegenDebounceTime += g_forceRegenTime.integer;
 				}
 			}
 		}
 	}
+	else
+		self->client->ps.fd.forcePowerRegenDebounceTime = level.time;
 
 powersetcheck:
 
