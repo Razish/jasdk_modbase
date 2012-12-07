@@ -3730,11 +3730,10 @@ static float CG_DrawTeamOverlay( float y, qboolean right, qboolean upper ) {
 		return y; // Not on any team
 	}
 
-	if (cg.snap->ps.pm_flags & PMF_FOLLOW){
-		return y; // following in spec, not valid info provided
-	}
-
 	plyrs = 0;
+
+	//TODO: On basejka servers, we won't have valid teaminfo if we're spectating someone.
+	//		Find a way to detect invalid info and return early?
 
 	// max player name width
 	pwidth = 0;
