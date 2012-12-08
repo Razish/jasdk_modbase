@@ -227,9 +227,41 @@ void G_Give( gentity_t *ent, const char *name, const char *args, int argc )
 	if ( give_all || !Q_stricmp( name, "health") )
 	{
 		if ( argc == 3 )
-			ent->health = Com_Clampi( 0, ent->client->ps.stats[STAT_MAX_HEALTH], atoi( args ) );
+			ent->health = Com_Clampi( 1, ent->client->ps.stats[STAT_MAX_HEALTH], atoi( args ) );
 		else
-			ent->health = ent->client->ps.stats[STAT_MAX_HEALTH];
+		{
+			if ( g_gametype.integer == GT_SIEGE && ent->client->siegeClass != -1 )
+				ent->health = bgSiegeClasses[ent->client->siegeClass].maxhealth;
+			else
+				ent->health = ent->client->ps.stats[STAT_MAX_HEALTH];
+		}
+		if ( !give_all )
+			return;
+	}
+
+	if ( give_all || !Q_stricmp( name, "armor" ) || !Q_stricmp( name, "shield" ) )
+	{
+		if ( argc == 3 )
+			ent->client->ps.stats[STAT_ARMOR] = Com_Clampi( 0, ent->client->ps.stats[STAT_MAX_HEALTH], atoi( arg ) );
+		else
+		{
+			if ( g_gametype.integer == GT_SIEGE && ent->client->siegeClass != -1 )
+				ent->client->ps.stats[STAT_ARMOR] = bgSiegeClasses[ent->client->siegeClass].maxarmor;
+			else
+				ent->client->ps.stats[STAT_ARMOR] = ent->client->ps.stats[STAT_MAX_HEALTH];
+		}
+
+		if ( !give_all )
+			return;
+	}
+
+	if ( give_all || !Q_stricmp( name, "force" ) )
+	{
+		if ( argc == 3 )
+			ent->client->ps.fd.forcePower = Com_Clampi( 0, ent->client->ps.fd.forcePowerMax, atoi( args ) );
+		else
+			ent->client->ps.fd.forcePower = ent->client->ps.fd.forcePowerMax;
+
 		if ( !give_all )
 			return;
 	}
@@ -254,17 +286,6 @@ void G_Give( gentity_t *ent, const char *name, const char *args, int argc )
 			num = atoi( args );
 		for ( i=0; i<MAX_WEAPONS; i++ )
 			ent->client->ps.ammo[i] = num;
-		if ( !give_all )
-			return;
-	}
-
-	if ( give_all || !Q_stricmp( name, "armor" ) )
-	{
-		if ( argc == 3 )
-			ent->client->ps.stats[STAT_ARMOR] = atoi( arg );
-		else
-			ent->client->ps.stats[STAT_ARMOR] = ent->client->ps.stats[STAT_MAX_HEALTH];
-
 		if ( !give_all )
 			return;
 	}
