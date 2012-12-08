@@ -868,6 +868,7 @@ typedef struct {
 
 	// voting state
 	char		voteString[MAX_STRING_CHARS];
+	char		voteStringClean[MAX_STRING_CHARS];
 	char		voteDisplayString[MAX_STRING_CHARS];
 	int			voteTime;				// level.time vote was called
 	int			voteExecuteTime;		// time the vote is executed
