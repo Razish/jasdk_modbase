@@ -2702,14 +2702,10 @@ void charge_stick (gentity_t *self, gentity_t *other, trace_t *trace)
 		return;
 	}
 
-	// fix: annoying det packs bug caused det packs to sometimes 
-	// not detonating when owner player dies
 	//if we get here I guess we hit hte world so we can stick to it
-	if (self->think == G_RunObject){
-		self->touch = 0;
-		self->think = DetPackBlow;
-		self->nextthink = level.time + 30000;
-	}
+	self->touch = 0;
+	self->think = DetPackBlow;
+	self->nextthink = level.time + 30000;
 
 	VectorClear(self->s.apos.trDelta);
 	self->s.apos.trType = TR_STATIONARY;
@@ -2856,7 +2852,7 @@ void BlowDetpacks(gentity_t *ent)
 {
 	gentity_t *found = NULL;
 
-	if ( ent->client->ps.hasDetPackPlanted )
+//	if ( ent->client->ps.hasDetPackPlanted )
 	{
 		while ( (found = G_Find( found, FOFS(classname), "detpack") ) != NULL )
 		{//loop through all ents and blow the crap out of them!
@@ -2875,7 +2871,7 @@ void RemoveDetpacks(gentity_t *ent)
 {
 	gentity_t *found = NULL;
 
-	if ( ent->client->ps.hasDetPackPlanted )
+//	if ( ent->client->ps.hasDetPackPlanted )
 	{
 		while ( (found = G_Find( found, FOFS(classname), "detpack") ) != NULL )
 		{//loop through all ents and blow the crap out of them!
