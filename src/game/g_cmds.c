@@ -155,6 +155,26 @@ void SanitizeString( char *in, char *out ) {
 
 /*
 ==================
+StringIsInteger
+==================
+*/
+qboolean StringIsInteger( const char *s ) {
+	int			i=0, len=0;
+	qboolean	foundDigit=qfalse;
+
+	for ( i=0, len=strlen( s ); i<len; i++ )
+	{
+		if ( !isdigit( s[i] ) )
+			return qfalse;
+
+		foundDigit = qtrue;
+	}
+
+	return foundDigit;
+}
+
+/*
+==================
 ClientNumberFromString
 
 Returns a player number for either a number or name string
@@ -164,38 +184,31 @@ Returns -1 if invalid
 int ClientNumberFromString( gentity_t *to, char *s ) {
 	gclient_t	*cl;
 	int			idnum;
-	char		s2[MAX_STRING_CHARS];
-	char		n2[MAX_STRING_CHARS];
+	char		cleanName[MAX_NETNAME];
 
-	// numeric values are just slot numbers
-	if (s[0] >= '0' && s[0] <= '9') {
+	if ( StringIsInteger( s ) )
+	{// numeric values could be slot numbers
 		idnum = atoi( s );
-		if ( idnum < 0 || idnum >= level.maxclients ) {
-			trap_SendServerCommand( to-g_entities, va("print \"Bad client slot: %i\n\"", idnum));
-			return -1;
+		if ( idnum >= 0 && idnum < level.maxclients )
+		{
+			cl = &level.clients[idnum];
+			if ( cl->pers.connected == CON_CONNECTED )
+				return idnum;
 		}
-
-		cl = &level.clients[idnum];
-		if ( cl->pers.connected != CON_CONNECTED ) {
-			trap_SendServerCommand( to-g_entities, va("print \"Client %i is not active\n\"", idnum));
-			return -1;
-		}
-		return idnum;
 	}
 
-	// check for a name match
-	SanitizeString( s, s2 );
-	for ( idnum=0,cl=level.clients ; idnum < level.maxclients ; idnum++,cl++ ) {
-		if ( cl->pers.connected != CON_CONNECTED ) {
+	for ( idnum=0,cl=level.clients; idnum < level.maxclients; idnum++,cl++ )
+	{// check for a name match
+		if ( cl->pers.connected != CON_CONNECTED )
 			continue;
-		}
-		SanitizeString( cl->pers.netname, n2 );
-		if ( !strcmp( n2, s2 ) ) {
+
+		Q_strncpyz( cleanName, cl->pers.netname, sizeof( cleanName ) );
+		Q_CleanStr( cleanName );
+		if ( !Q_stricmp( cleanName, s ) )
 			return idnum;
-		}
 	}
 
-	trap_SendServerCommand( to-g_entities, va("print \"User %s is not on the server\n\"", s));
+	trap_SendServerCommand( to-g_entities, va( "print \"User %s is not on the server\n\"", s ) );
 	return -1;
 }
 
@@ -1729,8 +1742,8 @@ static void Cmd_Tell_f( gentity_t *ent ) {
 	}
 
 	trap_Argv( 1, arg, sizeof( arg ) );
-	targetNum = atoi( arg );
-	if ( targetNum < 0 || targetNum >= level.maxclients ) {
+	targetNum = ClientNumberFromString( ent, arg );
+	if ( targetNum == -1 ) {
 		return;
 	}
 
@@ -1827,25 +1840,42 @@ static char	*gc_orders[] = {
 	"search and destroy",
 	"report"
 };
+static size_t numgc_orders = ARRAY_LEN( gc_orders );
 
 void Cmd_GameCommand_f( gentity_t *ent ) {
-	int		player;
-	int		order;
-	char	str[MAX_TOKEN_CHARS];
+	int				targetNum;
+	unsigned int	order;
+	gentity_t		*target;
+	char			arg[MAX_TOKEN_CHARS] = {0};
 
-	trap_Argv( 1, str, sizeof( str ) );
-	player = atoi( str );
-	trap_Argv( 2, str, sizeof( str ) );
-	order = atoi( str );
+	if ( trap_Argc() != 3 ) {
+		trap_SendServerCommand( ent-g_entities, va( "print \"Usage: gc <player id> <order 0-%d>\n\"", numgc_orders - 1 ) );
+		return;
+	}
 
-	if ( player < 0 || player >= level.maxclients )
+	trap_Argv( 2, arg, sizeof( arg ) );
+	order = atoi( arg );
+
+	if ( order < 0 || order >= numgc_orders ) {
+		trap_SendServerCommand( ent-g_entities, va("print \"Bad order: %i\n\"", order));
+		return;
+	}
+
+	trap_Argv( 1, arg, sizeof( arg ) );
+	targetNum = ClientNumberFromString( ent, arg );
+	if ( targetNum == -1 )
 		return;
 
-	if ( order < 0 || order >= sizeof(gc_orders)/sizeof(char *) )
+	target = &g_entities[targetNum];
+	if ( !target->inuse || !target->client )
 		return;
 
-	G_Say( ent, &g_entities[player], SAY_TELL, gc_orders[order] );
-	G_Say( ent, ent, SAY_TELL, gc_orders[order] );
+	G_LogPrintf( "tell: %s to %s: %s\n", ent->client->pers.netname, target->client->pers.netname, gc_orders[order] );
+	G_Say( ent, target, SAY_TELL, gc_orders[order] );
+	// don't tell to the player self if it was already directed to this player
+	// also don't send the chat back to a bot
+	if ( ent != target && !(ent->r.svFlags & SVF_BOT) )
+		G_Say( ent, ent, SAY_TELL, gc_orders[order] );
 }
 
 /*
