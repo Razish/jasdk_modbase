@@ -543,6 +543,13 @@ void CG_DrawFlagModel( float x, float y, float w, float h, int team, qboolean fo
 
 	if ( !force2D && cg_draw3dIcons.integer ) {
 
+		//Raz: need to adjust the coords only for 3d models
+		//		2d icons use virtual screen coords
+		x *= cgs.screenXScale;
+		y *= cgs.screenYScale;
+		w *= cgs.screenXScale;
+		h *= cgs.screenYScale;
+
 		VectorClear( angles );
 
 		cm = cgs.media.redFlagModel;
