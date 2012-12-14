@@ -2578,6 +2578,18 @@ void ClientBegin( int clientNum, qboolean allowTeamReset ) {
 	//assign the pointer for bg entity access
 	ent->playerState = &ent->client->ps;
 
+	#ifndef PATCH_ENGINE
+		//fix for donedl command bug, that could cause powerup dissapearing
+		if ( ent->health && ent->client && ent->client->sess.sessionTeam != TEAM_SPECTATOR && clientNum == ent->client->ps.clientNum) {
+			// Kill him (makes sure he loses flags, etc)
+			ent->flags &= ~FL_GODMODE;
+			ent->client->ps.stats[STAT_HEALTH] = ent->health = 0;
+			g_dontPenalizeTeam = qtrue;
+			player_die( ent, ent, ent, 100000, MOD_TEAM_CHANGE );
+			g_dontPenalizeTeam = qfalse;
+		}
+	#endif
+
 	client->pers.connected = CON_CONNECTED;
 	client->pers.enterTime = level.time;
 	client->pers.teamState.state = TEAM_BEGIN;

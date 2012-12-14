@@ -49,6 +49,7 @@
 #define HOOK_Q3INFOBOOM			//	Q3infoboom: truncate large arguments
 #define HOOK_Q3FILL				//	Q3fill: Drop inactive connections
 #define HOOK_SvSayFix			//	SvSay: Add chat separator to svsay command
+#define HOOK_DoneDL				//	DoneDL: donedl is often abused ingame to have ClientBegin called from SV_SendClientGameState.
 
 
 // --------------------------------
@@ -248,6 +249,55 @@
 #endif //HOOK_SvSayFix
 
 
+#ifdef HOOK_DoneDL
+	//--------------------------------
+	//      Name:   DoneDL Fix
+	//      Desc:   /donedl is often abused to make flags disappear and other game-related data
+	//                      We prevent active clients from using this.
+	//      Hook:   SV_SendClientGameState
+	//      Retn:   SV_SendClientGameState
+	//--------------------------------
+
+	#ifdef _WIN32
+		#define DDL_HOOKPOS			0x43AEF4	//	mov dword ptr [esi], CS_PRIMED
+		#define DDL_RETSUCCESS		0x43AEFA	//	mov dword ptr [esi+39430h], 0
+		#define DDL_ORIGBYTES		{ 0xC7, 0x06, 0x03, 0x00, 0x00 }
+	#else
+		#define DDL_HOOKPOS			0x804CF54	// mov dword ptr [esi], CS_PRIMED
+		#define DDL_RETSUCCESS		0x804CF5A	// mov eax, [esi+39458h]
+		#define DDL_ORIGBYTES		{ 0xC7, 0x06, 0x03, 0x00, 0x00 }
+	#endif //_WIN32
+
+	static void USED DoneDL_Handler( client_t *client )
+	{
+		// fix: set CS_PRIMED only when CS_CONNECTED is current state
+		if ( client->state == CS_CONNECTED )
+			client->state = CS_PRIMED;
+		else
+		{
+			char tmpIP[NET_ADDRSTRMAXLEN] = {0};
+			NET_AddrToString( tmpIP, sizeof( tmpIP ), &client->netchan.remoteAddress );
+			G_SecurityLogPrintf( "Client %d (%s) probably tried \"donedl\" exploit when client->state(%d)!=CS_CONNECTED(%d) [IP: %s]\n", client->gentity->s.number, client->name, client->state, CS_CONNECTED, tmpIP );
+		}
+	}
+
+	HOOK( DoneDL )
+	{//DoneDL patch
+		__StartHook( DoneDL )
+		{
+			__asm1__( pushad );
+			__asm1__( push esi );
+			__asm1__( call DoneDL_Handler );
+			__asm2__( add esp, 4 );
+			__asm1__( popad );
+			__asm1__( push DDL_RETSUCCESS );
+			__asm1__( ret );
+		}
+		__EndHook( DoneDL )
+	}
+#endif //HOOK_DoneDL
+
+
 // --------------------------------
 // Hook table
 
@@ -261,6 +311,9 @@ static hookEntry_t hooks[] =
 	#endif
 	#ifdef HOOK_SvSayFix
 		HOOKDEF( SVS_HOOKPOS,	SVS_ORIGBYTES,	0xE9,	Hook_SvSay,				"SvSay fix"									),
+	#endif
+	#ifdef HOOK_DoneDL
+		HOOKDEF( DDL_HOOKPOS,	DDL_ORIGBYTES,	0xE9,	Hook_DoneDL,			"DoneDL fix"									),
 	#endif
 };
 static const int numHooks = ARRAY_LEN( hooks );
