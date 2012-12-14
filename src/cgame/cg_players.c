@@ -4470,10 +4470,11 @@ static void CG_PlayerPowerups( centity_t *cent, refEntity_t *torso ) {
 		return;
 	}
 
-	// quad gives a dlight
-	if ( powerups & ( 1 << PW_QUAD ) ) {
-		trap_R_AddLightToScene( cent->lerpOrigin, 200 + (rand()&31), 0.2f, 0.2f, 1 );
-	}
+	#ifdef BASE_COMPAT
+		// quad gives a dlight
+		if ( powerups & ( 1 << PW_QUAD ) )
+			trap_R_AddLightToScene( cent->lerpOrigin, 200 + (rand()&31), 0.2f, 0.2f, 1 );
+	#endif // BASE_COMPAT
 
 	if (cent->currentState.eType == ET_NPC)
 	{

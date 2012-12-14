@@ -1614,7 +1614,9 @@ extern	vmCvar_t	g_needpass;
 extern	vmCvar_t	g_gravity;
 extern	vmCvar_t	g_speed;
 extern	vmCvar_t	g_knockback;
-extern	vmCvar_t	g_quadfactor;
+#ifdef BASE_COMPAT
+	extern	vmCvar_t	g_quadfactor;
+#endif // BASE_COMPAT
 extern	vmCvar_t	g_forcerespawn;
 extern	vmCvar_t	g_siegeRespawn;
 extern	vmCvar_t	g_inactivity;

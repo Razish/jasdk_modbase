@@ -16,6 +16,9 @@
 
 	// server-side conditional compiling
 //	#define IOJAMP // ensure iojamp compatibility (disables engine modifications, new vmMain/trap functionality, etc)
+	#define BASE_COMPAT // some unused and leftover code has been stripped out, but this breaks compatibility
+						//	between base<->modbase clients and servers (mismatching events, powerups, etc)
+						// leave this defined to ensure compatibility
 
 	#ifndef IOJAMP
 		#define PATCH_ENGINE
@@ -25,6 +28,9 @@
 
 	// client-side conditional compiling
 //	#define IOJAMP // ensure iojamp compatibility (disables engine modifications, new vmMain/trap functionality, etc)
+	#define BASE_COMPAT // some unused and leftover code has been stripped out, but this breaks compatibility
+						//	between base<->modbase clients and servers (mismatching events, powerups, etc)
+						// leave this defined to ensure compatibility
 //	#define USE_WIDESCREEN // Adjust fov for widescreen aspect ratio
 
 	#ifndef IOJAMP

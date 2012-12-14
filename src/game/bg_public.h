@@ -643,12 +643,12 @@ typedef enum {
 typedef enum {
 	PW_NONE,
 
-	PW_QUAD,
-	PW_BATTLESUIT,
+	#ifdef BASE_COMPAT
+		PW_QUAD,
+		PW_BATTLESUIT,
+	#endif // BASE_COMPAT
+
 	PW_PULL,
-	//PW_INVIS, //rww - removed
-	//PW_REGEN, //rww - removed
-	//PW_FLIGHT, //rww - removed
 
 	PW_REDFLAG,
 	PW_BLUEFLAG,
@@ -656,10 +656,6 @@ typedef enum {
 
 	PW_SHIELDHIT,
 
-	//PW_SCOUT, //rww - removed
-	//PW_GUARD, //rww - removed
-	//PW_DOUBLER, //rww - removed
-	//PW_AMMOREGEN, //rww - removed
 	PW_SPEEDBURST,
 	PW_DISINT_4,
 	PW_SPEED,
@@ -855,9 +851,10 @@ typedef enum {
 	EV_DEATH3,
 	EV_OBITUARY,
 
-	EV_POWERUP_QUAD,
-	EV_POWERUP_BATTLESUIT,
-	//EV_POWERUP_REGEN,
+	#ifdef BASE_COMPAT
+		EV_POWERUP_QUAD,
+		EV_POWERUP_BATTLESUIT,
+	#endif // BASE_COMPAT
 
 	EV_FORCE_DRAINED,
 
