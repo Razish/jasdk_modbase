@@ -825,7 +825,8 @@ void SetTeamQuick(gentity_t *ent, int team, qboolean doBegin)
 
 	ent->client->pers.teamState.state = TEAM_BEGIN;
 
-	ClientUserinfoChanged( ent->s.number );
+	if ( !ClientUserinfoChanged( ent->s.number ) )
+		return;
 
 	if (doBegin)
 	{

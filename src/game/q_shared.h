@@ -56,6 +56,7 @@
 #define VALIDATEP( a )	if ( a == NULL ) {	assert(0);	return NULL;	}
 
 #define VALIDSTRING( a )	( ( a != 0 ) && ( a[0] != 0 ) )
+#define VALIDENT( e )		( ( e != 0 ) && ( (e)->inuse ) )
 
 //JAC: Added
 #define ARRAY_LEN( x ) ( sizeof( x ) / sizeof( *(x) ) )
@@ -1555,6 +1556,7 @@ int Q_PrintStrlen( const char *string );
 // removes color sequences from string
 char *Q_CleanStr( char *string );
 void Q_strstrip( char *string, const char *strip, const char *repl );
+const char *Q_strchrs( const char *string, const char *search );
 
 //=============================================
 

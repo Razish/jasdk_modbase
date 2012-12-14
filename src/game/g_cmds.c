@@ -476,7 +476,7 @@ void Cmd_LevelShot_f( gentity_t *ent )
 	trap_SendServerCommand( ent-g_entities, "clientLevelShot" );
 }
 
-
+#if 0
 /*
 ==================
 Cmd_TeamTask_f
@@ -501,7 +501,7 @@ void Cmd_TeamTask_f( gentity_t *ent ) {
 	trap_SetUserinfo(client, userinfo);
 	ClientUserinfoChanged(client);
 }
-
+#endif
 
 
 /*
@@ -960,7 +960,8 @@ void SetTeam( gentity_t *ent, char *s ) {
 	}
 
 	// get and distribute relevent paramters
-	ClientUserinfoChanged( clientNum );
+	if ( !ClientUserinfoChanged( clientNum ) )
+		return;
 
 	if (!g_preventTeamBegin)
 	{
@@ -978,6 +979,7 @@ to free floating spectator mode
 */
 extern void G_LeaveVehicle( gentity_t *ent, qboolean ConCheck );
 void StopFollowing( gentity_t *ent ) {
+	int i=0;
 	ent->client->ps.persistant[ PERS_TEAM ] = TEAM_SPECTATOR;	
 	ent->client->sess.sessionTeam = TEAM_SPECTATOR;	
 	ent->client->sess.spectatorState = SPECTATOR_FREE;
@@ -1001,7 +1003,9 @@ void StopFollowing( gentity_t *ent ) {
 	ent->client->ps.cloakFuel = 100; // so that fuel goes away after stop following them
 	ent->client->ps.jetpackFuel = 100; // so that fuel goes away after stop following them
 	ent->health = ent->client->ps.stats[STAT_HEALTH] = 100; // so that you don't keep dead angles if you were spectating a dead person
-	ent->client->ps.bobCycle = 0; 
+	ent->client->ps.bobCycle = 0;
+	for ( i=0; i<PW_NUM_POWERUPS; i++ )
+		ent->client->ps.powerups[i] = 0;
 }
 
 /*
@@ -1155,7 +1159,8 @@ void Cmd_DuelTeam_f(gentity_t *ent)
 	ent->client->sess.losses = 0;
 
 	//get and distribute relevent paramters
-	ClientUserinfoChanged( ent->s.number );
+	if ( ClientUserinfoChanged( ent->s.number ) )
+		return;
 
 	ent->client->switchDuelTeamTime = level.time + 5000;
 }
@@ -1281,7 +1286,8 @@ void Cmd_SiegeClass_f( gentity_t *ent )
 	strcpy(ent->client->sess.siegeClass, className);
 
 	// get and distribute relevent paramters
-	ClientUserinfoChanged( ent->s.number );
+	if ( !ClientUserinfoChanged( ent->s.number ) )
+		return;
 
 	if (ent->client->tempSpectate < level.time)
 	{
@@ -1352,55 +1358,37 @@ extern qboolean WP_SaberStyleValidForSaber( saberInfo_t *saber1, saberInfo_t *sa
 extern qboolean WP_UseFirstValidSaberStyle( saberInfo_t *saber1, saberInfo_t *saber2, int saberHolstered, int *saberAnimLevel );
 qboolean G_SetSaber(gentity_t *ent, int saberNum, char *saberName, qboolean siegeOverride)
 {
-	char truncSaberName[64];
-	int i = 0;
+	char truncSaberName[MAX_QPATH] = {0};
 
-	if (!siegeOverride &&
-		g_gametype.integer == GT_SIEGE &&
-		ent->client->siegeClass != -1 &&
-		(
-		 bgSiegeClasses[ent->client->siegeClass].saberStance ||
-		 bgSiegeClasses[ent->client->siegeClass].saber1[0] ||
-		 bgSiegeClasses[ent->client->siegeClass].saber2[0]
-		))
+	if ( !siegeOverride && g_gametype.integer == GT_SIEGE && ent->client->siegeClass != -1 &&
+		(bgSiegeClasses[ent->client->siegeClass].saberStance || bgSiegeClasses[ent->client->siegeClass].saber1[0] || bgSiegeClasses[ent->client->siegeClass].saber2[0]) )
 	{ //don't let it be changed if the siege class has forced any saber-related things
-        return qfalse;
+		return qfalse;
 	}
 
-	while (saberName[i] && i < 64-1)
-	{
-        truncSaberName[i] = saberName[i];
-		i++;
-	}
-	truncSaberName[i] = 0;
+	Q_strncpyz( truncSaberName, saberName, sizeof( truncSaberName ) );
 
-	if ( saberNum == 0 && (Q_stricmp( "none", truncSaberName ) == 0 || Q_stricmp( "remove", truncSaberName ) == 0) )
+	if ( saberNum == 0 && !Q_stricmp( "none", truncSaberName ) || !Q_stricmp( "remove", truncSaberName ) )
 	{ //can't remove saber 0 like this
-        strcpy(truncSaberName, "Kyle");
+		Q_strncpyz( truncSaberName, DEFAULT_SABER, sizeof( truncSaberName ) );
 	}
 
 	//Set the saber with the arg given. If the arg is
 	//not a valid sabername defaults will be used.
-	WP_SetSaber(ent->s.number, ent->client->saber, saberNum, truncSaberName);
+	WP_SetSaber( ent->s.number, ent->client->saber, saberNum, truncSaberName );
 
-	if (!ent->client->saber[0].model[0])
+	if ( !ent->client->saber[0].model[0] )
 	{
 		assert(0); //should never happen!
-		strcpy(ent->client->sess.saberType, "none");
+		Q_strncpyz( ent->client->pers.saber1, DEFAULT_SABER, sizeof( ent->client->pers.saber1 ) );
 	}
 	else
-	{
-		strcpy(ent->client->sess.saberType, ent->client->saber[0].name);
-	}
+		Q_strncpyz( ent->client->pers.saber1, ent->client->saber[0].name, sizeof( ent->client->pers.saber1 ) );
 
-	if (!ent->client->saber[1].model[0])
-	{
-		strcpy(ent->client->sess.saber2Type, "none");
-	}
+	if ( !ent->client->saber[1].model[0] )
+		Q_strncpyz( ent->client->pers.saber2, "none", sizeof( ent->client->pers.saber2 ) );
 	else
-	{
-		strcpy(ent->client->sess.saber2Type, ent->client->saber[1].name);
-	}
+		Q_strncpyz( ent->client->pers.saber2, ent->client->saber[1].name, sizeof( ent->client->pers.saber2 ) );
 
 	if ( !WP_SaberStyleValidForSaber( &ent->client->saber[0], &ent->client->saber[1], ent->client->ps.saberHolstered, ent->client->ps.fd.saberAnimLevel ) )
 	{
@@ -3404,7 +3392,7 @@ command_t commands[] = {
 	{ "siegeclass",			Cmd_SiegeClass_f,			CMD_NOINTERMISSION },
 	{ "stats",				Cmd_Stats_f,				CMD_NOINTERMISSION },
 	{ "team",				Cmd_Team_f,					CMD_NOINTERMISSION },
-	{ "teamtask",			Cmd_TeamTask_f,				CMD_NOINTERMISSION },
+//	{ "teamtask",			Cmd_TeamTask_f,				CMD_NOINTERMISSION },
 	{ "teamvote",			Cmd_TeamVote_f,				CMD_NOINTERMISSION },
 	{ "tell",				Cmd_Tell_f,					0 },
 	{ "thedestroyer",		Cmd_TheDestroyer_f,			CMD_CHEAT|CMD_ALIVE },

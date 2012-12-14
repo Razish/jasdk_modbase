@@ -81,9 +81,6 @@
 
 #define	DEFAULT_MODEL			"kyle"
 
-#define DEFAULT_FORCEPOWERS		"5-1-000000000000000000"
-//"rank-side-heal.lev.speed.push.pull.tele.grip.lightning.rage.protect.absorb.teamheal.teamforce.drain.see"
-
 #define DEFAULT_REDTEAM_NAME		"Empire"
 #define DEFAULT_BLUETEAM_NAME		"Rebellion"
 

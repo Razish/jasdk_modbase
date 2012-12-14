@@ -1052,6 +1052,32 @@ void Q_strstrip( char *string, const char *strip, const char *repl )
 }
 
 /*
+Q_strchrs
+
+	Description:	Find any characters in a string. Think of it as a shorthand strchr loop.
+	Mutates:		--
+	Return:			first instance of any characters found
+					 otherwise NULL
+*/
+
+const char *Q_strchrs( const char *string, const char *search )
+{
+	const char *p = string, *s = search;
+
+	while ( *p != '\0' )
+	{
+		for ( s=search; *s; s++ )
+		{
+			if ( *p == *s )
+				return p;
+		}
+		p++;
+	}
+
+	return NULL;
+}
+
+/*
 ============
 Q_vsnprintf
 

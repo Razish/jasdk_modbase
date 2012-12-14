@@ -19,7 +19,13 @@
 
 #define	GAME_VERSION		"basejka-1"
 
+#define DEFAULT_SABER		"Kyle"
+#define DEFAULT_SABER_MODEL	"models/weapons2/saber/saber_w.glm"
+
 #define	STEPSIZE		18
+
+#define DEFAULT_FORCEPOWERS	"5-1-000000000000000000"
+//"rank-side-heal.lev.speed.push.pull.tele.grip.lightning.rage.protect.absorb.teamheal.teamforce.drain.see"
 
 #define	DEFAULT_GRAVITY		800
 #define	GIB_HEALTH			-40

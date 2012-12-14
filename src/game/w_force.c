@@ -266,12 +266,17 @@ void WP_InitForcePowers( gentity_t *ent )
 		trap_GetUserinfo( ent->s.number, userinfo, sizeof( userinfo ) );
 	}
 
-	Q_strncpyz( forcePowers, Info_ValueForKey (userinfo, "forcepowers"), sizeof( forcePowers ) );
+	Q_strncpyz( forcePowers, Info_ValueForKey( userinfo, "forcepowers" ), sizeof( forcePowers ) );
 
-	if ( (ent->r.svFlags & SVF_BOT) && botstates[ent->s.number] )
-	{ //if it's a bot just copy the info directly from its personality
-		Com_sprintf(forcePowers, sizeof(forcePowers), "%s\0", botstates[ent->s.number]->forceinfo);
+	if ( strlen( forcePowers ) < strlen( DEFAULT_FORCEPOWERS ) )
+	{
+		Q_strncpyz( forcePowers, DEFAULT_FORCEPOWERS, sizeof( forcePowers ) );
+		trap_SendServerCommand( ent-g_entities, "print \"^1Invalid forcepowers string, setting default\n\"" );
 	}
+
+	//if it's a bot just copy the info directly from its personality
+	if ( (ent->r.svFlags & SVF_BOT) && botstates[ent->s.number] )
+		Q_strncpyz( forcePowers, botstates[ent->s.number]->forceinfo, sizeof( forcePowers ) );
 
 	//rww - parse through the string manually and eat out all the appropriate data
 	i = 0;

@@ -424,8 +424,6 @@ typedef struct {
 	int			updateUITime;		// only update userinfo for FP/SL if < level.time
 	qboolean	teamLeader;			// true when this client is a team leader
 	char		siegeClass[64];
-	char		saberType[64];
-	char		saber2Type[64];
 	int			duelTeam;
 	int			siegeDesiredTeam;
 
@@ -461,6 +459,11 @@ typedef struct {
 
 	//JAC: Added
 	int			connectTime;
+
+	//Raz: Moved this out of session data.
+	//		userinfo -> pers in ClientUserinfoChanged
+	char		saber1[MAX_QPATH];
+	char		saber2[MAX_QPATH];
 } clientPersistant_t;
 
 typedef struct renderInfo_s
@@ -1356,7 +1359,7 @@ const char *G_GetStringEdString(char *refSection, char *refName);
 // g_client.c
 //
 char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot );
-void ClientUserinfoChanged( int clientNum );
+qboolean ClientUserinfoChanged( int clientNum );
 void ClientDisconnect( int clientNum );
 void ClientBegin( int clientNum, qboolean allowTeamReset );
 void G_BreakArm(gentity_t *ent, int arm);
@@ -1999,3 +2002,11 @@ void trap_RMG_Init(int terrainID);
 void trap_Bot_UpdateWaypoints(int wpnum, wpobject_t **wps);
 void trap_Bot_CalculatePaths(int rmg);
 
+// userinfo validation bitflags
+typedef enum userinfoValidationBits_e {
+	// validation & (1<<(numUserinfoFields+USERINFO_VALIDATION_BLAH))
+	USERINFO_VALIDATION_SIZE=0,
+	USERINFO_VALIDATION_SLASH,
+	USERINFO_VALIDATION_EXTASCII,
+	USERINFO_VALIDATION_CONTROLCHARS,
+} userinfoValidationBits_t;
