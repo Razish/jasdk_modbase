@@ -4753,6 +4753,9 @@ static void UI_LoadDemosInDirectory( const char *directory )
 
 static void UI_LoadDemos( void )
 {
+	uiInfo.demoCount = 0;
+	uiInfo.loadedDemos = 0;
+	memset( uiInfo.demoList, 0, sizeof( uiInfo.demoList ) );
 	UI_LoadDemosInDirectory( DEMO_DIRECTORY );
 }
 
