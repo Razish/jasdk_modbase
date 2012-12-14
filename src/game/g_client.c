@@ -2143,7 +2143,7 @@ void ClientUserinfoChanged( int clientNum ) {
 	else
 	{
 		maxHealth = 100;
-		health = 100; //atoi( Info_ValueForKey( userinfo, "handicap" ) );
+		health = atoi( Info_ValueForKey( userinfo, "handicap" ) );
 	}
 	client->pers.maxHealth = health;
 	if ( client->pers.maxHealth < 1 || client->pers.maxHealth > maxHealth ) {
@@ -3452,7 +3452,7 @@ void ClientSpawn(gentity_t *ent) {
 	}
 	else
 	{
-		maxHealth = 100;
+		maxHealth = atoi( Info_ValueForKey( userinfo, "handicap" ) );
 	}
 	client->pers.maxHealth = maxHealth;//atoi( Info_ValueForKey( userinfo, "handicap" ) );
 	if ( client->pers.maxHealth < 1 || client->pers.maxHealth > maxHealth ) {
