@@ -303,8 +303,10 @@ int WeaponAttackAnim[WP_NUM_WEAPONS] =
 	BOTH_THERMAL_THROW,//WP_THERMAL,
 	BOTH_ATTACK3,//BOTH_ATTACK11,//WP_TRIP_MINE,
 	BOTH_ATTACK3,//BOTH_ATTACK12,//WP_DET_PACK,
-	//JAC: Raven forgot the Concussion's firing animation
-	BOTH_ATTACK3,//WP_CONCUSSION,
+	#ifndef BASE_COMPAT
+		//JAC: Raven forgot the Concussion's firing animation
+		BOTH_ATTACK3,//WP_CONCUSSION,
+	#endif // BASE_COMPAT
 	BOTH_ATTACK2,//WP_BRYAR_OLD,
 
 	//NOT VALID (e.g. should never really be used):
@@ -445,26 +447,24 @@ qboolean BG_LegalizedForcePowers(char *powerOut, int maxRank, qboolean freeSaber
 	int final_Side;
 	int final_Powers[NUM_FORCE_POWERS] = {0};
 
-	if (powerLen >= 128)
+	if ( powerLen >= 128 )
 	{ //This should not happen. If it does, this is obviously a bogus string.
 		//They can have this string. Because I said so.
-		strcpy(powerBuf, "7-1-032330000000001333");
+		Q_strncpyz( powerBuf, DEFAULT_FORCEPOWERS, sizeof( powerBuf ) );
 		maintainsValidity = qfalse;
 	}
 	else
-	{
-		strcpy(powerBuf, powerOut); //copy it as the original
-	}
+		Q_strncpyz( powerBuf, powerOut, sizeof( powerBuf ) ); //copy it as the original
 
 	//first of all, print the max rank into the string as the rank
-	strcpy(powerOut, va("%i-", maxRank));
+	Q_strncpyz( powerOut, va( "%i-", maxRank ), sizeof( powerOut ) );
 
-	while (i < 128 && powerBuf[i] && powerBuf[i] != '-')
+	while (i < sizeof( powerBuf ) && powerBuf[i] && powerBuf[i] != '-')
 	{
 		i++;
 	}
 	i++;
-	while (i < 128 && powerBuf[i] && powerBuf[i] != '-')
+	while (i < sizeof( powerBuf ) && powerBuf[i] && powerBuf[i] != '-')
 	{
 		readBuf[c] = powerBuf[i];
 		c++;
@@ -495,8 +495,7 @@ qboolean BG_LegalizedForcePowers(char *powerOut, int maxRank, qboolean freeSaber
 	//Now we have established a valid rank, and a valid side.
 	//Read the force powers in, and cut them down based on the various rules supplied.
 	c = 0;
-	while (i < 128 && powerBuf[i] &&
-		powerBuf[i] != '\n' && powerBuf[i] != '\r'
+	while (i < sizeof( powerBuf ) && powerBuf[i] && powerBuf[i] != '\n' && powerBuf[i] != '\r'
 		&& powerBuf[i] >= '0' && powerBuf[i] <= '3' && c < NUM_FORCE_POWERS)
 	{
 		readBuf[0] = powerBuf[i];
@@ -661,26 +660,18 @@ qboolean BG_LegalizedForcePowers(char *powerOut, int maxRank, qboolean freeSaber
 	if (freeSaber)
 	{
 		if (final_Powers[FP_SABER_OFFENSE] < 1)
-		{
 			final_Powers[FP_SABER_OFFENSE] = 1;
-		}
 		if (final_Powers[FP_SABER_DEFENSE] < 1)
-		{
 			final_Powers[FP_SABER_DEFENSE] = 1;
-		}
 	}
 	if (final_Powers[FP_LEVITATION] < 1)
-	{
 		final_Powers[FP_LEVITATION] = 1;
-	}
 
 	i = 0;
 	while (i < NUM_FORCE_POWERS)
 	{
 		if (final_Powers[i] > FORCE_LEVEL_3)
-		{
 			final_Powers[i] = FORCE_LEVEL_3;
-		}
 		i++;
 	}
 
@@ -689,17 +680,11 @@ qboolean BG_LegalizedForcePowers(char *powerOut, int maxRank, qboolean freeSaber
 	  //things work for the case of all powers disabled.
 	  //If jump is disabled, down-cap it to level 1. Otherwise don't do a thing.
 		if (fpDisabled & (1 << FP_LEVITATION))
-		{
 			final_Powers[FP_LEVITATION] = 1;
-		}
 		if (fpDisabled & (1 << FP_SABER_OFFENSE))
-		{
 			final_Powers[FP_SABER_OFFENSE] = 3;
-		}
 		if (fpDisabled & (1 << FP_SABER_DEFENSE))
-		{
 			final_Powers[FP_SABER_DEFENSE] = 3;
-		}
 	}
 
 	if (final_Powers[FP_SABER_OFFENSE] < 1)
@@ -717,7 +702,7 @@ qboolean BG_LegalizedForcePowers(char *powerOut, int maxRank, qboolean freeSaber
 	c = 0;
 	while (c < NUM_FORCE_POWERS)
 	{
-		strcpy(readBuf, va("%i", final_Powers[c]));
+		Q_strncpyz(readBuf, va( "%i", final_Powers[c] ), sizeof( readBuf ) );
 		powerOut[i] = readBuf[0];
 		c++;
 		i++;
@@ -2583,8 +2568,10 @@ char *eventnames[] = {
 	"EV_DEATH3",
 	"EV_OBITUARY",
 
-	"EV_POWERUP_QUAD",
-	"EV_POWERUP_BATTLESUIT",
+	#ifdef BASE_COMPAT
+		"EV_POWERUP_QUAD",
+		"EV_POWERUP_BATTLESUIT",
+	#endif // BASE_COMPAT
 	//"EV_POWERUP_REGEN",
 
 	"EV_FORCE_DRAINED",

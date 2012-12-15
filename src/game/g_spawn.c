@@ -49,7 +49,21 @@ qboolean	G_SpawnVector( const char *key, const char *defaultString, float *out )
 	return present;
 }
 
+qboolean	G_SpawnBoolean( const char *key, const char *defaultString, qboolean *out ) {
+	char		*s;
+	qboolean	present;
 
+	present = G_SpawnString( key, defaultString, &s );
+
+	if ( !Q_stricmp( s, "qtrue" ) || !Q_stricmp( s, "true" ) || !Q_stricmp( s, "yes" ) || !Q_stricmp( s, "1" ) )
+		*out = qtrue;
+	else if ( !Q_stricmp( s, "qfalse" ) || !Q_stricmp( s, "false" ) || !Q_stricmp( s, "no" ) || !Q_stricmp( s, "0" ) )
+		*out = qfalse;
+	else
+		*out = qfalse;
+
+	return present;
+}
 
 BG_field_t fields[] = {
 	{"classname", FOFS(classname), F_LSTRING},

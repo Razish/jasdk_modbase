@@ -1889,10 +1889,12 @@ void CG_FireWeapon( centity_t *cent, qboolean altFire ) {
 		}
 	}
 
-	// play quad sound if needed
-	if ( cent->currentState.powerups & ( 1 << PW_QUAD ) ) {
-		//trap_S_StartSound (NULL, cent->currentState.number, CHAN_ITEM, cgs.media.quadSound );
-	}
+	#ifdef BASE_COMPAT
+		// play quad sound if needed
+		if ( cent->currentState.powerups & ( 1 << PW_QUAD ) ) {
+			//trap_S_StartSound (NULL, cent->currentState.number, CHAN_ITEM, cgs.media.quadSound );
+		}
+	#endif // BASE_COMPAT
 
 
 	// play a sound

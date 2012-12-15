@@ -543,6 +543,13 @@ void CG_DrawFlagModel( float x, float y, float w, float h, int team, qboolean fo
 
 	if ( !force2D && cg_draw3dIcons.integer ) {
 
+		//Raz: need to adjust the coords only for 3d models
+		//		2d icons use virtual screen coords
+		x *= cgs.screenXScale;
+		y *= cgs.screenYScale;
+		w *= cgs.screenXScale;
+		h *= cgs.screenYScale;
+
 		VectorClear( angles );
 
 		cm = cgs.media.redFlagModel;
@@ -587,22 +594,6 @@ void CG_DrawFlagModel( float x, float y, float w, float h, int team, qboolean fo
 		}
 	}
 }
-
-/*
-================
-DrawAmmo
-================
-*/
-void DrawAmmo()
-{
-	int x, y;
-
-	x = SCREEN_WIDTH-80;
-	y = SCREEN_HEIGHT-80;
-
-}
-
-
 
 /*
 ================
@@ -701,7 +692,7 @@ void CG_DrawArmor( menuDef_t *menuHUD )
 {
 	vec4_t			calcColor;
 	playerState_t	*ps;
-	int				armor, maxArmor;
+	int				maxArmor;
 	itemDef_t		*focusItem;
 	float			percent,quarterArmor;
 	int				i,currValue,inc;
@@ -715,17 +706,9 @@ void CG_DrawArmor( menuDef_t *menuHUD )
 		return;
 	}
 
-	armor = ps->stats[STAT_ARMOR];
 	maxArmor = ps->stats[STAT_MAX_HEALTH];
 
-	/* Raz: Display real armor value on graphical HUD
-	if (armor> maxArmor)
-	{
-		armor = maxArmor;
-	}
-	*/
-
-	currValue = armor;
+	currValue = ps->stats[STAT_ARMOR];
 	inc = (float) maxArmor / MAX_HUD_TICS;
 
 	memcpy(calcColor, hudTintColor, sizeof(vec4_t));
@@ -790,7 +773,7 @@ void CG_DrawArmor( menuDef_t *menuHUD )
 			focusItem->window.rect.x, 
 			focusItem->window.rect.y, 
 			3, 
-			armor, 
+			ps->stats[STAT_ARMOR], 
 			focusItem->window.rect.w, 
 			focusItem->window.rect.h, 
 			NUM_FONT_SMALL,
@@ -798,7 +781,7 @@ void CG_DrawArmor( menuDef_t *menuHUD )
 	}
 
 	// If armor is low, flash a graphic to warn the player
-	if (armor)	// Is there armor? Draw the HUD Armor TIC
+	if (ps->stats[STAT_ARMOR])	// Is there armor? Draw the HUD Armor TIC
 	{
 		quarterArmor = (float) (ps->stats[STAT_MAX_HEALTH] / 4.0f);
 
@@ -3754,11 +3737,10 @@ static float CG_DrawTeamOverlay( float y, qboolean right, qboolean upper ) {
 		return y; // Not on any team
 	}
 
-	if (cg.snap->ps.pm_flags & PMF_FOLLOW){
-		return y; // following in spec, not valid info provided
-	}
-
 	plyrs = 0;
+
+	//TODO: On basejka servers, we won't have valid teaminfo if we're spectating someone.
+	//		Find a way to detect invalid info and return early?
 
 	// max player name width
 	pwidth = 0;
@@ -5667,6 +5649,8 @@ static void CG_DrawActivePowers(void)
 	{
 		return;
 	}
+
+	trap_R_SetColor( NULL );
 
 	while (i < NUM_FORCE_POWERS)
 	{
@@ -7591,7 +7575,7 @@ static CGAME_INLINE void CG_ChatBox_DrawStrings(void)
 	int linesToDraw = 0;
 	int i = 0;
 	int x = 30;
-	int y = cg.scoreBoardShowing ? 475 : cg_chatBoxHeight.integer;
+	float y = cg.scoreBoardShowing ? 475 : cg_chatBoxHeight.integer;
 	float fontScale = 0.65f;
 
 	if (!cg_chatBox.integer)

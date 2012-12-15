@@ -9,7 +9,9 @@
 #include "../shared/Ghoul2/G2.h"
 #include "q_shared.h"
 
-static	float	s_quadFactor;
+#ifdef BASE_COMPAT
+	static	float	s_quadFactor;
+#endif // BASE_COMPAT
 static	vec3_t	forward, vright, up;
 static	vec3_t	muzzle;
 
@@ -2702,10 +2704,19 @@ void charge_stick (gentity_t *self, gentity_t *other, trace_t *trace)
 		return;
 	}
 
-	// fix: annoying det packs bug caused det packs to sometimes 
-	// not detonating when owner player dies
 	//if we get here I guess we hit hte world so we can stick to it
-	if (self->think == G_RunObject){
+	//Raz: This fix requires a bit of explaining..
+	//	When you suicide, all of the detpacks you have placed (either on a wall, or still falling in the air) will
+	//		have their ent->think() set to DetPackBlow and ent->nextthink will be between 100 <-> 300
+	//	If your detpacks land on a surface (i.e. charge_stick gets called) within that 100<->300 ms then ent->think()
+	//		will be overwritten (set to DetpackBlow) and ent->nextthink will be 30000
+	//	The end result is your detpacks won't explode, but will be stuck to the wall for 30 seconds without
+	//		being able to detonate them (or shoot them)
+	//	The fix Sil came up with is to check the think() function in charge_stick, and only overwrite it
+	//		if they haven't been primed to detonate
+//	if ( self->think == G_RunObject )
+	if ( self->think != DetPackBlow )
+	{
 		self->touch = 0;
 		self->think = DetPackBlow;
 		self->nextthink = level.time + 30000;
@@ -3484,9 +3495,9 @@ void SnapVectorTowards( vec3_t v, vec3_t to ) {
 
 	for ( i = 0 ; i < 3 ; i++ ) {
 		if ( to[i] <= v[i] ) {
-			v[i] = (int)v[i];
+			v[i] = floorf( v[i] );
 		} else {
-			v[i] = (int)v[i] + 1;
+			v[i] = ceilf( v[i] );
 		}
 	}
 }
@@ -4414,11 +4425,13 @@ FireWeapon
 int BG_EmplacedView(vec3_t baseAngles, vec3_t angles, float *newYaw, float constraint);
 
 void FireWeapon( gentity_t *ent, qboolean altFire ) {
-	if (ent->client->ps.powerups[PW_QUAD] ) {
-		s_quadFactor = g_quadfactor.value;
-	} else {
-		s_quadFactor = 1;
-	}
+	#ifdef BASE_COMPAT
+		if (ent->client->ps.powerups[PW_QUAD] ) {
+			s_quadFactor = g_quadfactor.value;
+		} else {
+			s_quadFactor = 1;
+		}
+	#endif // BASE_COMPAT
 
 	// track shots taken for accuracy tracking.  Grapple is not a weapon and gauntet is just not tracked
 	if( ent->s.weapon != WP_SABER && ent->s.weapon != WP_STUN_BATON && ent->s.weapon != WP_MELEE ) 

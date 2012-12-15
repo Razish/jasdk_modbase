@@ -3,7 +3,6 @@
 // q_math.c -- stateless support routines that are included in each code module
 #include "q_shared.h"
 
-
 vec3_t	vec3_origin = {0,0,0};
 vec3_t	axisDefault[3] = { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } };
 
@@ -823,11 +822,11 @@ __declspec( naked ) int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, struct cplan
 	__asm {
 
 		push ebx
-			
+
 		cmp bops_initialized, 1
 		je  initialized
 		mov bops_initialized, 1
-		
+
 		mov Ljmptab[0*4], offset Lcase0
 		mov Ljmptab[1*4], offset Lcase1
 		mov Ljmptab[2*4], offset Lcase2
@@ -836,7 +835,7 @@ __declspec( naked ) int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, struct cplan
 		mov Ljmptab[5*4], offset Lcase5
 		mov Ljmptab[6*4], offset Lcase6
 		mov Ljmptab[7*4], offset Lcase7
-			
+
 initialized:
 
 		mov edx,dword ptr[4+12+esp]
@@ -1078,7 +1077,7 @@ vec_t DistanceHorizontal( const vec3_t p1, const vec3_t p2 ) {
 	vec3_t	v;
 
 	VectorSubtract( p2, p1, v );
-	return sqrt( v[0]*v[0] + v[1]*v[1] );	//Leave off the z component
+	return sqrt( v[0]*v[0] + v[1]*v[1] ); //Leave off the z component
 }
 
 vec_t DistanceHorizontalSquared( const vec3_t p1, const vec3_t p2 ) {
@@ -1114,147 +1113,148 @@ void AddPointToBounds( const vec3_t v, vec3_t mins, vec3_t maxs ) {
 
 //JAC: Moved some math functions from q_shared.h
 
-ID_INLINE void VectorAdd( const vec3_t v1, const vec3_t v2, vec3_t out ) {
-#if !defined(__LCC__) && defined(USE_SSE)
+ID_INLINE void VectorAdd( const vec3_t vec1, const vec3_t vec2, vec3_t vecOut ) {
+#ifdef USE_SSE
 	__asm {
-		mov      ecx, v1
-		movss    xmm0, [ecx]
-		movhps   xmm0, [ecx+4]
+		mov ecx, vec1
+		movss xmm0, [ecx]
+		movhps xmm0, [ecx+4]
 
-		mov      edx, v2
-		movss    xmm1, [edx]
-		movhps   xmm1, [edx+4]
+		mov edx, vec2
+		movss xmm1, [edx]
+		movhps xmm1, [edx+4]
 
-		addps    xmm0, xmm1
+		addps xmm0, xmm1
 
-		mov      eax, o
-		movss    [eax], xmm0
-		movhps   [eax+4], xmm0
+		mov eax, vecOut
+		movss [eax], xmm0
+		movhps [eax+4], xmm0
 	}
 #else
-	out[0] = v1[0]+v2[0];
-	out[1] = v1[1]+v2[1];
-	out[2] = v1[2]+v2[2];
+	vecOut[0] = vec1[0]+vec2[0];
+	vecOut[1] = vec1[1]+vec2[1];
+	vecOut[2] = vec1[2]+vec2[2];
 #endif
 }
 
-ID_INLINE void VectorSubtract( const vec3_t v1, const vec3_t v2, vec3_t out ) {
-#if !defined(__LCC__) && defined(USE_SSE)
+ID_INLINE void VectorSubtract( const vec3_t vec1, const vec3_t vec2, vec3_t vecOut ) {
+#ifdef USE_SSE
 	__asm {
-		mov      ecx, v1
-		movss    xmm0, [ecx]
-		movhps   xmm0, [ecx+4]
+		mov ecx, vec1
+		movss xmm0, [ecx]
+		movhps xmm0, [ecx+4]
 
-		mov      edx, v2
-		movss    xmm1, [edx]
-		movhps   xmm1, [edx+4]
+		mov edx, vec2
+		movss xmm1, [edx]
+		movhps xmm1, [edx+4]
 
-		subps    xmm0, xmm1
+		subps xmm0, xmm1
 
-		mov      eax, o
-		movss    [eax], xmm0
-		movhps   [eax+4], xmm0
+		mov eax, vecOut
+		movss [eax], xmm0
+		movhps [eax+4], xmm0
 	}
 #else
-	out[0] = v1[0]-v2[0];
-	out[1] = v1[1]-v2[1];
-	out[2] = v1[2]-v2[2];
+	vecOut[0] = vec1[0]-vec2[0];
+	vecOut[1] = vec1[1]-vec2[1];
+	vecOut[2] = vec1[2]-vec2[2];
 #endif
 }
 
-ID_INLINE void VectorScale( const vec3_t in, vec_t scale, vec3_t out ) {
-#if !defined(__LCC__) && defined(USE_SSE)
+ID_INLINE void VectorScale( const vec3_t vecIn, vec_t scale, vec3_t vecOut ) {
+#ifdef USE_SSE
 	__asm {
-		movss	xmm0, scale
-		shufps	xmm0, xmm0, 0h
+		movss xmm0, scale
+		shufps xmm0, xmm0, 0x0
 
-		mov		edx, i
-		movss	xmm1, [edx]
-		movhps	xmm1, [edx+4]
+		mov edx, vecIn
+		movss xmm1, [edx]
+		movhps xmm1, [edx+4]
 
-		mulps	xmm0, xmm1
+		mulps xmm0, xmm1
 
-		mov		eax, o
-		movss	[eax], xmm0
-		movhps	[eax+4], xmm0
+		mov eax, vecOut
+		movss [eax], xmm0
+		movhps [eax+4], xmm0
 	}
 #else
-	out[0] = in[0]*scale;
-	out[1] = in[1]*scale;
-	out[2] = in[2]*scale;
+	vecOut[0] = vecIn[0]*scale;
+	vecOut[1] = vecIn[1]*scale;
+	vecOut[2] = vecIn[2]*scale;
 #endif
 }
 
-void VectorScale4( const vec4_t in, vec_t scale, vec4_t out ) {
-	out[0] = in[0]*scale;
-	out[1] = in[1]*scale;
-	out[2] = in[2]*scale;
-	out[3] = in[3]*scale;
+void VectorScale4( const vec4_t vecIn, vec_t scale, vec4_t vecOut ) {
+	vecOut[0] = vecIn[0]*scale;
+	vecOut[1] = vecIn[1]*scale;
+	vecOut[2] = vecIn[2]*scale;
+	vecOut[3] = vecIn[3]*scale;
 }
 
-ID_INLINE void VectorMA( const vec3_t v1, float scale, const vec3_t v2, vec3_t out ) {
-	out[0] = v1[0] + scale*v2[0];
-	out[1] = v1[1] + scale*v2[1];
-	out[2] = v1[2] + scale*v2[2];
+ID_INLINE void VectorMA( const vec3_t vec1, float scale, const vec3_t vec2, vec3_t vecOut ) {
+	vecOut[0] = vec1[0] + scale*vec2[0];
+	vecOut[1] = vec1[1] + scale*vec2[1];
+	vecOut[2] = vec1[2] + scale*vec2[2];
 }
 
-ID_INLINE vec_t VectorLength( const vec3_t v ) {
-#if !defined(__LCC__) && defined(USE_SSE)
+ID_INLINE vec_t VectorLength( const vec3_t vec ) {
+#ifdef USE_SSE
 	float res;
 
 	__asm {
-        mov     edx, v
-        movss   xmm1, [edx]
-        movhps  xmm1, [edx+4]
+		mov edx, vec
+		movss xmm1, [edx]
+		movhps xmm1, [edx+4]
 
-        movaps  xmm2, xmm1
+		movaps xmm2, xmm1
 
-        mulps   xmm1, xmm2
+		mulps xmm1, xmm2
 
-        movaps  xmm0, xmm1
+		movaps xmm0, xmm1
 
-        shufps  xmm0, xmm0, 32h
-        addps   xmm1, xmm0
+		shufps xmm0, xmm0, 0x32
+		addps xmm1, xmm0
 
-        shufps  xmm0, xmm0, 32h
-        addps   xmm1, xmm0
+		shufps xmm0, xmm0, 0x32
+		addps xmm1, xmm0
 
-        sqrtss  xmm1, xmm1
-        movss   [res], xmm1
-    }
+		sqrtss xmm1, xmm1
+		movss [res], xmm1
+	}
 
-    return res;
+	return res;
 #else
-	return (vec_t)sqrt( v[0]*v[0] + v[1]*v[1] + v[2]*v[2] );
+	return (vec_t)sqrt( vec[0]*vec[0] + vec[1]*vec[1] + vec[2]*vec[2] );
 #endif
 }
 
-ID_INLINE vec_t VectorLengthSquared( const vec3_t v ) {
-#if !defined(__LCC__) && defined(USE_SSE)
+ID_INLINE vec_t VectorLengthSquared( const vec3_t vec ) {
+#ifdef USE_SSE
 	float res;
+
 	__asm {
-        mov     edx, v
-        movss   xmm1, [edx]
-        movhps  xmm1, [edx+4]
+		mov edx, vec
+		movss xmm1, [edx]
+		movhps xmm1, [edx+4]
 
-        movaps  xmm2, xmm1
+		movaps xmm2, xmm1
 
-        mulps   xmm1, xmm2
+		mulps xmm1, xmm2
 
-        movaps  xmm0, xmm1
+		movaps xmm0, xmm1
 
-        shufps  xmm0, xmm0, 32h
-        addps   xmm1, xmm0
+		shufps xmm0, xmm0, 0x32
+		addps xmm1, xmm0
 
-        shufps  xmm0, xmm0, 32h
-        addps   xmm1, xmm0
+		shufps xmm0, xmm0, 0x32
+		addps xmm1, xmm0
 
-        movss   [res], xmm1
-    }
+		movss [res], xmm1
+	}
 
-    return res;
+	return res;
 #else
-	return (v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
+	return (vec[0]*vec[0] + vec[1]*vec[1] + vec[2]*vec[2]);
 #endif
 }
 
@@ -1274,133 +1274,132 @@ ID_INLINE vec_t DistanceSquared( const vec3_t p1, const vec3_t p2 ) {
 
 // fast vector normalize routine that does not check to make sure
 // that length != 0, nor does it return length, uses rsqrt approximation
-ID_INLINE void VectorNormalizeFast( vec3_t v )
+ID_INLINE void VectorNormalizeFast( vec3_t vec )
 {
 	float ilength;
 
-	ilength = Q_rsqrt( DotProduct( v, v ) );
+	ilength = Q_rsqrt( DotProduct( vec, vec ) );
 
-	v[0] *= ilength;
-	v[1] *= ilength;
-	v[2] *= ilength;
+	vec[0] *= ilength;
+	vec[1] *= ilength;
+	vec[2] *= ilength;
 }
 
-ID_INLINE vec_t VectorNormalize( vec3_t v ) {
+ID_INLINE vec_t VectorNormalize( vec3_t vec ) {
 	float	length, ilength;
 
-	length = v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
+	length = vec[0]*vec[0] + vec[1]*vec[1] + vec[2]*vec[2];
 	length = sqrt( length );
 
 	if ( length ) {
 		ilength = 1/length;
-		v[0] *= ilength;
-		v[1] *= ilength;
-		v[2] *= ilength;
+		vec[0] *= ilength;
+		vec[1] *= ilength;
+		vec[2] *= ilength;
 	}
-		
+
 	return length;
 }
 
-ID_INLINE vec_t VectorNormalize2( const vec3_t v, vec3_t out ) {
+ID_INLINE vec_t VectorNormalize2( const vec3_t vec, vec3_t vecOut ) {
 	float	length, ilength;
 
-	length = v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
-	length = sqrt (length);
+	length = vec[0]*vec[0] + vec[1]*vec[1] + vec[2]*vec[2];
+	length = sqrtf( length );
 
-	if (length)
-	{
+	if ( length ) {
 		ilength = 1/length;
-		out[0] = v[0]*ilength;
-		out[1] = v[1]*ilength;
-		out[2] = v[2]*ilength;
+		vecOut[0] = vec[0]*ilength;
+		vecOut[1] = vec[1]*ilength;
+		vecOut[2] = vec[2]*ilength;
 	}
-	else {
-		VectorClear( out );
-	}
+	else
+		VectorClear( vecOut );
 
 	return length;
 }
 
-ID_INLINE void VectorCopy( const vec3_t in, vec3_t out ) {
-	out[0]=in[0]; out[1]=in[1]; out[2]=in[2];
+ID_INLINE void VectorCopy( const vec3_t vecIn, vec3_t vecOut ) {
+	vecOut[0]=vecIn[0]; vecOut[1]=vecIn[1]; vecOut[2]=vecIn[2];
 }
 
-ID_INLINE void VectorCopy4( const vec4_t in, vec4_t out ) {
-	out[0]=in[0]; out[1]=in[1]; out[2]=in[2]; out[3]=in[3];
+ID_INLINE void VectorCopy4( const vec4_t vecIn, vec4_t vecOut ) {
+	vecOut[0]=vecIn[0]; vecOut[1]=vecIn[1]; vecOut[2]=vecIn[2]; vecOut[3]=vecIn[3];
 }
 
-ID_INLINE void VectorSet( vec3_t v, vec_t x, vec_t y, vec_t z ) {
-	v[0]=x; v[1]=y; v[2]=z;
+ID_INLINE void VectorSet( vec3_t vec, vec_t x, vec_t y, vec_t z ) {
+	vec[0]=x; vec[1]=y; vec[2]=z;
 }
 
-ID_INLINE void VectorSet4( vec4_t v, vec_t x, vec_t y, vec_t z, vec_t w ) {
-	v[0]=x; v[1]=y; v[2]=z; v[3]=w;
+ID_INLINE void VectorSet4( vec4_t vec, vec_t x, vec_t y, vec_t z, vec_t w ) {
+	vec[0]=x; vec[1]=y; vec[2]=z; vec[3]=w;
 }
 
-ID_INLINE void VectorSet5( vec5_t v, vec_t x, vec_t y, vec_t z, vec_t w, vec_t u ) {
-	v[0]=x; v[1]=y; v[2]=z; v[3]=w; v[4]=u;
+ID_INLINE void VectorSet5( vec5_t vec, vec_t x, vec_t y, vec_t z, vec_t w, vec_t u ) {
+	vec[0]=x; vec[1]=y; vec[2]=z; vec[3]=w; vec[4]=u;
 }
 
-ID_INLINE void VectorClear( vec3_t v ) {
-	v[0] = v[1] = v[2] = 0;
+ID_INLINE void VectorClear( vec3_t vec ) {
+	vec[0] = vec[1] = vec[2] = 0;
 }
 
-ID_INLINE void VectorClear4( vec4_t v ) {
-	v[0] = v[1] = v[2] = v[3] = 0;
+ID_INLINE void VectorClear4( vec4_t vec ) {
+	vec[0] = vec[1] = vec[2] = vec[3] = 0;
 }
 
-ID_INLINE void VectorInc( vec3_t v ) {
-	v[0] += 1.0f; v[1] += 1.0f; v[2] += 1.0f;	
+ID_INLINE void VectorInc( vec3_t vec ) {
+	vec[0] += 1.0f; vec[1] += 1.0f; vec[2] += 1.0f;
 }
 
-ID_INLINE void VectorDec( vec3_t v ) {
-	v[0] -= 1.0f; v[1] -= 1.0f; v[2] -= 1.0f;	
+ID_INLINE void VectorDec( vec3_t vec ) {
+	vec[0] -= 1.0f; vec[1] -= 1.0f; vec[2] -= 1.0f;
 }
 
-ID_INLINE void VectorInverse( vec3_t v ) {
-	v[0] = -v[0]; v[1] = -v[1]; v[2] = -v[2];
+ID_INLINE void VectorInverse( vec3_t vec ) {
+	vec[0] = -vec[0]; vec[1] = -vec[1]; vec[2] = -vec[2];
 }
 
-ID_INLINE void CrossProduct( const vec3_t v1, const vec3_t v2, vec3_t cross ) {
-	cross[0] = v1[1]*v2[2] - v1[2]*v2[1];
-	cross[1] = v1[2]*v2[0] - v1[0]*v2[2];
-	cross[2] = v1[0]*v2[1] - v1[1]*v2[0];
+ID_INLINE void CrossProduct( const vec3_t vec1, const vec3_t vec2, vec3_t vecOut ) {
+	vecOut[0] = vec1[1]*vec2[2] - vec1[2]*vec2[1];
+	vecOut[1] = vec1[2]*vec2[0] - vec1[0]*vec2[2];
+	vecOut[2] = vec1[0]*vec2[1] - vec1[1]*vec2[0];
 }
 
-ID_INLINE vec_t DotProduct( const vec3_t v1, const vec3_t v2 ) {
-#if !defined(__LCC__) && defined(USE_SSE)
+ID_INLINE vec_t DotProduct( const vec3_t vec1, const vec3_t vec2 ) {
+#ifdef USE_SSE
 	float res;
+
 	__asm {
-		mov     edx, v1
-		movss   xmm1, [edx]
-		movhps  xmm1, [edx+4]
+		mov edx, vec1
+		movss xmm1, [edx]
+		movhps xmm1, [edx+4]
 
-		mov     edx, v2
-		movss   xmm2, [edx]
-		movhps  xmm2, [edx+4]
+		mov edx, vec2
+		movss xmm2, [edx]
+		movhps xmm2, [edx+4]
 
-		mulps   xmm1, xmm2
+		mulps xmm1, xmm2
 
-		movaps  xmm0, xmm1
+		movaps xmm0, xmm1
 
-		shufps  xmm0, xmm0, 32h
-		addps   xmm1, xmm0
+		shufps xmm0, xmm0, 0x32
+		addps xmm1, xmm0
 
-		shufps  xmm0, xmm0, 32h
-		addps   xmm1, xmm0
+		shufps xmm0, xmm0, 0x32
+		addps xmm1, xmm0
 
-		movss   [res], xmm1
+		movss [res], xmm1
 	}
+
 	return res;
 #else
-	return v1[0]*v2[0] + v1[1]*v2[1] + v1[2]*v2[2];
+	return vec1[0]*vec2[0] + vec1[1]*vec2[1] + vec1[2]*vec2[2];
 #endif
 }
 
-ID_INLINE qboolean VectorCompare( const vec3_t v1, const vec3_t v2 ) {
-	if (v1[0] != v2[0] || v1[1] != v2[1] || v1[2] != v2[2]) {
+ID_INLINE qboolean VectorCompare( const vec3_t vec1, const vec3_t vec2 ) {
+	if ( vec1[0] != vec2[0] || vec1[1] != vec2[1] || vec1[2] != vec2[2] )
 		return qfalse;
-	}			
 	return qtrue;
 }
 

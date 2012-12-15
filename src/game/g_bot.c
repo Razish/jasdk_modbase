@@ -830,16 +830,10 @@ G_AddBot
 ===============
 */
 static void G_AddBot( const char *name, float skill, const char *team, int delay, char *altname) {
-	int				clientNum;
-	char			*botinfo;
-	gentity_t		*bot;
-	char			*key;
-	char			*s;
-	char			*botname;
-	char			*model;
-//	char			*headmodel;
-	char			userinfo[MAX_INFO_STRING];
-	int				preTeam = 0;
+	gentity_t		*bot = NULL;
+	int				clientNum, preTeam = TEAM_FREE;
+	char			userinfo[MAX_INFO_STRING] = {0},
+					*botinfo = NULL, *key = NULL, *s = NULL, *botname = NULL, *model = NULL;
 
 	// get the botinfo from bots.txt
 	botinfo = G_GetBotInfoByName( name );
@@ -861,105 +855,100 @@ static void G_AddBot( const char *name, float skill, const char *team, int delay
 	}
 
 	botname = Info_ValueForKey( botinfo, "funname" );
-	if( !botname[0] ) {
+	if( !botname[0] )
 		botname = Info_ValueForKey( botinfo, "name" );
-	}
-	// check for an alternative name
-	if (altname && altname[0]) {
+	if ( altname && altname[0] )
 		botname = altname;
-	}
+
 	Info_SetValueForKey( userinfo, "name", botname );
 	Info_SetValueForKey( userinfo, "rate", "25000" );
 	Info_SetValueForKey( userinfo, "snaps", "20" );
 	Info_SetValueForKey( userinfo, "ip", "localhost" );
 	Info_SetValueForKey( userinfo, "skill", va("%1.2f", skill) );
 
-	if ( skill >= 1 && skill < 2 ) {
-		Info_SetValueForKey( userinfo, "handicap", "50" );
-	}
-	else if ( skill >= 2 && skill < 3 ) {
-		Info_SetValueForKey( userinfo, "handicap", "70" );
-	}
-	else if ( skill >= 3 && skill < 4 ) {
-		Info_SetValueForKey( userinfo, "handicap", "90" );
-	}
+		 if ( skill >= 1 && skill < 2 )		Info_SetValueForKey( userinfo, "handicap", "50" );
+	else if ( skill >= 2 && skill < 3 )		Info_SetValueForKey( userinfo, "handicap", "70" );
+	else if ( skill >= 3 && skill < 4 )		Info_SetValueForKey( userinfo, "handicap", "90" );
+	else									Info_SetValueForKey( userinfo, "handicap", "100" );
 
 	key = "model";
 	model = Info_ValueForKey( botinfo, key );
-	if ( !*model ) {
-		model = "kyle/default";
-	}
+	if ( !*model )	model = "kyle/default";
 	Info_SetValueForKey( userinfo, key, model );
 
-/*	key = "headmodel";
-	headmodel = Info_ValueForKey( botinfo, key );
-	if ( !*headmodel ) {
-		headmodel = model;
-	}
-	Info_SetValueForKey( userinfo, key, headmodel );
-	key = "team_headmodel";
-	Info_SetValueForKey( userinfo, key, headmodel );
-*/
-	key = "gender";
+	key = "sex";
 	s = Info_ValueForKey( botinfo, key );
-	if ( !*s ) {
-		s = "male";
-	}
-	Info_SetValueForKey( userinfo, "sex", s );
+	if ( !*s )	s = Info_ValueForKey( botinfo, "gender" );
+	if ( !*s )	s = "male";
+	Info_SetValueForKey( userinfo, key, s );
 
 	key = "color1";
 	s = Info_ValueForKey( botinfo, key );
-	if ( !*s ) {
-		s = "4";
-	}
+	if ( !*s )	s = "4";
 	Info_SetValueForKey( userinfo, key, s );
 
 	key = "color2";
 	s = Info_ValueForKey( botinfo, key );
-	if ( !*s ) {
-		s = "4";
-	}
+	if ( !*s )	s = "4";
 	Info_SetValueForKey( userinfo, key, s );
 
 	key = "saber1";
 	s = Info_ValueForKey( botinfo, key );
-	if ( !*s ) {
-		s = "single_1";
-	}
+	if ( !*s )	s = DEFAULT_SABER;
 	Info_SetValueForKey( userinfo, key, s );
 
 	key = "saber2";
 	s = Info_ValueForKey( botinfo, key );
-	if ( !*s ) {
-		s = "none";
-	}
+	if ( !*s )	s = "none";
 	Info_SetValueForKey( userinfo, key, s );
 
-	s = Info_ValueForKey(botinfo, "personality");
-	if (!*s )
-	{
-		Info_SetValueForKey( userinfo, "personality", "botfiles/default.jkb" );
-	}
-	else
-	{
-		Info_SetValueForKey( userinfo, "personality", s );
-	}
+	//Raz: Added
+	key = "forcepowers";
+	s = Info_ValueForKey( botinfo, key );
+	if ( !*s )	s = DEFAULT_FORCEPOWERS;
+	Info_SetValueForKey( userinfo, key, s );
+
+	key = "cg_predictItems";
+	s = Info_ValueForKey( botinfo, key );
+	if ( !*s )	s = "1";
+	Info_SetValueForKey( userinfo, key, s );
+
+	key = "char_color_red";
+	s = Info_ValueForKey( botinfo, key );
+	if ( !*s )	s = "255";
+	Info_SetValueForKey( userinfo, key, s );
+
+	key = "char_color_green";
+	s = Info_ValueForKey( botinfo, key );
+	if ( !*s )	s = "255";
+	Info_SetValueForKey( userinfo, key, s );
+
+	key = "char_color_blue";
+	s = Info_ValueForKey( botinfo, key );
+	if ( !*s )	s = "255";
+	Info_SetValueForKey( userinfo, key, s );
+
+	key = "teamtask";
+	s = Info_ValueForKey( botinfo, key );
+	if ( !*s )	s = "0";
+	Info_SetValueForKey( userinfo, key, s );
+
+	key = "personality";
+	s = Info_ValueForKey( botinfo, key );
+	if ( !*s )	s = "botfiles/default.jkb";
+	Info_SetValueForKey( userinfo, key, s );
 
 	// initialize the bot settings
-	if( !team || !*team ) {
-		if( g_gametype.integer >= GT_TEAM ) {
-			if( PickTeam(clientNum) == TEAM_RED) {
+	if ( !team || !*team ) {
+		if ( g_gametype.integer >= GT_TEAM ) {
+			if ( PickTeam( clientNum ) == TEAM_RED)
 				team = "red";
-			}
-			else {
+			else
 				team = "blue";
-			}
 		}
-		else {
+		else
 			team = "red";
-		}
 	}
-//	Info_SetValueForKey( userinfo, "characterfile", Info_ValueForKey( botinfo, "aifile" ) );
 	Info_SetValueForKey( userinfo, "skill", va( "%5.2f", skill ) );
 	Info_SetValueForKey( userinfo, "team", team );
 
@@ -970,23 +959,17 @@ static void G_AddBot( const char *name, float skill, const char *team, int delay
 	// register the userinfo
 	trap_SetUserinfo( clientNum, userinfo );
 
-	if (g_gametype.integer >= GT_TEAM)
+	if ( g_gametype.integer >= GT_TEAM )
 	{
-		if (team && Q_stricmp(team, "red") == 0)
-		{
+		if ( team && !Q_stricmp( team, "red" ) )
 			bot->client->sess.sessionTeam = TEAM_RED;
-		}
-		else if (team && Q_stricmp(team, "blue") == 0)
-		{
+		else if ( team && !Q_stricmp( team, "blue" ) )
 			bot->client->sess.sessionTeam = TEAM_BLUE;
-		}
 		else
-		{
 			bot->client->sess.sessionTeam = PickTeam( -1 );
-		}
 	}
 
-	if (g_gametype.integer == GT_SIEGE)
+	if ( g_gametype.integer == GT_SIEGE )
 	{
 		bot->client->sess.siegeDesiredTeam = bot->client->sess.sessionTeam;
 		bot->client->sess.sessionTeam = TEAM_SPECTATOR;
@@ -995,40 +978,24 @@ static void G_AddBot( const char *name, float skill, const char *team, int delay
 	preTeam = bot->client->sess.sessionTeam;
 
 	// have it connect to the game as a normal client
-	if ( ClientConnect( clientNum, qtrue, qtrue ) ) {
+	if ( ClientConnect( clientNum, qtrue, qtrue ) )
 		return;
-	}
 
-	if (bot->client->sess.sessionTeam != preTeam)
+	if ( bot->client->sess.sessionTeam != preTeam )
 	{
-		trap_GetUserinfo(clientNum, userinfo, MAX_INFO_STRING);
+		trap_GetUserinfo( clientNum, userinfo, sizeof( userinfo ) );
 
-		if (bot->client->sess.sessionTeam == TEAM_SPECTATOR)
-		{
+		if ( bot->client->sess.sessionTeam == TEAM_SPECTATOR )
 			bot->client->sess.sessionTeam = preTeam;
-		}
 
-		if (bot->client->sess.sessionTeam == TEAM_RED)
-		{
+		if ( bot->client->sess.sessionTeam == TEAM_RED )
 			team = "Red";
-		}
 		else
 		{
-			if (g_gametype.integer == GT_SIEGE)
-			{
-				if (bot->client->sess.sessionTeam == TEAM_BLUE)
-				{
-					team = "Blue";
-				}
-				else
-				{
-					team = "s";
-				}
-			}
+			if ( g_gametype.integer == GT_SIEGE )
+				team = (bot->client->sess.sessionTeam == TEAM_BLUE) ? "Blue" : "s";
 			else
-			{
 				team = "Blue";
-			}
 		}
 
 		Info_SetValueForKey( userinfo, "team", team );
@@ -1038,7 +1005,8 @@ static void G_AddBot( const char *name, float skill, const char *team, int delay
 		bot->client->ps.persistant[ PERS_TEAM ] = bot->client->sess.sessionTeam;
 
 		G_ReadSessionData( bot->client );
-		ClientUserinfoChanged( clientNum );
+		if ( !ClientUserinfoChanged( clientNum ) )
+			return;
 	}
 
 	if (g_gametype.integer == GT_DUEL ||

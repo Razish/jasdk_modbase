@@ -1611,19 +1611,19 @@ static void CG_ServerCommand( void ) {
 				return;
 			}
 
-			strcpy(name, CG_Argv(1));
-			strcpy(loc, CG_Argv(2));
-			strcpy(color, CG_Argv(3));
-			strcpy(message, CG_Argv(4));
+			Q_strncpyz( name, CG_Argv( 1 ), sizeof( name ) );
+			Q_strncpyz( loc, CG_Argv( 2 ), sizeof( loc ) );
+			Q_strncpyz( color, CG_Argv( 3 ), sizeof( color ) );
+			Q_strncpyz( message, CG_Argv( 4 ), sizeof( message ) );
 
 			if (loc[0] == '@')
 			{ //get localized text
-				trap_SP_GetStringTextString(loc+1, loc, MAX_STRING_CHARS);
+				trap_SP_GetStringTextString(loc+1, loc, sizeof( loc ) );
 			}
 
 			trap_S_StartLocalSound( cgs.media.talkSound, CHAN_LOCAL_SOUND );
 			//Q_strncpyz( text, CG_Argv(1), MAX_SAY_TEXT );
-			Com_sprintf(text, MAX_SAY_TEXT, "%s<%s>^%s%s", name, loc, color, message);
+			Com_sprintf(text, sizeof( text ), "%s^7<%s>^%s%s", name, loc, color, message);
 			CG_RemoveChatEscapeChar( text );
 			CG_ChatBox_AddString(text);
 			CG_Printf( "*%s\n", text );
@@ -1641,19 +1641,19 @@ static void CG_ServerCommand( void ) {
 			return;
 		}
 
-		strcpy(name, CG_Argv(1));
-		strcpy(loc, CG_Argv(2));
-		strcpy(color, CG_Argv(3));
-		strcpy(message, CG_Argv(4));
+		Q_strncpyz( name, CG_Argv( 1 ), sizeof( name ) );
+		Q_strncpyz( loc, CG_Argv( 2 ), sizeof( loc ) );
+		Q_strncpyz( color, CG_Argv( 3 ), sizeof( color ) );
+		Q_strncpyz( message, CG_Argv( 4 ), sizeof( message ) );
 
 		if (loc[0] == '@')
 		{ //get localized text
-			trap_SP_GetStringTextString(loc+1, loc, MAX_STRING_CHARS);
+			trap_SP_GetStringTextString(loc+1, loc, sizeof( loc ) );
 		}
 
 		trap_S_StartLocalSound( cgs.media.talkSound, CHAN_LOCAL_SOUND );
 		//Q_strncpyz( text, CG_Argv(1), MAX_SAY_TEXT );
-		Com_sprintf(text, MAX_SAY_TEXT, "%s<%s> ^%s%s", name, loc, color, message);
+		Com_sprintf(text, sizeof( text ), "%s^7<%s> ^%s%s", name, loc, color, message);
 		CG_RemoveChatEscapeChar( text );
 		CG_ChatBox_AddString(text);
 		CG_Printf( "*%s\n", text );

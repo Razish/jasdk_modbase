@@ -117,7 +117,9 @@ vmCvar_t	g_speed;
 vmCvar_t	g_gravity;
 vmCvar_t	g_cheats;
 vmCvar_t	g_knockback;
-vmCvar_t	g_quadfactor;
+#ifdef BASE_COMPAT
+	vmCvar_t	g_quadfactor;
+#endif // BASE_COMPAT
 vmCvar_t	g_forcerespawn;
 vmCvar_t	g_siegeRespawn;
 vmCvar_t	g_inactivity;
@@ -356,7 +358,9 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_speed, "g_speed", "250", 0, 0, qtrue  },
 	{ &g_gravity, "g_gravity", "800", 0, 0, qtrue  },
 	{ &g_knockback, "g_knockback", "1000", 0, 0, qtrue  },
+#ifdef BASE_COMPAT
 	{ &g_quadfactor, "g_quadfactor", "3", 0, 0, qtrue  },
+#endif // BASE_COMPAT
 	{ &g_weaponRespawn, "g_weaponrespawn", "5", 0, 0, qtrue  },
 	{ &g_weaponTeamRespawn, "g_weaponTeamRespawn", "5", 0, 0, qtrue },
 	{ &g_adaptRespawn, "g_adaptrespawn", "1", 0, 0, qtrue  },		// Make weapons respawn faster with a lot of players.
@@ -2237,7 +2241,7 @@ void QDECL G_LogPrintf( const char *fmt, ... ) {
 	char		string[1024] = {0};
 	int			mins, seconds, msec, l;
 
-	msec = level.time;
+	msec = level.time - level.startTime;
 
 	seconds = msec / 1000;
 	mins = seconds / 60;
@@ -3359,11 +3363,11 @@ void CheckVote( void ) {
 		return;
 	}
 	if ( level.time - level.voteTime >= VOTE_TIME ) {
-		trap_SendServerCommand( -1, va("print \"%s\n\"", G_GetStringEdString("MP_SVGAME", "VOTEFAILED")) );
+		trap_SendServerCommand( -1, va("print \"%s (%s)\n\"", G_GetStringEdString("MP_SVGAME", "VOTEFAILED"), level.voteStringClean) );
 	} else {
 		if ( level.voteYes > level.numVotingClients/2 ) {
 			// execute the command, then remove the vote
-			trap_SendServerCommand( -1, va("print \"%s\n\"", G_GetStringEdString("MP_SVGAME", "VOTEPASSED")) );
+			trap_SendServerCommand( -1, va("print \"%s (%s)\n\"", G_GetStringEdString("MP_SVGAME", "VOTEPASSED"), level.voteStringClean) );
 			level.voteExecuteTime = level.time + 3000;
 		}
 		// same behavior as a timeout
@@ -3375,7 +3379,7 @@ void CheckVote( void ) {
 			even if player C would vote Yes and it should have been 2:1 and passed */
 	//	else if ( level.voteNo >= level.numVotingClients/2 )
 		else if ( level.voteNo >= (level.numVotingClients+1)/2 ) {
-			trap_SendServerCommand( -1, va("print \"%s\n\"", G_GetStringEdString("MP_SVGAME", "VOTEFAILED")) );
+			trap_SendServerCommand( -1, va("print \"%s (%s)\n\"", G_GetStringEdString("MP_SVGAME", "VOTEFAILED"), level.voteStringClean) );
 		} else {
 			// still waiting for a majority
 			return;

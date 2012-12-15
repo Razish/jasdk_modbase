@@ -424,8 +424,6 @@ typedef struct {
 	int			updateUITime;		// only update userinfo for FP/SL if < level.time
 	qboolean	teamLeader;			// true when this client is a team leader
 	char		siegeClass[64];
-	char		saberType[64];
-	char		saber2Type[64];
 	int			duelTeam;
 	int			siegeDesiredTeam;
 
@@ -461,6 +459,11 @@ typedef struct {
 
 	//JAC: Added
 	int			connectTime;
+
+	//Raz: Moved this out of session data.
+	//		userinfo -> pers in ClientUserinfoChanged
+	char		saber1[MAX_QPATH];
+	char		saber2[MAX_QPATH];
 } clientPersistant_t;
 
 typedef struct renderInfo_s
@@ -746,6 +749,12 @@ struct gclient_s {
 
 	int			lastGenCmd;
 	int			lastGenCmdTime;
+
+	struct force {
+		int		regenDebounce;
+		int		drainDebounce;
+		int		lightningDebounce;
+	} force;
 };
 
 //Interest points
@@ -862,6 +871,7 @@ typedef struct {
 
 	// voting state
 	char		voteString[MAX_STRING_CHARS];
+	char		voteStringClean[MAX_STRING_CHARS];
 	char		voteDisplayString[MAX_STRING_CHARS];
 	int			voteTime;				// level.time vote was called
 	int			voteExecuteTime;		// time the vote is executed
@@ -945,6 +955,7 @@ qboolean	G_SpawnString( const char *key, const char *defaultString, char **out )
 qboolean	G_SpawnFloat( const char *key, const char *defaultString, float *out );
 qboolean	G_SpawnInt( const char *key, const char *defaultString, int *out );
 qboolean	G_SpawnVector( const char *key, const char *defaultString, float *out );
+qboolean	G_SpawnBoolean( const char *key, const char *defaultString, qboolean *out );
 void		G_SpawnEntitiesFromString( qboolean inSubBSP );
 char *G_NewString( const char *string );
 
@@ -1348,7 +1359,7 @@ const char *G_GetStringEdString(char *refSection, char *refName);
 // g_client.c
 //
 char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot );
-void ClientUserinfoChanged( int clientNum );
+qboolean ClientUserinfoChanged( int clientNum );
 void ClientDisconnect( int clientNum );
 void ClientBegin( int clientNum, qboolean allowTeamReset );
 void G_BreakArm(gentity_t *ent, int arm);
@@ -1606,7 +1617,9 @@ extern	vmCvar_t	g_needpass;
 extern	vmCvar_t	g_gravity;
 extern	vmCvar_t	g_speed;
 extern	vmCvar_t	g_knockback;
-extern	vmCvar_t	g_quadfactor;
+#ifdef BASE_COMPAT
+	extern	vmCvar_t	g_quadfactor;
+#endif // BASE_COMPAT
 extern	vmCvar_t	g_forcerespawn;
 extern	vmCvar_t	g_siegeRespawn;
 extern	vmCvar_t	g_inactivity;
@@ -1989,3 +2002,11 @@ void trap_RMG_Init(int terrainID);
 void trap_Bot_UpdateWaypoints(int wpnum, wpobject_t **wps);
 void trap_Bot_CalculatePaths(int rmg);
 
+// userinfo validation bitflags
+typedef enum userinfoValidationBits_e {
+	// validation & (1<<(numUserinfoFields+USERINFO_VALIDATION_BLAH))
+	USERINFO_VALIDATION_SIZE=0,
+	USERINFO_VALIDATION_SLASH,
+	USERINFO_VALIDATION_EXTASCII,
+	USERINFO_VALIDATION_CONTROLCHARS,
+} userinfoValidationBits_t;

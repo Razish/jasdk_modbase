@@ -3196,7 +3196,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 				{ //add to the chat box
 					//hear it in the world spot.
 					char vchatstr[1024] = {0};
-					Q_strncpyz(vchatstr, va("<%s: %s>\n", ci->name, descr), sizeof( vchatstr ) );
+					Q_strncpyz(vchatstr, va("<%s^7: %s>\n", ci->name, descr), sizeof( vchatstr ) );
 					CG_Printf(vchatstr);
 					CG_ChatBox_AddString(vchatstr);
 				}
@@ -3378,6 +3378,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 	//
 	// powerup events
 	//
+#ifdef BASE_COMPAT
 	case EV_POWERUP_QUAD:
 		DEBUGNAME("EV_POWERUP_QUAD");
 		if ( es->number == cg.snap->ps.clientNum ) {
@@ -3394,6 +3395,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		}
 		//trap_S_StartSound (NULL, es->number, CHAN_ITEM, cgs.media.protectSound );
 		break;
+#endif // BASE_COMPAT
 
 	case EV_FORCE_DRAINED:
 		DEBUGNAME("EV_FORCE_DRAINED");
