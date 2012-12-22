@@ -457,7 +457,7 @@ qboolean BG_LegalizedForcePowers(char *powerOut, int maxRank, qboolean freeSaber
 		Q_strncpyz( powerBuf, powerOut, sizeof( powerBuf ) ); //copy it as the original
 
 	//first of all, print the max rank into the string as the rank
-	Q_strncpyz( powerOut, va( "%i-", maxRank ), sizeof( powerOut ) );
+	Q_strncpyz( powerOut, va( "%i-", maxRank ), 128 );
 
 	while (i < sizeof( powerBuf ) && powerBuf[i] && powerBuf[i] != '-')
 	{
