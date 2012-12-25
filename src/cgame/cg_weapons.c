@@ -855,20 +855,10 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 		{
 			ci = &cgs.clientinfo[ cent->currentState.clientNum ];
 		}
-		//Raz: Smoother first-person anims by eezstreet http://jkhub.org/topic/1499-/
-		{
-            float currentFrame, animSpeed;
-            int startFrame,endFrame,flags; //Filler data to make the trap call not go kaboom
-            trap_G2API_GetBoneAnim(cent->ghoul2, "lower_lumbar", cg.time, &currentFrame, &startFrame, &endFrame, &flags, &animSpeed, 0, 0);
-            hand.frame = CG_MapTorsoToWeaponFrame( ci, ceil(currentFrame), ps->torsoAnim );
-            hand.oldframe = CG_MapTorsoToWeaponFrame( ci, floor(currentFrame), ps->torsoAnim );
-            hand.backlerp = 1.0f - (currentFrame-floor(currentFrame));
-		}
-		/* basejka code
+
 		hand.frame = CG_MapTorsoToWeaponFrame( ci, cent->pe.torso.frame, cent->currentState.torsoAnim );
 		hand.oldframe = CG_MapTorsoToWeaponFrame( ci, cent->pe.torso.oldFrame, cent->currentState.torsoAnim );
 		hand.backlerp = cent->pe.torso.backlerp;
-		*/
 
 		// Handle the fringe situation where oldframe is invalid
 		if ( hand.frame == -1 )
