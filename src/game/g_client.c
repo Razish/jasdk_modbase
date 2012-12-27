@@ -2532,6 +2532,7 @@ and on transition between teams, but doesn't happen on respawns
 */
 extern qboolean	gSiegeRoundBegun;
 extern qboolean	gSiegeRoundEnded;
+extern qboolean g_dontPenalizeTeam; //g_cmds.c
 void SetTeamQuick(gentity_t *ent, int team, qboolean doBegin);
 void ClientBegin( int clientNum, qboolean allowTeamReset ) {
 	gentity_t	*ent;
