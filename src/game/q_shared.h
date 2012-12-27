@@ -21,7 +21,9 @@
 						// leave this defined to ensure compatibility
 
 	#ifndef IOJAMP
+	#if !MAC_PORT	//for now engine patching off in mac version until I put in code to check which version is running
 		#define PATCH_ENGINE
+	#endif
 	#endif
 
 #else
@@ -203,7 +205,6 @@ float FloatSwap( const float *f );
 #ifdef MACOS_X
 
 	#include <sys/mman.h>
-	#include <unistd.h>
 
 	#define __cdecl
 	#define __declspec(x)
