@@ -680,26 +680,6 @@
 			};
 			name = "Deployment - Native";
 		};
-		565DAD0F0C4FF414008167FA /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "";
-				HEADER_SEARCH_PATHS = "";
-				LIBRARY_SEARCH_PATHS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PREFIX_HEADER = MacPrefix_game.h;
-				PRODUCT_NAME = jampgame;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = bundle;
-			};
-			name = Default;
-		};
 		565DAD730C4FF414008167FA /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -753,34 +733,15 @@
 			};
 			name = "Deployment - Native";
 		};
-		565DAD750C4FF414008167FA /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_PREFIX_HEADER = MacPrefix_game.h;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				HEADER_SEARCH_PATHS = "";
-				INFOPLIST_FILE = "Info-game.plist";
-				LIBRARY_SEARCH_PATHS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = jampgame;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = bundle;
-			};
-			name = Default;
-		};
 		565DAD7A0C4FF416008167FA /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COPY_PHASE_STRIP = NO;
 				GCC_VERSION = 4.0;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = "";
+				STRIP_INSTALLED_PRODUCT = NO;
 				USER_HEADER_SEARCH_PATHS = "..//**";
+				VALID_ARCHS = "i386 ppc";
 			};
 			name = Development;
 		};
@@ -790,20 +751,11 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = "FINAL_BUILD=1";
 				GCC_VERSION = 4.0;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = "";
 				USER_HEADER_SEARCH_PATHS = "..//**";
+				VALID_ARCHS = "i386 ppc";
 			};
 			name = "Deployment - Native";
-		};
-		565DAD7C0C4FF416008167FA /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_PREPROCESSOR_DEFINITIONS = "FINAL_BUILD=1";
-				GCC_VERSION = 4.0;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-				USER_HEADER_SEARCH_PATHS = "..//**";
-			};
-			name = Default;
 		};
 		565DAD850C4FF4D9008167FA /* Deployment - Universal */ = {
 			isa = XCBuildConfiguration;
@@ -865,6 +817,7 @@
 				GCC_VERSION = 4.0;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				USER_HEADER_SEARCH_PATHS = "..//**";
+				VALID_ARCHS = "i386 ppc";
 			};
 			name = "Deployment - Universal";
 		};
@@ -877,10 +830,9 @@
 				565DAD0D0C4FF414008167FA /* Development */,
 				565DAD0E0C4FF414008167FA /* Deployment - Native */,
 				565DAD860C4FF4D9008167FA /* Deployment - Universal */,
-				565DAD0F0C4FF414008167FA /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Development;
 		};
 		565DAD720C4FF414008167FA /* Build configuration list for PBXNativeTarget "game (Upgraded)" */ = {
 			isa = XCConfigurationList;
@@ -888,10 +840,9 @@
 				565DAD730C4FF414008167FA /* Development */,
 				565DAD740C4FF414008167FA /* Deployment - Native */,
 				565DAD850C4FF4D9008167FA /* Deployment - Universal */,
-				565DAD750C4FF414008167FA /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Development;
 		};
 		565DAD790C4FF416008167FA /* Build configuration list for PBXProject "game" */ = {
 			isa = XCConfigurationList;
@@ -899,10 +850,9 @@
 				565DAD7A0C4FF416008167FA /* Development */,
 				565DAD7B0C4FF416008167FA /* Deployment - Native */,
 				565DAD870C4FF4D9008167FA /* Deployment - Universal */,
-				565DAD7C0C4FF416008167FA /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Development;
 		};
 /* End XCConfigurationList section */
 	};

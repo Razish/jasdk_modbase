@@ -542,26 +542,6 @@
 			};
 			name = "Deployment - Native";
 		};
-		565DADD10C4FF78D008167FA /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "";
-				HEADER_SEARCH_PATHS = "";
-				LIBRARY_SEARCH_PATHS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PREFIX_HEADER = MacPrefix_cgame.h;
-				PRODUCT_NAME = cgame;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = bundle;
-			};
-			name = Default;
-		};
 		565DAE0F0C4FF78D008167FA /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -615,56 +595,33 @@
 			};
 			name = "Deployment - Native";
 		};
-		565DAE110C4FF78D008167FA /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_PREFIX_HEADER = MacPrefix_cgame.h;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				HEADER_SEARCH_PATHS = "";
-				INFOPLIST_FILE = "Info-cgame.plist";
-				LIBRARY_SEARCH_PATHS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = cgame;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = bundle;
-			};
-			name = Default;
-		};
 		565DAE150C4FF78E008167FA /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COPY_PHASE_STRIP = NO;
 				GCC_VERSION = 4.0;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				MACOSX_DEPLOYMENT_TARGET = "";
+				SDKROOT = "";
+				STRIP_INSTALLED_PRODUCT = NO;
 				USER_HEADER_SEARCH_PATHS = "..//**";
+				VALID_ARCHS = "i386 ppc";
 			};
 			name = Development;
 		};
 		565DAE160C4FF78E008167FA /* Deployment - Native */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = "FINAL_BUILD=1";
 				GCC_VERSION = 4.0;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				MACOSX_DEPLOYMENT_TARGET = "";
+				SDKROOT = "";
+				STRIP_INSTALLED_PRODUCT = YES;
 				USER_HEADER_SEARCH_PATHS = "..//**";
+				VALID_ARCHS = "i386 ppc";
 			};
 			name = "Deployment - Native";
-		};
-		565DAE170C4FF78E008167FA /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_VERSION = 4.0;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-				USER_HEADER_SEARCH_PATHS = "..//**";
-			};
-			name = Default;
 		};
 		565DAE1D0C4FF7C9008167FA /* Deployment - Universal */ = {
 			isa = XCBuildConfiguration;
@@ -721,11 +678,14 @@
 					ppc,
 					i386,
 				);
+				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = "FINAL_BUILD=1";
 				GCC_VERSION = 4.0;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				STRIP_INSTALLED_PRODUCT = YES;
 				USER_HEADER_SEARCH_PATHS = "..//**";
+				VALID_ARCHS = "i386 ppc";
 			};
 			name = "Deployment - Universal";
 		};
@@ -738,10 +698,9 @@
 				565DADCF0C4FF78D008167FA /* Development */,
 				565DADD00C4FF78D008167FA /* Deployment - Native */,
 				565DAE1E0C4FF7C9008167FA /* Deployment - Universal */,
-				565DADD10C4FF78D008167FA /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Development;
 		};
 		565DAE0E0C4FF78D008167FA /* Build configuration list for PBXNativeTarget "cgame (Upgraded)" */ = {
 			isa = XCConfigurationList;
@@ -749,10 +708,9 @@
 				565DAE0F0C4FF78D008167FA /* Development */,
 				565DAE100C4FF78D008167FA /* Deployment - Native */,
 				565DAE1D0C4FF7C9008167FA /* Deployment - Universal */,
-				565DAE110C4FF78D008167FA /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Development;
 		};
 		565DAE140C4FF78E008167FA /* Build configuration list for PBXProject "cgame" */ = {
 			isa = XCConfigurationList;
@@ -760,10 +718,9 @@
 				565DAE150C4FF78E008167FA /* Development */,
 				565DAE160C4FF78E008167FA /* Deployment - Native */,
 				565DAE1F0C4FF7C9008167FA /* Deployment - Universal */,
-				565DAE170C4FF78E008167FA /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Development;
 		};
 /* End XCConfigurationList section */
 	};

@@ -380,26 +380,6 @@
 			};
 			name = "Deployment - Native";
 		};
-		565DAD980C4FF701008167FA /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "";
-				HEADER_SEARCH_PATHS = "";
-				LIBRARY_SEARCH_PATHS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PREFIX_HEADER = MacPrefix_UI.h;
-				PRODUCT_NAME = ui;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = bundle;
-			};
-			name = Default;
-		};
 		565DADB00C4FF701008167FA /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -453,34 +433,16 @@
 			};
 			name = "Deployment - Native";
 		};
-		565DADB20C4FF701008167FA /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_PREFIX_HEADER = MacPrefix_UI.h;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				HEADER_SEARCH_PATHS = "";
-				INFOPLIST_FILE = "Info-ui.plist";
-				LIBRARY_SEARCH_PATHS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = ui;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = bundle;
-			};
-			name = Default;
-		};
 		565DADB60C4FF702008167FA /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COPY_PHASE_STRIP = NO;
 				GCC_VERSION = 4.0;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				MACOSX_DEPLOYMENT_TARGET = "";
+				SDKROOT = "";
+				STRIP_INSTALLED_PRODUCT = NO;
 				USER_HEADER_SEARCH_PATHS = "..//**";
+				VALID_ARCHS = "i386 ppc";
 			};
 			name = Development;
 		};
@@ -490,19 +452,12 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = "FINAL_BUILD=1";
 				GCC_VERSION = 4.0;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				MACOSX_DEPLOYMENT_TARGET = "";
+				SDKROOT = "";
 				USER_HEADER_SEARCH_PATHS = "..//**";
+				VALID_ARCHS = "i386 ppc";
 			};
 			name = "Deployment - Native";
-		};
-		565DADB80C4FF702008167FA /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_VERSION = 4.0;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-				USER_HEADER_SEARCH_PATHS = "..//**";
-			};
-			name = Default;
 		};
 		565DADC70C4FF781008167FA /* Deployment - Universal */ = {
 			isa = XCBuildConfiguration;
@@ -564,6 +519,7 @@
 				GCC_VERSION = 4.0;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				USER_HEADER_SEARCH_PATHS = "..//**";
+				VALID_ARCHS = "i386 ppc";
 			};
 			name = "Deployment - Universal";
 		};
@@ -576,10 +532,9 @@
 				565DAD960C4FF701008167FA /* Development */,
 				565DAD970C4FF701008167FA /* Deployment - Native */,
 				565DADC80C4FF781008167FA /* Deployment - Universal */,
-				565DAD980C4FF701008167FA /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Development;
 		};
 		565DADAF0C4FF701008167FA /* Build configuration list for PBXNativeTarget "ui (Upgraded)" */ = {
 			isa = XCConfigurationList;
@@ -587,10 +542,9 @@
 				565DADB00C4FF701008167FA /* Development */,
 				565DADB10C4FF701008167FA /* Deployment - Native */,
 				565DADC70C4FF781008167FA /* Deployment - Universal */,
-				565DADB20C4FF701008167FA /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Development;
 		};
 		565DADB50C4FF702008167FA /* Build configuration list for PBXProject "ui" */ = {
 			isa = XCConfigurationList;
@@ -598,10 +552,9 @@
 				565DADB60C4FF702008167FA /* Development */,
 				565DADB70C4FF702008167FA /* Deployment - Native */,
 				565DADC90C4FF781008167FA /* Deployment - Universal */,
-				565DADB80C4FF702008167FA /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Development;
 		};
 /* End XCConfigurationList section */
 	};
