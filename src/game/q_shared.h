@@ -430,6 +430,11 @@ typedef int		clipHandle_t;
 	// vsnprintf is ISO/IEC 9899:1999
 	// abstracting this to make it portable
 	int Q_vsnprintf( char *str, size_t size, const char *format, va_list args );
+#elif MAC_PORT
+
+	#include <stdint.h>
+	int Q_vsnprintf( char *str, size_t size, const char *format, va_list args );
+
 #else // not using MSVC
 
 	#include <stdint.h>

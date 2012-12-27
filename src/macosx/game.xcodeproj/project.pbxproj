@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		089C1680FE841241C02AAC07 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		565DAD140C4FF414008167FA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		565DAD700C4FF414008167FA /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */; };
 		56BB7ACD168CF68800EA91A8 /* g_engine.c in Sources */ = {isa = PBXBuildFile; fileRef = 56BB7ACC168CF68800EA91A8 /* g_engine.c */; };
@@ -100,75 +99,9 @@
 		56E4CF59121F0005004E7206 /* w_saber.c in Sources */ = {isa = PBXBuildFile; fileRef = 56E4CF00121F0005004E7206 /* w_saber.c */; };
 		56E4CF5A121F0005004E7206 /* WalkerNPC.c in Sources */ = {isa = PBXBuildFile; fileRef = 56E4CF01121F0005004E7206 /* WalkerNPC.c */; };
 		56E4CF5C121F000B004E7206 /* npc_headers.h in Headers */ = {isa = PBXBuildFile; fileRef = 56E4CF5B121F000B004E7206 /* npc_headers.h */; };
-		F5D461E10341868601A80169 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXBundleTarget section */
-		089C1673FE841209C02AAC07 /* game */ = {
-			isa = PBXBundleTarget;
-			buildConfigurationList = 565DAD0C0C4FF414008167FA /* Build configuration list for PBXBundleTarget "game" */;
-			buildPhases = (
-				089C1674FE841209C02AAC07 /* Headers */,
-				089C1675FE841209C02AAC07 /* Resources */,
-				089C1676FE841209C02AAC07 /* Sources */,
-				089C1677FE841209C02AAC07 /* Frameworks */,
-				089C1679FE841209C02AAC07 /* Rez */,
-			);
-			dependencies = (
-			);
-			name = game;
-			productName = cgame;
-			productReference = 014CEA3E0018CDD111CA2923 /* jampgame.bundle */;
-			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
-<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
-<plist version=\"1.0\">
-<dict>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>English</string>
-	<key>CFBundleExecutable</key>
-	<string>jampgame</string>
-	<key>CFBundleIconFile</key>
-	<string></string>
-	<key>CFBundleIdentifier</key>
-	<string></string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundleName</key>
-	<string>cgame</string>
-	<key>CFBundlePackageType</key>
-	<string>BNDL</string>
-	<key>CFBundleShortVersionString</key>
-	<string>1.03a</string>
-	<key>CFBundleSignature</key>
-	<string>JK2m</string>
-	<key>CFBundleVersion</key>
-	<string>1.03a</string>
-	<key>CFPlugInDynamicRegisterFunction</key>
-	<string></string>
-	<key>CFPlugInDynamicRegistration</key>
-	<string>NO</string>
-	<key>CFPlugInFactories</key>
-	<dict>
-		<key>00000000-0000-0000-0000-000000000000</key>
-		<string>MyFactoryFunction</string>
-	</dict>
-	<key>CFPlugInTypes</key>
-	<dict>
-		<key>00000000-0000-0000-0000-000000000000</key>
-		<array>
-			<string>00000000-0000-0000-0000-000000000000</string>
-		</array>
-	</dict>
-	<key>CFPlugInUnloadFunction</key>
-	<string></string>
-</dict>
-</plist>
-";
-		};
-/* End PBXBundleTarget section */
-
 /* Begin PBXFileReference section */
-		014CEA3E0018CDD111CA2923 /* jampgame.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = jampgame.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		565DAD760C4FF414008167FA /* Info-game.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-game.plist"; sourceTree = "<group>"; };
@@ -266,14 +199,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		089C1677FE841209C02AAC07 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F5D461E10341868601A80169 /* CoreFoundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		565DAD6F0C4FF414008167FA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -316,7 +241,6 @@
 		19C28FB6FE9D52B211CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				014CEA3E0018CDD111CA2923 /* jampgame.bundle */,
 				565DAD770C4FF414008167FA /* jampgame.bundle */,
 			);
 			name = Products;
@@ -422,13 +346,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		089C1674FE841209C02AAC07 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		565DAD110C4FF414008167FA /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -440,9 +357,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		565DAD100C4FF414008167FA /* game (Upgraded) */ = {
+		565DAD100C4FF414008167FA /* game */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 565DAD720C4FF414008167FA /* Build configuration list for PBXNativeTarget "game (Upgraded)" */;
+			buildConfigurationList = 565DAD720C4FF414008167FA /* Build configuration list for PBXNativeTarget "game" */;
 			buildPhases = (
 				565DAD110C4FF414008167FA /* Headers */,
 				565DAD130C4FF414008167FA /* Resources */,
@@ -454,7 +371,7 @@
 			);
 			dependencies = (
 			);
-			name = "game (Upgraded)";
+			name = game;
 			productName = cgame;
 			productReference = 565DAD770C4FF414008167FA /* jampgame.bundle */;
 			productType = "com.apple.product-type.bundle";
@@ -471,21 +388,12 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				565DAD100C4FF414008167FA /* game (Upgraded) */,
-				089C1673FE841209C02AAC07 /* game */,
+				565DAD100C4FF414008167FA /* game */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		089C1675FE841209C02AAC07 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				089C1680FE841241C02AAC07 /* InfoPlist.strings in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		565DAD130C4FF414008167FA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -497,13 +405,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXRezBuildPhase section */
-		089C1679FE841209C02AAC07 /* Rez */ = {
-			isa = PBXRezBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		565DAD710C4FF414008167FA /* Rez */ = {
 			isa = PBXRezBuildPhase;
 			buildActionMask = 2147483647;
@@ -514,13 +415,6 @@
 /* End PBXRezBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		089C1676FE841209C02AAC07 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		565DAD150C4FF414008167FA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -631,55 +525,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		565DAD0D0C4FF414008167FA /* Development */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				HEADER_SEARCH_PATHS = "";
-				LIBRARY_SEARCH_PATHS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PREFIX_HEADER = MacPrefix_game.h;
-				PRODUCT_NAME = jampgame;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = bundle;
-				ZERO_LINK = YES;
-			};
-			name = Development;
-		};
-		565DAD0E0C4FF414008167FA /* Deployment - Native */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				HEADER_SEARCH_PATHS = "";
-				LIBRARY_SEARCH_PATHS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PREFIX_HEADER = MacPrefix_game.h;
-				PRODUCT_NAME = jampgame;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = bundle;
-				ZERO_LINK = NO;
-			};
-			name = "Deployment - Native";
-		};
 		565DAD730C4FF414008167FA /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -737,7 +582,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
-				GCC_VERSION = 4.0;
+				GCC_VERSION = "";
 				SDKROOT = "";
 				STRIP_INSTALLED_PRODUCT = NO;
 				USER_HEADER_SEARCH_PATHS = "..//**";
@@ -750,7 +595,7 @@
 			buildSettings = {
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = "FINAL_BUILD=1";
-				GCC_VERSION = 4.0;
+				GCC_VERSION = "";
 				SDKROOT = "";
 				USER_HEADER_SEARCH_PATHS = "..//**";
 				VALID_ARCHS = "i386 ppc";
@@ -782,29 +627,6 @@
 			};
 			name = "Deployment - Universal";
 		};
-		565DAD860C4FF4D9008167FA /* Deployment - Universal */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				HEADER_SEARCH_PATHS = "";
-				LIBRARY_SEARCH_PATHS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PREFIX_HEADER = MacPrefix_game.h;
-				PRODUCT_NAME = jampgame;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = bundle;
-				ZERO_LINK = NO;
-			};
-			name = "Deployment - Universal";
-		};
 		565DAD870C4FF4D9008167FA /* Deployment - Universal */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -824,17 +646,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		565DAD0C0C4FF414008167FA /* Build configuration list for PBXBundleTarget "game" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				565DAD0D0C4FF414008167FA /* Development */,
-				565DAD0E0C4FF414008167FA /* Deployment - Native */,
-				565DAD860C4FF4D9008167FA /* Deployment - Universal */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Development;
-		};
-		565DAD720C4FF414008167FA /* Build configuration list for PBXNativeTarget "game (Upgraded)" */ = {
+		565DAD720C4FF414008167FA /* Build configuration list for PBXNativeTarget "game" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				565DAD730C4FF414008167FA /* Development */,

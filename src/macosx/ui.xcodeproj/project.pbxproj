@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		089C1680FE841241C02AAC07 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		565DAD9C0C4FF701008167FA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		565DADAD0C4FF701008167FA /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */; };
 		56E4CE03121EFEC2004E7206 /* ui_atoms.c in Sources */ = {isa = PBXBuildFile; fileRef = 56E4CDFC121EFEC2004E7206 /* ui_atoms.c */; };
@@ -23,75 +22,9 @@
 		56E4CE15121EFEF8004E7206 /* bg_weapons.c in Sources */ = {isa = PBXBuildFile; fileRef = 56E4CE0E121EFEF8004E7206 /* bg_weapons.c */; };
 		56E4CE16121EFEF8004E7206 /* q_math.c in Sources */ = {isa = PBXBuildFile; fileRef = 56E4CE0F121EFEF8004E7206 /* q_math.c */; };
 		56E4CE17121EFEF8004E7206 /* q_shared.c in Sources */ = {isa = PBXBuildFile; fileRef = 56E4CE10121EFEF8004E7206 /* q_shared.c */; };
-		F5D461E10341868601A80169 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXBundleTarget section */
-		089C1673FE841209C02AAC07 /* ui */ = {
-			isa = PBXBundleTarget;
-			buildConfigurationList = 565DAD950C4FF701008167FA /* Build configuration list for PBXBundleTarget "ui" */;
-			buildPhases = (
-				089C1674FE841209C02AAC07 /* Headers */,
-				089C1675FE841209C02AAC07 /* Resources */,
-				089C1676FE841209C02AAC07 /* Sources */,
-				089C1677FE841209C02AAC07 /* Frameworks */,
-				089C1679FE841209C02AAC07 /* Rez */,
-			);
-			dependencies = (
-			);
-			name = ui;
-			productName = cgame;
-			productReference = 014CEA3E0018CDD111CA2923 /* ui.bundle */;
-			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
-<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
-<plist version=\"1.0\">
-<dict>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>English</string>
-	<key>CFBundleExecutable</key>
-	<string>ui</string>
-	<key>CFBundleIconFile</key>
-	<string></string>
-	<key>CFBundleIdentifier</key>
-	<string></string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundleName</key>
-	<string>cgame</string>
-	<key>CFBundlePackageType</key>
-	<string>BNDL</string>
-	<key>CFBundleShortVersionString</key>
-	<string>1.03a</string>
-	<key>CFBundleSignature</key>
-	<string>JK2m</string>
-	<key>CFBundleVersion</key>
-	<string>1.03a</string>
-	<key>CFPlugInDynamicRegisterFunction</key>
-	<string></string>
-	<key>CFPlugInDynamicRegistration</key>
-	<string>NO</string>
-	<key>CFPlugInFactories</key>
-	<dict>
-		<key>00000000-0000-0000-0000-000000000000</key>
-		<string>MyFactoryFunction</string>
-	</dict>
-	<key>CFPlugInTypes</key>
-	<dict>
-		<key>00000000-0000-0000-0000-000000000000</key>
-		<array>
-			<string>00000000-0000-0000-0000-000000000000</string>
-		</array>
-	</dict>
-	<key>CFPlugInUnloadFunction</key>
-	<string></string>
-</dict>
-</plist>
-";
-		};
-/* End PBXBundleTarget section */
-
 /* Begin PBXFileReference section */
-		014CEA3E0018CDD111CA2923 /* ui.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = ui.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		565DADB30C4FF701008167FA /* Info-ui.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-ui.plist"; sourceTree = "<group>"; };
@@ -112,14 +45,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		089C1677FE841209C02AAC07 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F5D461E10341868601A80169 /* CoreFoundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		565DADAC0C4FF701008167FA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -163,7 +88,6 @@
 		19C28FB6FE9D52B211CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				014CEA3E0018CDD111CA2923 /* ui.bundle */,
 				565DADB40C4FF702008167FA /* ui.bundle */,
 			);
 			name = Products;
@@ -199,13 +123,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		089C1674FE841209C02AAC07 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		565DAD9A0C4FF701008167FA /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -216,9 +133,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		565DAD990C4FF701008167FA /* ui (Upgraded) */ = {
+		565DAD990C4FF701008167FA /* ui */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 565DADAF0C4FF701008167FA /* Build configuration list for PBXNativeTarget "ui (Upgraded)" */;
+			buildConfigurationList = 565DADAF0C4FF701008167FA /* Build configuration list for PBXNativeTarget "ui" */;
 			buildPhases = (
 				565DAD9A0C4FF701008167FA /* Headers */,
 				565DAD9B0C4FF701008167FA /* Resources */,
@@ -230,7 +147,7 @@
 			);
 			dependencies = (
 			);
-			name = "ui (Upgraded)";
+			name = ui;
 			productName = cgame;
 			productReference = 565DADB40C4FF702008167FA /* ui.bundle */;
 			productType = "com.apple.product-type.bundle";
@@ -247,21 +164,12 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				565DAD990C4FF701008167FA /* ui (Upgraded) */,
-				089C1673FE841209C02AAC07 /* ui */,
+				565DAD990C4FF701008167FA /* ui */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		089C1675FE841209C02AAC07 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				089C1680FE841241C02AAC07 /* InfoPlist.strings in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		565DAD9B0C4FF701008167FA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -273,13 +181,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXRezBuildPhase section */
-		089C1679FE841209C02AAC07 /* Rez */ = {
-			isa = PBXRezBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		565DADAE0C4FF701008167FA /* Rez */ = {
 			isa = PBXRezBuildPhase;
 			buildActionMask = 2147483647;
@@ -290,13 +191,6 @@
 /* End PBXRezBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		089C1676FE841209C02AAC07 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		565DAD9D0C4FF701008167FA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -331,55 +225,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		565DAD960C4FF701008167FA /* Development */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				HEADER_SEARCH_PATHS = "";
-				LIBRARY_SEARCH_PATHS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PREFIX_HEADER = MacPrefix_UI.h;
-				PRODUCT_NAME = ui;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = bundle;
-				ZERO_LINK = YES;
-			};
-			name = Development;
-		};
-		565DAD970C4FF701008167FA /* Deployment - Native */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				HEADER_SEARCH_PATHS = "";
-				LIBRARY_SEARCH_PATHS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PREFIX_HEADER = MacPrefix_UI.h;
-				PRODUCT_NAME = ui;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = bundle;
-				ZERO_LINK = NO;
-			};
-			name = "Deployment - Native";
-		};
 		565DADB00C4FF701008167FA /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -437,7 +282,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
-				GCC_VERSION = 4.0;
+				GCC_VERSION = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				SDKROOT = "";
 				STRIP_INSTALLED_PRODUCT = NO;
@@ -451,7 +296,7 @@
 			buildSettings = {
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = "FINAL_BUILD=1";
-				GCC_VERSION = 4.0;
+				GCC_VERSION = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				SDKROOT = "";
 				USER_HEADER_SEARCH_PATHS = "..//**";
@@ -484,29 +329,6 @@
 			};
 			name = "Deployment - Universal";
 		};
-		565DADC80C4FF781008167FA /* Deployment - Universal */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				HEADER_SEARCH_PATHS = "";
-				LIBRARY_SEARCH_PATHS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PREFIX_HEADER = MacPrefix_UI.h;
-				PRODUCT_NAME = ui;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = bundle;
-				ZERO_LINK = NO;
-			};
-			name = "Deployment - Universal";
-		};
 		565DADC90C4FF781008167FA /* Deployment - Universal */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -526,17 +348,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		565DAD950C4FF701008167FA /* Build configuration list for PBXBundleTarget "ui" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				565DAD960C4FF701008167FA /* Development */,
-				565DAD970C4FF701008167FA /* Deployment - Native */,
-				565DADC80C4FF781008167FA /* Deployment - Universal */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Development;
-		};
-		565DADAF0C4FF701008167FA /* Build configuration list for PBXNativeTarget "ui (Upgraded)" */ = {
+		565DADAF0C4FF701008167FA /* Build configuration list for PBXNativeTarget "ui" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				565DADB00C4FF701008167FA /* Development */,

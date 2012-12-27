@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		089C1680FE841241C02AAC07 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		565DADD50C4FF78D008167FA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		565DAE0C0C4FF78D008167FA /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */; };
 		56E4CE2B121EFF36004E7206 /* Info-cgame.plist in Resources */ = {isa = PBXBuildFile; fileRef = 56E4CE2A121EFF36004E7206 /* Info-cgame.plist */; };
@@ -62,75 +61,9 @@
 		56E4CE92121EFFA3004E7206 /* SpeederNPC.c in Sources */ = {isa = PBXBuildFile; fileRef = 56E4CE81121EFFA3004E7206 /* SpeederNPC.c */; };
 		56E4CE93121EFFA3004E7206 /* WalkerNPC.c in Sources */ = {isa = PBXBuildFile; fileRef = 56E4CE82121EFFA3004E7206 /* WalkerNPC.c */; };
 		56E4CE95121EFFB3004E7206 /* ui_shared.c in Sources */ = {isa = PBXBuildFile; fileRef = 56E4CE94121EFFB3004E7206 /* ui_shared.c */; };
-		F5D461E10341868601A80169 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXBundleTarget section */
-		089C1673FE841209C02AAC07 /* cgame */ = {
-			isa = PBXBundleTarget;
-			buildConfigurationList = 565DADCE0C4FF78D008167FA /* Build configuration list for PBXBundleTarget "cgame" */;
-			buildPhases = (
-				089C1674FE841209C02AAC07 /* Headers */,
-				089C1675FE841209C02AAC07 /* Resources */,
-				089C1676FE841209C02AAC07 /* Sources */,
-				089C1677FE841209C02AAC07 /* Frameworks */,
-				089C1679FE841209C02AAC07 /* Rez */,
-			);
-			dependencies = (
-			);
-			name = cgame;
-			productName = cgame;
-			productReference = 014CEA3E0018CDD111CA2923 /* cgame.bundle */;
-			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
-<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
-<plist version=\"1.0\">
-<dict>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>English</string>
-	<key>CFBundleExecutable</key>
-	<string>cgame</string>
-	<key>CFBundleIconFile</key>
-	<string></string>
-	<key>CFBundleIdentifier</key>
-	<string></string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundleName</key>
-	<string>cgame</string>
-	<key>CFBundlePackageType</key>
-	<string>BNDL</string>
-	<key>CFBundleShortVersionString</key>
-	<string>1.03a</string>
-	<key>CFBundleSignature</key>
-	<string>JK2m</string>
-	<key>CFBundleVersion</key>
-	<string>1.03a</string>
-	<key>CFPlugInDynamicRegisterFunction</key>
-	<string></string>
-	<key>CFPlugInDynamicRegistration</key>
-	<string>NO</string>
-	<key>CFPlugInFactories</key>
-	<dict>
-		<key>00000000-0000-0000-0000-000000000000</key>
-		<string>MyFactoryFunction</string>
-	</dict>
-	<key>CFPlugInTypes</key>
-	<dict>
-		<key>00000000-0000-0000-0000-000000000000</key>
-		<array>
-			<string>00000000-0000-0000-0000-000000000000</string>
-		</array>
-	</dict>
-	<key>CFPlugInUnloadFunction</key>
-	<string></string>
-</dict>
-</plist>
-";
-		};
-/* End PBXBundleTarget section */
-
 /* Begin PBXFileReference section */
-		014CEA3E0018CDD111CA2923 /* cgame.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = cgame.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		565DAE130C4FF78D008167FA /* cgame.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = cgame.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -189,14 +122,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		089C1677FE841209C02AAC07 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F5D461E10341868601A80169 /* CoreFoundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		565DAE0B0C4FF78D008167FA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -282,7 +207,6 @@
 		19C28FB6FE9D52B211CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				014CEA3E0018CDD111CA2923 /* cgame.bundle */,
 				565DAE130C4FF78D008167FA /* cgame.bundle */,
 			);
 			name = Products;
@@ -322,13 +246,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		089C1674FE841209C02AAC07 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		565DADD30C4FF78D008167FA /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -339,9 +256,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		565DADD20C4FF78D008167FA /* cgame (Upgraded) */ = {
+		565DADD20C4FF78D008167FA /* cgame */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 565DAE0E0C4FF78D008167FA /* Build configuration list for PBXNativeTarget "cgame (Upgraded)" */;
+			buildConfigurationList = 565DAE0E0C4FF78D008167FA /* Build configuration list for PBXNativeTarget "cgame" */;
 			buildPhases = (
 				565DADD30C4FF78D008167FA /* Headers */,
 				565DADD40C4FF78D008167FA /* Resources */,
@@ -353,7 +270,7 @@
 			);
 			dependencies = (
 			);
-			name = "cgame (Upgraded)";
+			name = cgame;
 			productName = cgame;
 			productReference = 565DAE130C4FF78D008167FA /* cgame.bundle */;
 			productType = "com.apple.product-type.bundle";
@@ -370,21 +287,12 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				565DADD20C4FF78D008167FA /* cgame (Upgraded) */,
-				089C1673FE841209C02AAC07 /* cgame */,
+				565DADD20C4FF78D008167FA /* cgame */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		089C1675FE841209C02AAC07 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				089C1680FE841241C02AAC07 /* InfoPlist.strings in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		565DADD40C4FF78D008167FA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -397,13 +305,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXRezBuildPhase section */
-		089C1679FE841209C02AAC07 /* Rez */ = {
-			isa = PBXRezBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		565DAE0D0C4FF78D008167FA /* Rez */ = {
 			isa = PBXRezBuildPhase;
 			buildActionMask = 2147483647;
@@ -414,13 +315,6 @@
 /* End PBXRezBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		089C1676FE841209C02AAC07 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		565DADD60C4FF78D008167FA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -493,55 +387,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		565DADCF0C4FF78D008167FA /* Development */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				HEADER_SEARCH_PATHS = "";
-				LIBRARY_SEARCH_PATHS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PREFIX_HEADER = MacPrefix_cgame.h;
-				PRODUCT_NAME = cgame;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = bundle;
-				ZERO_LINK = YES;
-			};
-			name = Development;
-		};
-		565DADD00C4FF78D008167FA /* Deployment - Native */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				HEADER_SEARCH_PATHS = "";
-				LIBRARY_SEARCH_PATHS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PREFIX_HEADER = MacPrefix_cgame.h;
-				PRODUCT_NAME = cgame;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = bundle;
-				ZERO_LINK = NO;
-			};
-			name = "Deployment - Native";
-		};
 		565DAE0F0C4FF78D008167FA /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -599,7 +444,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
-				GCC_VERSION = 4.0;
+				GCC_VERSION = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				SDKROOT = "";
 				STRIP_INSTALLED_PRODUCT = NO;
@@ -614,7 +459,7 @@
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = "FINAL_BUILD=1";
-				GCC_VERSION = 4.0;
+				GCC_VERSION = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				SDKROOT = "";
 				STRIP_INSTALLED_PRODUCT = YES;
@@ -648,29 +493,6 @@
 			};
 			name = "Deployment - Universal";
 		};
-		565DAE1E0C4FF7C9008167FA /* Deployment - Universal */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				HEADER_SEARCH_PATHS = "";
-				LIBRARY_SEARCH_PATHS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PREFIX_HEADER = MacPrefix_cgame.h;
-				PRODUCT_NAME = cgame;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = bundle;
-				ZERO_LINK = NO;
-			};
-			name = "Deployment - Universal";
-		};
 		565DAE1F0C4FF7C9008167FA /* Deployment - Universal */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -692,17 +514,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		565DADCE0C4FF78D008167FA /* Build configuration list for PBXBundleTarget "cgame" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				565DADCF0C4FF78D008167FA /* Development */,
-				565DADD00C4FF78D008167FA /* Deployment - Native */,
-				565DAE1E0C4FF7C9008167FA /* Deployment - Universal */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Development;
-		};
-		565DAE0E0C4FF78D008167FA /* Build configuration list for PBXNativeTarget "cgame (Upgraded)" */ = {
+		565DAE0E0C4FF78D008167FA /* Build configuration list for PBXNativeTarget "cgame" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				565DAE0F0C4FF78D008167FA /* Development */,
