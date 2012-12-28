@@ -315,7 +315,7 @@ void multi_trigger( gentity_t *ent, gentity_t *activator )
 	}
 
 	// if the player has already activated this trigger this frame
-	if( activator && !activator->s.number && ent->aimDebounceTime == level.time )
+	if( activator && activator->s.number < MAX_CLIENTS && ent->aimDebounceTime == level.time )
 	{
 		return;	
 	}
