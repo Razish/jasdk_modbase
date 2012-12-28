@@ -226,7 +226,6 @@ void G_Give( gentity_t *ent, const char *name, const char *args, int argc )
 	qboolean	give_all = qfalse;
 	gentity_t	*it_ent;
 	trace_t		trace;
-	char		arg[MAX_TOKEN_CHARS];
 
 	if ( !Q_stricmp( name, "all" ) )
 		give_all = qtrue;
@@ -255,7 +254,7 @@ void G_Give( gentity_t *ent, const char *name, const char *args, int argc )
 	if ( give_all || !Q_stricmp( name, "armor" ) || !Q_stricmp( name, "shield" ) )
 	{
 		if ( argc == 3 )
-			ent->client->ps.stats[STAT_ARMOR] = Com_Clampi( 0, ent->client->ps.stats[STAT_MAX_HEALTH], atoi( arg ) );
+			ent->client->ps.stats[STAT_ARMOR] = Com_Clampi( 0, ent->client->ps.stats[STAT_MAX_HEALTH], atoi( args ) );
 		else
 		{
 			if ( g_gametype.integer == GT_SIEGE && ent->client->siegeClass != -1 )
