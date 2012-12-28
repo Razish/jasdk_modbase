@@ -2714,8 +2714,7 @@ void charge_stick (gentity_t *self, gentity_t *other, trace_t *trace)
 	//		being able to detonate them (or shoot them)
 	//	The fix Sil came up with is to check the think() function in charge_stick, and only overwrite it
 	//		if they haven't been primed to detonate
-//	if ( self->think == G_RunObject )
-	if ( self->think != DetPackBlow )
+	if ( self->think == G_RunObject )
 	{
 		self->touch = 0;
 		self->think = DetPackBlow;
