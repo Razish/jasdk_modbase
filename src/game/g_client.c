@@ -3808,13 +3808,11 @@ void ClientSpawn(gentity_t *ent) {
 	}
 
 	// run the presend to set anything else
-	ClientEndFrame( ent );
+	if ( ent->client->sess.spectatorState != SPECTATOR_FOLLOW )
+		ClientEndFrame( ent );
 
 	// clear entity state values
 	BG_PlayerStateToEntityState( &client->ps, &ent->s, qtrue );
-
-	//Raz: http://jkhub.org/topic/533-the-so-called-ghost-bug/#entry9485
-	ent->s.number = index;
 
 	//rww - make sure client has a valid icarus instance
 	trap_ICARUS_FreeEnt( ent );
