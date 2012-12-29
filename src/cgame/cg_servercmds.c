@@ -103,9 +103,9 @@ and whenever the server updates any serverinfo flagged cvars
 ================
 */
 void CG_ParseServerinfo( void ) {
-	const char	*info;
-	const char	*tinfo;
-	char	*mapname;
+	const char *info = NULL, *tinfo = NULL;
+	char *mapname;
+	int i;
 
 	info = CG_ConfigString( CS_SERVERINFO );
 
@@ -131,7 +131,12 @@ void CG_ParseServerinfo( void ) {
 	cgs.fraglimit = atoi( Info_ValueForKey( info, "fraglimit" ) );
 	cgs.duel_fraglimit = atoi( Info_ValueForKey( info, "duel_fraglimit" ) );
 	cgs.capturelimit = atoi( Info_ValueForKey( info, "capturelimit" ) );
-	cgs.timelimit = atoi( Info_ValueForKey( info, "timelimit" ) );
+
+	i = atoi( Info_ValueForKey( info, "timelimit" ) );
+	if ( cgs.timelimit != i )
+		cg.timelimitWarnings &= ~(1|2);
+	cgs.timelimit = i;
+
 	cgs.maxclients = atoi( Info_ValueForKey( info, "sv_maxclients" ) );
 	mapname = Info_ValueForKey( info, "mapname" );
 
