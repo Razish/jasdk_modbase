@@ -1522,7 +1522,6 @@ typedef struct {
 	int				stepSlideFix;
 	int				noSpecMove;
 	int				dmflags;
-	int				teamflags;
 	int				fraglimit;
 	int				duel_fraglimit;
 	int				capturelimit;

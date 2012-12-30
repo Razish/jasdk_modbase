@@ -127,11 +127,16 @@ void CG_ParseServerinfo( void ) {
 	cgs.wDisable = atoi( Info_ValueForKey( info, "wdisable" ) );
 	cgs.fDisable = atoi( Info_ValueForKey( info, "fdisable" ) );
 	cgs.dmflags = atoi( Info_ValueForKey( info, "dmflags" ) );
-	cgs.teamflags = atoi( Info_ValueForKey( info, "teamflags" ) );
-	cgs.fraglimit = atoi( Info_ValueForKey( info, "fraglimit" ) );
 	cgs.duel_fraglimit = atoi( Info_ValueForKey( info, "duel_fraglimit" ) );
 	cgs.capturelimit = atoi( Info_ValueForKey( info, "capturelimit" ) );
 
+	// reset fraglimit warnings
+	i = atoi( Info_ValueForKey( info, "fraglimit" ) );
+	if ( cgs.fraglimit < i )
+		cg.fraglimitWarnings &= ~(1|2|4);
+	cgs.fraglimit = i;
+
+	// reset timelimit warnings
 	i = atoi( Info_ValueForKey( info, "timelimit" ) );
 	if ( cgs.timelimit != i )
 		cg.timelimitWarnings &= ~(1|2);
