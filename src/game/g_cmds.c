@@ -346,7 +346,7 @@ void Cmd_Give_f( gentity_t *ent )
 	char name[MAX_TOKEN_CHARS] = {0};
 
 	trap_Argv( 1, name, sizeof( name ) );
-	G_Give( ent, name, ConcatArgs( 3 ), trap_Argc() );
+	G_Give( ent, name, ConcatArgs( 2 ), trap_Argc() );
 }
 
 void Cmd_GiveOther_f( gentity_t *ent )
