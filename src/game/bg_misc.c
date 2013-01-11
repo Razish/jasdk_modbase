@@ -2439,7 +2439,11 @@ void BG_EvaluateTrajectoryDelta( const trajectory_t *tr, int atTime, vec3_t resu
 		result[2] -= DEFAULT_GRAVITY * deltaTime;		// FIXME: local gravity...
 		break;
 	default:
-		Com_Error( ERR_DROP, "BG_EvaluateTrajectoryDelta: unknown trType: %i", tr->trTime );
+#ifdef QAGAME
+		Com_Error( ERR_DROP, "BG_EvaluateTrajectoryDelta: [GAME SIDE] unknown trType: %i", tr->trType );
+#else
+		Com_Error( ERR_DROP, "BG_EvaluateTrajectoryDelta: [CLIENTGAME SIDE] unknown trType: %i", tr->trType );
+#endif
 		break;
 	}
 }
