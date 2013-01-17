@@ -509,13 +509,6 @@ Cmd_Kill_f
 =================
 */
 void Cmd_Kill_f( gentity_t *ent ) {
-	if ( ent->client->sess.sessionTeam == TEAM_SPECTATOR || ent->client->tempSpectate >= level.time ) {
-		return;
-	}
-	if (ent->health <= 0) {
-		return;
-	}
-
 	if ((g_gametype.integer == GT_DUEL || g_gametype.integer == GT_POWERDUEL) &&
 		level.numPlayingClients > 1 && !level.warmupTime)
 	{
@@ -3353,7 +3346,7 @@ command_t commands[] = {
 	{ "give",				Cmd_Give_f,					CMD_CHEAT|CMD_ALIVE|CMD_NOINTERMISSION },
 	{ "giveother",			Cmd_GiveOther_f,			CMD_CHEAT|CMD_ALIVE|CMD_NOINTERMISSION },
 	{ "god",				Cmd_God_f,					CMD_CHEAT|CMD_ALIVE|CMD_NOINTERMISSION },
-	{ "kill",				Cmd_Kill_f,					CMD_NOINTERMISSION },
+	{ "kill",				Cmd_Kill_f,					CMD_ALIVE|CMD_NOINTERMISSION },
 	{ "killother",			Cmd_KillOther_f,			CMD_CHEAT|CMD_ALIVE },
 //	{ "kylesmash",			TryGrapple,					0 },
 	{ "levelshot",			Cmd_LevelShot_f,			CMD_CHEAT|CMD_ALIVE|CMD_NOINTERMISSION },
@@ -3408,19 +3401,24 @@ void ClientCommand( int clientNum ) {
 		return;
 	}
 
-	else if ( (command->flags & CMD_NOINTERMISSION) && level.intermissiontime )
+	else if ( (command->flags & CMD_NOINTERMISSION)
+		&& level.intermissiontime )
 	{
 		trap_SendServerCommand( clientNum, va( "print \"%s (%s)\n\"", G_GetStringEdString( "MP_SVGAME", "CANNOT_TASK_INTERMISSION" ), cmd ) );
 		return;
 	}
 
-	else if ( (command->flags & CMD_CHEAT) && !g_cheats.integer )
+	else if ( (command->flags & CMD_CHEAT)
+		&& !g_cheats.integer )
 	{
 		trap_SendServerCommand( clientNum, va( "print \"%s\n\"", G_GetStringEdString( "MP_SVGAME", "NOCHEATS" ) ) );
 		return;
 	}
 
-	else if ( (command->flags & CMD_ALIVE) && ent->health <= 0 )
+	else if ( (command->flags & CMD_ALIVE)
+		&& (ent->health <= 0
+			|| ent->client->tempSpectate >= level.time
+			|| ent->client->sess.sessionTeam == TEAM_SPECTATOR) )
 	{
 		trap_SendServerCommand( clientNum, va( "print \"%s\n\"", G_GetStringEdString( "MP_SVGAME", "MUSTBEALIVE" ) ) );
 		return;
