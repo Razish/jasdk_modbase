@@ -740,7 +740,7 @@ void SetTeam( gentity_t *ent, char *s ) {
 			//}
 		}
 
-		if ( g_teamForceBalance.integer && !g_trueJedi.integer ) {
+		if ( g_teamForceBalance.integer && !g_jediVmerc.integer ) {
 			int		counts[TEAM_NUM_TEAMS];
 
 			//JAC: Invalid clientNum was being used
@@ -1648,7 +1648,7 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 	}
 
 	// echo the text to the console
-	if ( g_dedicated.integer ) {
+	if ( dedicated.integer ) {
 		G_Printf( "%s%s\n", name, text);
 	}
 
@@ -2456,10 +2456,6 @@ void Cmd_SetViewpos_f( gentity_t *ent ) {
 	char		buffer[MAX_TOKEN_CHARS];
 	int			i;
 
-	if ( !g_cheats.integer ) {
-		trap_SendServerCommand( ent-g_entities, va("print \"%s\n\"", G_GetStringEdString("MP_SVGAME", "NOCHEATS")));
-		return;
-	}
 	if ( trap_Argc() != 5 ) {
 		trap_SendServerCommand( ent-g_entities, va("print \"usage: setviewpos x y z yaw\n\""));
 		return;
@@ -3356,7 +3352,7 @@ command_t commands[] = {
 	{ "say",				Cmd_Say_f,					0 },
 	{ "say_team",			Cmd_SayTeam_f,				0 },
 	{ "score",				Cmd_Score_f,				0 },
-	{ "setviewpos",			Cmd_SetViewpos_f,			CMD_NOINTERMISSION },
+	{ "setviewpos",			Cmd_SetViewpos_f,			CMD_CHEAT|CMD_NOINTERMISSION },
 	{ "siegeclass",			Cmd_SiegeClass_f,			CMD_NOINTERMISSION },
 	{ "team",				Cmd_Team_f,					CMD_NOINTERMISSION },
 //	{ "teamtask",			Cmd_TeamTask_f,				CMD_NOINTERMISSION },
@@ -3409,7 +3405,7 @@ void ClientCommand( int clientNum ) {
 	}
 
 	else if ( (command->flags & CMD_CHEAT)
-		&& !g_cheats.integer )
+		&& !sv_cheats.integer )
 	{
 		trap_SendServerCommand( clientNum, va( "print \"%s\n\"", G_GetStringEdString( "MP_SVGAME", "NOCHEATS" ) ) );
 		return;

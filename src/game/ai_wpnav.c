@@ -368,7 +368,7 @@ void CreateNewWP(vec3_t origin, int flags)
 {
 	if (gWPNum >= MAX_WPARRAY_SIZE)
 	{
-		if (!g_RMG.integer)
+		if (!RMG.integer)
 		{
 			G_Printf(S_COLOR_YELLOW "Warning: Waypoint limit hit (%i)\n", MAX_WPARRAY_SIZE);
 		}
@@ -564,7 +564,7 @@ int CreateNewWP_InTrail(vec3_t origin, int flags, int afterindex)
 
 	if (gWPNum >= MAX_WPARRAY_SIZE)
 	{
-		if (!g_RMG.integer)
+		if (!RMG.integer)
 		{
 			G_Printf(S_COLOR_YELLOW "Warning: Waypoint limit hit (%i)\n", MAX_WPARRAY_SIZE);
 		}
@@ -642,7 +642,7 @@ int CreateNewWP_InsertUnder(vec3_t origin, int flags, int afterindex)
 
 	if (gWPNum >= MAX_WPARRAY_SIZE)
 	{
-		if (!g_RMG.integer)
+		if (!RMG.integer)
 		{
 			G_Printf(S_COLOR_YELLOW "Warning: Waypoint limit hit (%i)\n", MAX_WPARRAY_SIZE);
 		}
@@ -1011,7 +1011,7 @@ int ConnectTrail(int startindex, int endindex, qboolean behindTheScenes)
 	vec3_t validspotpos;
 	trace_t tr;
 
-	if (g_RMG.integer)
+	if (RMG.integer)
 	{ //this might be temporary. Or not.
 		if (!(gWPArray[startindex]->flags & WPFLAG_NEVERONEWAY) &&
 			!(gWPArray[endindex]->flags & WPFLAG_NEVERONEWAY))
@@ -1022,7 +1022,7 @@ int ConnectTrail(int startindex, int endindex, qboolean behindTheScenes)
 		return 0;
 	}
 
-	if (!g_RMG.integer)
+	if (!RMG.integer)
 	{
 		branchDistance = TABLE_BRANCH_DISTANCE;
 	}
@@ -1031,7 +1031,7 @@ int ConnectTrail(int startindex, int endindex, qboolean behindTheScenes)
 		branchDistance = 512; //be less precise here, terrain is fairly broad, and we don't want to take an hour precalculating
 	}
 
-	if (g_RMG.integer)
+	if (RMG.integer)
 	{
 		maxDistFactor = 700;
 	}
@@ -1093,7 +1093,7 @@ int ConnectTrail(int startindex, int endindex, qboolean behindTheScenes)
 
 	while (nodenum < MAX_NODETABLE_SIZE && !foundit && cancontinue)
 	{
-		if (g_RMG.integer)
+		if (RMG.integer)
 		{ //adjust the branch distance dynamically depending on the distance from the start and end points.
 			vec3_t startDist;
 			vec3_t endDist;
@@ -1467,7 +1467,7 @@ int RepairPaths(qboolean behindTheScenes)
 		return 0;
 	}
 
-	if (g_RMG.integer)
+	if (RMG.integer)
 	{
 		maxDistFactor = 800; //higher tolerance here.
 	}
@@ -1625,7 +1625,7 @@ void CalculatePaths(void)
 		return;
 	}
 
-	if (g_RMG.integer)
+	if (RMG.integer)
 	{
 		maxNeighborDist = DEFAULT_GRID_SPACING + (DEFAULT_GRID_SPACING*0.5);
 	}
@@ -3276,7 +3276,7 @@ void BeginAutoPathRoutine(void)
 	
 	//rww - Using a faster in-engine version because we're having to wait for this stuff to get done as opposed to just saving it once.
 	trap_Bot_UpdateWaypoints(gWPNum, gWPArray);
-	trap_Bot_CalculatePaths(g_RMG.integer);
+	trap_Bot_CalculatePaths(RMG.integer);
 	//CalculatePaths(); //make everything nice and connected
 
 #ifdef PAINFULLY_DEBUGGING_THROUGH_VM
@@ -3332,7 +3332,7 @@ void LoadPath_ThisLevel(void)
 
 	trap_Cvar_Register( &mapname, "mapname", "", CVAR_SERVERINFO | CVAR_ROM );
 
-	if (g_RMG.integer)
+	if (RMG.integer)
 	{ //If RMG, generate the path on-the-fly
 		trap_Cvar_Register(&bot_normgpath, "bot_normgpath", "1", CVAR_CHEAT);
 		//note: This is disabled for now as I'm using standard bot nav

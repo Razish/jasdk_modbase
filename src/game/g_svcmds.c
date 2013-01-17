@@ -34,10 +34,6 @@ If 0, then only addresses matching the list will be allowed.  This lets you easi
 ==============================================================================
 */
 
-// extern	vmCvar_t	g_banIPs;
-// extern	vmCvar_t	g_filterBan;
-
-
 typedef struct ipFilter_s
 {
 	unsigned	mask;
@@ -451,7 +447,7 @@ qboolean	ConsoleCommand( void ) {
 		return qtrue;
 	}
 
-	if (g_dedicated.integer) {
+	if (dedicated.integer) {
 		if (Q_stricmp (cmd, "say") == 0) {
 			trap_SendServerCommand( -1, va("print \"server: %s\n\"", ConcatArgs(1) ) );
 			return qtrue;

@@ -419,7 +419,7 @@ void G_AddRandomBot( int team ) {
 	for ( n = 0; n < g_numBots ; n++ ) {
 		value = Info_ValueForKey( g_botInfos[n], "name" );
 		//
-		for ( i=0 ; i< g_maxclients.integer ; i++ ) {
+		for ( i=0 ; i< sv_maxclients.integer ; i++ ) {
 			cl = level.clients + i;
 			if ( cl->pers.connected != CON_CONNECTED ) {
 				continue;
@@ -444,7 +444,7 @@ void G_AddRandomBot( int team ) {
 				break;
 			}
 		}
-		if (i >= g_maxclients.integer) {
+		if (i >= sv_maxclients.integer) {
 			num++;
 		}
 	}
@@ -452,7 +452,7 @@ void G_AddRandomBot( int team ) {
 	for ( n = 0; n < g_numBots ; n++ ) {
 		value = Info_ValueForKey( g_botInfos[n], "name" );
 		//
-		for ( i=0 ; i< g_maxclients.integer ; i++ ) {
+		for ( i=0 ; i< sv_maxclients.integer ; i++ ) {
 			cl = level.clients + i;
 			if ( cl->pers.connected != CON_CONNECTED ) {
 				continue;
@@ -477,10 +477,10 @@ void G_AddRandomBot( int team ) {
 				break;
 			}
 		}
-		if (i >= g_maxclients.integer) {
+		if (i >= sv_maxclients.integer) {
 			num--;
 			if (num <= 0) {
-				skill = trap_Cvar_VariableValue( "g_spSkill" );
+				skill = trap_Cvar_VariableValue( "g_npcspskill" );
 				if (team == TEAM_RED) teamstr = "red";
 				else if (team == TEAM_BLUE) teamstr = "blue";
 				else teamstr = "";
@@ -503,7 +503,7 @@ int G_RemoveRandomBot( int team ) {
 	int i;
 	gclient_t	*cl;
 
-	for ( i=0 ; i< g_maxclients.integer ; i++ ) {
+	for ( i=0 ; i< sv_maxclients.integer ; i++ ) {
 		cl = level.clients + i;
 		if ( cl->pers.connected != CON_CONNECTED ) {
 			continue;
@@ -538,7 +538,7 @@ int G_CountHumanPlayers( int team ) {
 	gclient_t	*cl;
 
 	num = 0;
-	for ( i=0 ; i< g_maxclients.integer ; i++ ) {
+	for ( i=0 ; i< sv_maxclients.integer ; i++ ) {
 		cl = level.clients + i;
 		if ( cl->pers.connected != CON_CONNECTED ) {
 			continue;
@@ -564,7 +564,7 @@ int G_CountBotPlayers( int team ) {
 	gclient_t	*cl;
 
 	num = 0;
-	for ( i=0 ; i< g_maxclients.integer ; i++ ) {
+	for ( i=0 ; i< sv_maxclients.integer ; i++ ) {
 		cl = level.clients + i;
 		if ( cl->pers.connected != CON_CONNECTED ) {
 			continue;
@@ -623,9 +623,9 @@ void G_CheckMinimumPlayers( void ) {
 	minplayers = bot_minplayers.integer;
 	if (minplayers <= 0) return;
 
-	if (minplayers > g_maxclients.integer)
+	if (minplayers > sv_maxclients.integer)
 	{
-		minplayers = g_maxclients.integer;
+		minplayers = sv_maxclients.integer;
 	}
 
 	humanplayers = G_CountHumanPlayers( -1 );
@@ -648,8 +648,8 @@ void G_CheckMinimumPlayers( void ) {
 	/*
 	if (g_gametype.integer >= GT_TEAM) {
 		int humanplayers2, botplayers2;
-		if (minplayers >= g_maxclients.integer / 2) {
-			minplayers = (g_maxclients.integer / 2) -1;
+		if (minplayers >= sv_maxclients.integer / 2) {
+			minplayers = (sv_maxclients.integer / 2) -1;
 		}
 
 		humanplayers = G_CountHumanPlayers( TEAM_RED );
@@ -681,8 +681,8 @@ void G_CheckMinimumPlayers( void ) {
 		}
 	}
 	else if (g_gametype.integer == GT_DUEL || g_gametype.integer == GT_POWERDUEL) {
-		if (minplayers >= g_maxclients.integer) {
-			minplayers = g_maxclients.integer-1;
+		if (minplayers >= sv_maxclients.integer) {
+			minplayers = sv_maxclients.integer-1;
 		}
 		humanplayers = G_CountHumanPlayers( -1 );
 		botplayers = G_CountBotPlayers( -1 );
@@ -698,8 +698,8 @@ void G_CheckMinimumPlayers( void ) {
 		}
 	}
 	else if (g_gametype.integer == GT_FFA) {
-		if (minplayers >= g_maxclients.integer) {
-			minplayers = g_maxclients.integer-1;
+		if (minplayers >= sv_maxclients.integer) {
+			minplayers = sv_maxclients.integer-1;
 		}
 		humanplayers = G_CountHumanPlayers( TEAM_FREE );
 		botplayers = G_CountBotPlayers( TEAM_FREE );
@@ -711,8 +711,8 @@ void G_CheckMinimumPlayers( void ) {
 		}
 	}
 	else if (g_gametype.integer == GT_HOLOCRON || g_gametype.integer == GT_JEDIMASTER) {
-		if (minplayers >= g_maxclients.integer) {
-			minplayers = g_maxclients.integer-1;
+		if (minplayers >= sv_maxclients.integer) {
+			minplayers = sv_maxclients.integer-1;
 		}
 		humanplayers = G_CountHumanPlayers( TEAM_FREE );
 		botplayers = G_CountBotPlayers( TEAM_FREE );
@@ -1148,13 +1148,13 @@ static void G_SpawnBots( char *botList, int baseDelay ) {
 	podium2 = NULL;
 	podium3 = NULL;
 
-	skill = trap_Cvar_VariableValue( "g_spSkill" );
+	skill = trap_Cvar_VariableValue( "g_npcspskill" );
 	if( skill < 1 ) {
-		trap_Cvar_Set( "g_spSkill", "1" );
+		trap_Cvar_Set( "g_npcspskill", "1" );
 		skill = 1;
 	}
 	else if ( skill > 5 ) {
-		trap_Cvar_Set( "g_spSkill", "5" );
+		trap_Cvar_Set( "g_npcspskill", "5" );
 		skill = 5;
 	}
 

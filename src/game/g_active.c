@@ -13,8 +13,6 @@ qboolean PM_SaberInReturn( int move );
 qboolean WP_SaberStyleValidForSaber( saberInfo_t *saber1, saberInfo_t *saber2, int saberHolstered, int saberAnimLevel );
 qboolean saberCheckKnockdown_DuelLoss(gentity_t *saberent, gentity_t *saberOwner, gentity_t *other);
 
-extern vmCvar_t g_saberLockRandomNess;
-
 void P_SetTwitchInfo(gclient_t	*client)
 {
 	client->ps.painTime = level.time;
@@ -944,7 +942,7 @@ void ClientEvents( gentity_t *ent, int oldEventSequence ) {
 					break;		// not in the player model
 				}
 				
-				if ( g_dmflags.integer & DF_NO_FALLING )
+				if ( dmflags.integer & DF_NO_FALLING )
 				{
 					break;
 				}
@@ -1527,17 +1525,17 @@ static int NPC_GetRunSpeed( gentity_t *ent )
 	{
 	case TEAM_BORG:
 		runSpeed = ent->NPC->stats.runSpeed;
-		runSpeed += BORG_RUN_INCR * (g_spskill->integer%3);
+		runSpeed += BORG_RUN_INCR * (g_npcspskill->integer%3);
 		break;
 
 	case TEAM_8472:
 		runSpeed = ent->NPC->stats.runSpeed;
-		runSpeed += SPECIES_RUN_INCR * (g_spskill->integer%3);
+		runSpeed += SPECIES_RUN_INCR * (g_npcspskill->integer%3);
 		break;
 
 	case TEAM_STASIS:
 		runSpeed = ent->NPC->stats.runSpeed;
-		runSpeed += STASIS_RUN_INCR * (g_spskill->integer%3);
+		runSpeed += STASIS_RUN_INCR * (g_npcspskill->integer%3);
 		break;
 
 	case TEAM_BOTS:
@@ -2910,7 +2908,7 @@ void ClientThink_real( gentity_t *ent ) {
 	pm.trace = trap_Trace;
 	pm.pointcontents = trap_PointContents;
 	pm.debugLevel = g_debugMove.integer;
-	pm.noFootsteps = ( g_dmflags.integer & DF_NO_FOOTSTEPS ) > 0;
+	pm.noFootsteps = ( dmflags.integer & DF_NO_FOOTSTEPS ) > 0;
 
 	pm.pmove_fixed = pmove_fixed.integer | client->pers.pmoveFixed;
 	pm.pmove_msec = pmove_msec.integer;
@@ -3535,7 +3533,7 @@ void ClientThink_real( gentity_t *ent ) {
 		// wait for the attack button to be pressed
 		if ( level.time > client->respawnTime && !gDoSlowMoDuel ) {
 			// forcerespawn is to prevent users from waiting out powerups
-			int forceRes = g_forcerespawn.integer;
+			int forceRes = g_forceRespawn.integer;
 
 			if (g_gametype.integer == GT_POWERDUEL)
 			{

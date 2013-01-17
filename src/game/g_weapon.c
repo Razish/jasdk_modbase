@@ -9,9 +9,6 @@
 #include "../shared/Ghoul2/G2.h"
 #include "q_shared.h"
 
-#ifdef BASE_COMPAT
-	static	float	s_quadFactor;
-#endif // BASE_COMPAT
 static	vec3_t	forward, vright, up;
 static	vec3_t	muzzle;
 
@@ -2903,7 +2900,7 @@ void RemoveDetpacks(gentity_t *ent)
 
 qboolean CheatsOn(void) 
 {
-	if ( !g_cheats.integer )
+	if ( !sv_cheats.integer )
 	{
 		return qfalse;
 	}
@@ -4424,14 +4421,6 @@ FireWeapon
 int BG_EmplacedView(vec3_t baseAngles, vec3_t angles, float *newYaw, float constraint);
 
 void FireWeapon( gentity_t *ent, qboolean altFire ) {
-	#ifdef BASE_COMPAT
-		if (ent->client->ps.powerups[PW_QUAD] ) {
-			s_quadFactor = g_quadfactor.value;
-		} else {
-			s_quadFactor = 1;
-		}
-	#endif // BASE_COMPAT
-
 	// track shots taken for accuracy tracking.  Grapple is not a weapon and gauntet is just not tracked
 	if( ent->s.weapon != WP_SABER && ent->s.weapon != WP_STUN_BATON && ent->s.weapon != WP_MELEE ) 
 	{

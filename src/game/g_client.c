@@ -1595,7 +1595,7 @@ void SetupGameGhoul2Model(gentity_t *ent, char *modelname, char *skinName)
 						strcpy(skin, "default");
 					}
 
-					if ( g_gametype.integer >= GT_TEAM && g_gametype.integer != GT_SIEGE && !g_trueJedi.integer )
+					if ( g_gametype.integer >= GT_TEAM && g_gametype.integer != GT_SIEGE && !g_jediVmerc.integer )
 					{
 						//JAC: Also adjust customRGBA for team colors.
 						float colorOverride[3];
@@ -2077,7 +2077,7 @@ qboolean ClientUserinfoChanged( int clientNum ) {
 	Q_strncpyz( forcePowers, Info_ValueForKey( userinfo, "forcepowers" ), sizeof( forcePowers ) );
 
 	//JAC: update our customRGBA for team colors. 
-	if ( g_gametype.integer >= GT_TEAM && g_gametype.integer != GT_SIEGE && !g_trueJedi.integer )
+	if ( g_gametype.integer >= GT_TEAM && g_gametype.integer != GT_SIEGE && !g_jediVmerc.integer )
 	{
 		char skin[MAX_QPATH] = {0};
 		vec3_t colorOverride = {0.0f};
@@ -2381,7 +2381,7 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 		#endif
 		{// patched, check for > g_maxConnPerIP connections from same IP
 			int count=0, i=0;
-			for ( i=0; i<g_maxclients.integer; i++ )
+			for ( i=0; i<sv_maxclients.integer; i++ )
 			{
 				#if 0
 					if ( level.clients[i].pers.connected != CON_DISCONNECTED && i != clientNum )
@@ -3248,7 +3248,7 @@ void ClientSpawn(gentity_t *ent) {
 	client->ps.customRGBA[3]=255;
 
 	//JAC: update our customRGBA for team colors. 
-	if ( g_gametype.integer >= GT_TEAM && g_gametype.integer != GT_SIEGE && !g_trueJedi.integer )
+	if ( g_gametype.integer >= GT_TEAM && g_gametype.integer != GT_SIEGE && !g_jediVmerc.integer )
 	{
 		char skin[MAX_QPATH] = {0}, model[MAX_QPATH] = {0};
 		vec3_t colorOverride = {0.0f};
@@ -3360,7 +3360,7 @@ void ClientSpawn(gentity_t *ent) {
 		&& g_gametype.integer != GT_JEDIMASTER 
 		&& !HasSetSaberOnly()
 		&& !AllForceDisabled( g_forcePowerDisable.integer )
-		&& g_trueJedi.integer )
+		&& g_jediVmerc.integer )
 	{
 		if ( g_gametype.integer >= GT_TEAM && (client->sess.sessionTeam == TEAM_BLUE || client->sess.sessionTeam == TEAM_RED) )
 		{//In Team games, force one side to be merc and other to be jedi
@@ -3647,11 +3647,11 @@ void ClientSpawn(gentity_t *ent) {
 	{//only start with 100 health in Duel
 		if ( g_gametype.integer == GT_POWERDUEL && client->sess.duelTeam == DUELTEAM_LONE )
 		{
-			if ( g_duel_fraglimit.integer )
+			if ( duel_fraglimit.integer )
 			{
 				
 				ent->health = client->ps.stats[STAT_HEALTH] = client->ps.stats[STAT_MAX_HEALTH] =
-					g_powerDuelStartHealth.integer - ((g_powerDuelStartHealth.integer - g_powerDuelEndHealth.integer) * (float)client->sess.wins / (float)g_duel_fraglimit.integer);
+					g_powerDuelStartHealth.integer - ((g_powerDuelStartHealth.integer - g_powerDuelEndHealth.integer) * (float)client->sess.wins / (float)duel_fraglimit.integer);
 			}
 			else
 			{

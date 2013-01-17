@@ -98,7 +98,7 @@ static void NPC_CheckAttacker( gentity_t *other, int mod )
 		//Account for the skill level to skew the results
 		float	luckThreshold;
 
-		switch ( g_spskill.integer )
+		switch ( g_npcspskill.integer )
 		{
 		//Easiest difficulty, mild chance of picking up the player
 		case 0:
@@ -172,7 +172,7 @@ float NPC_GetPainChance( gentity_t *self, int damage )
 	}
 
 	pain_chance = (float)(self->client->ps.stats[STAT_MAX_HEALTH]-self->health)/(self->client->ps.stats[STAT_MAX_HEALTH]*2.0f) + (float)damage/(self->client->ps.stats[STAT_MAX_HEALTH]/2.0f);
-	switch ( g_spskill.integer )
+	switch ( g_npcspskill.integer )
 	{
 	case 0:	//easy
 		//return 0.75f;
@@ -440,9 +440,9 @@ void NPC_Pain(gentity_t *self, gentity_t *attacker, int damage)
 				{//mindtricked
 					return;
 				}
-				else if ( self->NPC->ffireCount < 3+((2-g_spskill.integer)*2) )
+				else if ( self->NPC->ffireCount < 3+((2-g_npcspskill.integer)*2) )
 				{//not mad enough yet
-					//Com_Printf( "chck: %d < %d\n", self->NPC->ffireCount, 3+((2-g_spskill.integer)*2) );
+					//Com_Printf( "chck: %d < %d\n", self->NPC->ffireCount, 3+((2-g_npcspskill.integer)*2) );
 					if ( damage != -1 )
 					{//-1 == don't play pain anim
 						//Set our proper pain animation

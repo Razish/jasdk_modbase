@@ -9,12 +9,6 @@ extern bot_state_t *botstates[MAX_CLIENTS];
 extern qboolean InFront( vec3_t spot, vec3_t from, vec3_t fromAngles, float threshHold );
 extern void G_TestLine(vec3_t start, vec3_t end, int color, int time);
 
-extern vmCvar_t		g_saberRealisticCombat;
-extern vmCvar_t		d_saberSPStyleDamage;
-extern vmCvar_t		g_debugSaberLocks;
-// nmckenzie: SABER_DAMAGE_WALLS
-extern vmCvar_t		g_saberWallDamageScale;
-
 int saberSpinSound = 0;
 
 //would be cleaner if these were renamed to BG_ and proto'd in a header.
@@ -327,7 +321,7 @@ void SaberUpdateSelf(gentity_t *ent)
 			VectorAdd( ent->r.currentOrigin, ent->r.mins, dbgMins );
 			VectorAdd( ent->r.currentOrigin, ent->r.maxs, dbgMaxs );
 
-			G_DebugBoxLines(dbgMins, dbgMaxs, (10.0f/(float)g_svfps.integer)*100);
+			G_DebugBoxLines(dbgMins, dbgMaxs, (10.0f/(float)sv_fps.integer)*100);
 		}
 #endif
 		if (ent->r.contents != CONTENTS_LIGHTSABER)
@@ -2356,7 +2350,7 @@ static GAME_INLINE qboolean G_G2TraceCollide(trace_t *tr, vec3_t lastValidStart,
 			angles[YAW] = g2Hit->r.currentAngles[YAW];
 		}
 
-		if (g_optvehtrace.integer &&
+		if (com_optvehtrace.integer &&
 			g2Hit->s.eType == ET_NPC &&
 			g2Hit->s.NPC_class == CLASS_VEHICLE &&
 			g2Hit->m_pVehicle)
@@ -4413,9 +4407,9 @@ static GAME_INLINE qboolean CheckSaberDamage(gentity_t *self, int rSaberNum, int
 	if (g_gametype.integer == GT_POWERDUEL &&
 		self->client->sess.duelTeam == DUELTEAM_LONE)
 	{ //always x2 when we're powerdueling alone... er, so, we apparently no longer want this?  So they say.
-		if ( g_duel_fraglimit.integer )
+		if ( duel_fraglimit.integer )
 		{
-			//dmg *= 1.5 - (.4 * (float)self->client->sess.wins / (float)g_duel_fraglimit.integer);
+			//dmg *= 1.5 - (.4 * (float)self->client->sess.wins / (float)duel_fraglimit.integer);
 				
 		}
 		//dmg *= 2;
@@ -8502,7 +8496,7 @@ nextStep:
 	}
 
 	//fVSpeed *= 0.08;
-	fVSpeed *= 1.6f/g_svfps.value;
+	fVSpeed *= 1.6f/sv_fps.value;
 
 	//Cap it off at reasonable values so the saber box doesn't go flying ahead of us or
 	//something if we get a big speed boost from something.

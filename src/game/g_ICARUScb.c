@@ -275,7 +275,7 @@ void G_DebugPrint( int level, const char *format, ... )
 
 	//Don't print messages they don't want to see
 	//if ( g_ICARUSDebug->integer < level )
-	if (g_developer.integer != 2)
+	if (developer.integer != 2)
 		return;
 
 	va_start( argptr, format );

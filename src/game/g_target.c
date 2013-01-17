@@ -786,7 +786,7 @@ void scriptrunner_run (gentity_t *self)
 		{
 			if ( !self->activator )
 			{
-				if (g_developer.integer)
+				if (developer.integer)
 				{
 					Com_Printf("target_scriptrunner tried to run on invalid entity!\n");
 				}
@@ -808,7 +808,7 @@ void scriptrunner_run (gentity_t *self)
 				}
 				else
 				{
-					if (g_developer.integer)
+					if (developer.integer)
 					{
 						Com_Printf("target_scriptrunner tried to run on invalid ICARUS activator!\n");
 					}
@@ -816,7 +816,7 @@ void scriptrunner_run (gentity_t *self)
 				}
 			}
 
-			if (g_developer.integer)
+			if (developer.integer)
 			{
 				Com_Printf( "target_scriptrunner running %s on activator %s\n", self->behaviorSet[BSET_USE], self->activator->targetname );
 			}
@@ -824,7 +824,7 @@ void scriptrunner_run (gentity_t *self)
 		}
 		else
 		{
-			if ( g_developer.integer && self->activator )
+			if ( developer.integer && self->activator )
 			{
 				Com_Printf( "target_scriptrunner %s used by %s\n", self->targetname, self->activator->targetname );
 			}

@@ -12,7 +12,6 @@
 #define STATION_RECHARGE_TIME 100
 
 void HolocronThink(gentity_t *ent);
-extern vmCvar_t g_MaxHolocronCarry;
 
 /*QUAKED func_group (0 0 0) ?
 Used to group brushes together just for editor convenience.  They are turned into normal brushes by the utilities.
@@ -494,7 +493,7 @@ void SP_terrain(gentity_t *ent)
 
 	//Force it to 1 when there is terrain on the level.
 	trap_Cvar_Set("RMG", "1");
-	g_RMG.integer = 1;
+	RMG.integer = 1;
 
 	VectorClear (ent->s.angles);
 	trap_SetBrushModel( ent, ent->model );
@@ -503,7 +502,7 @@ void SP_terrain(gentity_t *ent)
 //	shaderNum = gi.CM_GetShaderNum(s.modelindex);
 	shaderNum = 0;
 
-	if (g_RMG.integer)
+	if (RMG.integer)
 	{
 		/*
 		// Grab the default terrain file from the RMG cvar
@@ -603,7 +602,7 @@ void SP_terrain(gentity_t *ent)
 	trap_LinkEntity(ent);
 
 	// If running RMG then initialize the terrain and handle team skins
-	if ( g_RMG.integer ) 
+	if ( RMG.integer ) 
 	{
 		trap_RMG_Init(terrainID);
 
@@ -854,7 +853,7 @@ void HolocronTouch(gentity_t *self, gentity_t *other, trace_t *trace)
 		}
 	}
 
-	if (g_MaxHolocronCarry.integer && othercarrying >= g_MaxHolocronCarry.integer)
+	if (g_maxHolocronCarry.integer && othercarrying >= g_maxHolocronCarry.integer)
 	{ //make the oldest holocron carried by the player pop out to make room for this one
 		other->client->ps.holocronsCarried[index_lowest] = 0;
 

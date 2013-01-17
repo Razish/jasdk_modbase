@@ -15,8 +15,6 @@ extern int GetTime ( int lastTime );
 extern void NPC_AimAdjust( int change );
 extern qboolean FlyingCreature( gentity_t *ent );
 
-extern	vmCvar_t		d_asynchronousGroupAI;
-
 #define	MAX_VIEW_DIST		1024
 #define MAX_VIEW_SPEED		250
 #define	MAX_LIGHT_INTENSITY 255
@@ -689,7 +687,7 @@ qboolean NPC_CheckEnemyStealth( gentity_t *target )
 		}	
 	
 		//If he's violated the threshold, then realize him
-		//float difficulty_scale = 1.0f + (2.0f-g_spskill.value);//if playing on easy, 20% harder to be seen...?
+		//float difficulty_scale = 1.0f + (2.0f-g_npcspskill.value);//if playing on easy, 20% harder to be seen...?
 		if ( NPC->client->NPC_class == CLASS_SWAMPTROOPER )
 		{//swamptroopers can see much better
 			realize = (float)CAUTIOUS_THRESHOLD/**difficulty_scale*/;
@@ -2740,7 +2738,7 @@ void NPC_BSST_Attack( void )
 			if ( NPC->s.weapon == WP_ROCKET_LAUNCHER 
 				&& (ucmd.buttons&BUTTON_ATTACK) 
 				&& !move
-				&& g_spskill.integer > 1 
+				&& g_npcspskill.integer > 1 
 				&& !Q_irand( 0, 3 ) )
 			{//every now and then, shoot a homing rocket
 				ucmd.buttons &= ~BUTTON_ATTACK;

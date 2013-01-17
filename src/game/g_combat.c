@@ -4742,7 +4742,7 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 	}
 
 	
-	if ( (g_trueJedi.integer || g_gametype.integer == GT_SIEGE)
+	if ( (g_jediVmerc.integer || g_gametype.integer == GT_SIEGE)
 		&& client )
 	{//less explosive damage for jedi, more saber damage for non-jedi
 		if ( client->ps.trueJedi 

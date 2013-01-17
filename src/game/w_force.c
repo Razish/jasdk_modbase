@@ -13,8 +13,6 @@ extern void NPC_UseResponse( gentity_t *self, gentity_t *user, qboolean useWhenD
 //NEEDED FOR MIND-TRICK on NPCS=========================================================
 extern void Jedi_Decloak( gentity_t *self );
 
-extern vmCvar_t		g_saberRestrictForce;
-
 extern qboolean BG_FullBodyTauntAnim( int anim );
 
 extern bot_state_t *botstates[MAX_CLIENTS];
@@ -4895,7 +4893,7 @@ void HolocronUpdate(gentity_t *self)
 		noHRank = FORCE_LEVEL_3;
 	}
 
-	trap_Cvar_Update(&g_MaxHolocronCarry);
+	trap_Cvar_Update(&g_maxHolocronCarry);
 
 	while (i < NUM_FORCE_POWERS)
 	{
@@ -4973,7 +4971,7 @@ void JediMasterUpdate(gentity_t *self)
 { //keep jedi master status updated for JM gametype
 	int i = 0;
 
-	trap_Cvar_Update(&g_MaxHolocronCarry);
+	trap_Cvar_Update(&g_maxHolocronCarry);
 
 	while (i < NUM_FORCE_POWERS)
 	{
@@ -5596,7 +5594,7 @@ void WP_ForcePowersUpdate( gentity_t *self, usercmd_t *ucmd )
 		{
 			while ( self->client->ps.fd.forcePowerRegenDebounceTime < level.time )
 			{
-				if (g_gametype.integer != GT_HOLOCRON || g_MaxHolocronCarry.value)
+				if (g_gametype.integer != GT_HOLOCRON || g_maxHolocronCarry.value)
 				{
 					if ( self->client->ps.powerups[PW_FORCE_BOON] )
 						WP_ForcePowerRegenerate( self, 6 );
@@ -5632,8 +5630,8 @@ void WP_ForcePowersUpdate( gentity_t *self, usercmd_t *ucmd )
 				{
 					if ( g_gametype.integer == GT_POWERDUEL && self->client->sess.duelTeam == DUELTEAM_LONE )
 					{
-						if ( g_duel_fraglimit.integer )
-							self->client->ps.fd.forcePowerRegenDebounceTime += max(g_forceRegenTime.integer * (0.6 + (.3 * (float)self->client->sess.wins / (float)g_duel_fraglimit.integer)), 1);
+						if ( duel_fraglimit.integer )
+							self->client->ps.fd.forcePowerRegenDebounceTime += max(g_forceRegenTime.integer * (0.6 + (.3 * (float)self->client->sess.wins / (float)duel_fraglimit.integer)), 1);
 						else
 							self->client->ps.fd.forcePowerRegenDebounceTime += max(g_forceRegenTime.integer*0.7, 1);
 					}

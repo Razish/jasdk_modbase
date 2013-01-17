@@ -87,7 +87,7 @@ void NPC_Blocked( gentity_t *self, gentity_t *blocker )
 		return;
 	}
 
-	//Debug_Printf( debugNPCAI, DEBUG_LEVEL_WARNING, "%s: Excuse me, %s %s!\n", self->targetname, blocker->classname, blocker->targetname );
+	//Debug_Printf( d_npcai, DEBUG_LEVEL_WARNING, "%s: Excuse me, %s %s!\n", self->targetname, blocker->classname, blocker->targetname );
 	
 	//If we're being blocked by the player, say something to them
 	if ( ( blocker->s.number == 0 ) && ( ( blocker->client->playerTeam == self->client->playerTeam ) ) )
