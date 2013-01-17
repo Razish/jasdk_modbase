@@ -324,6 +324,8 @@ static const int numHooks = ARRAY_LEN( hooks );
 void PatchEngine( void )
 {
 	#ifdef PATCH_ENGINE
+	if ( g_engineModifications.integer )
+	{
 		int i;
 
 		Com_Printf( "Installing engine patches (GAME)\n" );
@@ -336,25 +338,28 @@ void PatchEngine( void )
 			PlaceHook( &hooks[i] );
 	
 		level.security.isPatched = qtrue;
-	#else
-		Com_Printf( "Engine modifications are disabled\n" );
+	}
+	else
 	#endif // PATCH_ENGINE
+		Com_Printf( "Engine modifications are disabled\n" );
 }
 
 void UnpatchEngine( void )
 {
 	#ifdef PATCH_ENGINE
+	if ( level.security.isPatched )
+	{
 		int i;
 
 		Com_Printf( "Removing engine patches (GAME)\n" );
 	
-		level.security.isPatched = qfalse;
-
 		for ( i=0; i<numHooks; i++ )
 			RemoveHook( &hooks[i] );
 
 		#ifdef HOOK_Q3INFOBOOM
 			PATCH( Q3IB_MSGPATCH, unsigned int, 0x1FF );
 		#endif
+		level.security.isPatched = qfalse;
+	}
 	#endif // PATCH_ENGINE
 }
