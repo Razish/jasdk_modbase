@@ -487,7 +487,7 @@ void G_AddRandomBot( int team ) {
 				strncpy(netname, value, sizeof(netname)-1);
 				netname[sizeof(netname)-1] = '\0';
 				Q_CleanStr(netname);
-				trap_SendConsoleCommand( EXEC_INSERT, va("addbot \"%s\" %f %s %i\n", netname, skill, teamstr, 0) );
+				trap_SendConsoleCommand( EXEC_INSERT, va("addbot \"%s\" %.2f %s %i\n", netname, skill, teamstr, 0) );
 				return;
 			}
 		}
@@ -501,7 +501,6 @@ G_RemoveRandomBot
 */
 int G_RemoveRandomBot( int team ) {
 	int i;
-	char netname[36];
 	gclient_t	*cl;
 
 	for ( i=0 ; i< g_maxclients.integer ; i++ ) {
@@ -523,9 +522,7 @@ int G_RemoveRandomBot( int team ) {
 		else if ( team >= 0 && cl->sess.sessionTeam != team )
 			continue;
 
-		strcpy(netname, cl->pers.netname);
-		Q_CleanStr(netname);
-		trap_SendConsoleCommand( EXEC_INSERT, va("kick \"%s\"\n", netname) );
+		trap_SendConsoleCommand( EXEC_INSERT, va("kick \"%d\"\n", i) );
 		return qtrue;
 	}
 	return qfalse;
@@ -864,7 +861,7 @@ static void G_AddBot( const char *name, float skill, const char *team, int delay
 	Info_SetValueForKey( userinfo, "rate", "25000" );
 	Info_SetValueForKey( userinfo, "snaps", "20" );
 	Info_SetValueForKey( userinfo, "ip", "localhost" );
-	Info_SetValueForKey( userinfo, "skill", va("%1.2f", skill) );
+	Info_SetValueForKey( userinfo, "skill", va("%.2f", skill) );
 
 		 if ( skill >= 1 && skill < 2 )		Info_SetValueForKey( userinfo, "handicap", "50" );
 	else if ( skill >= 2 && skill < 3 )		Info_SetValueForKey( userinfo, "handicap", "70" );
@@ -949,7 +946,6 @@ static void G_AddBot( const char *name, float skill, const char *team, int delay
 		else
 			team = "red";
 	}
-	Info_SetValueForKey( userinfo, "skill", va( "%5.2f", skill ) );
 	Info_SetValueForKey( userinfo, "team", team );
 
 	bot = &g_entities[ clientNum ];
