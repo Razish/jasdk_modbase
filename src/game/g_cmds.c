@@ -2168,13 +2168,13 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 	//Raz: bounds checking
 	else if ( !Q_stricmp( arg1, "timelimit" ) )
 	{
-		int n = Com_Clampi( 0, 35790, atoi( arg2 ) );
+		int tl = Com_Clamp( 0.0f, 35790.0f, atof( arg2 ) );
 		if ( trap_Argc() < 3 )
 		{
 			trap_SendServerCommand( ent-g_entities, "print \"Usage: /callvote timelimit <time>.\n\"" );
 			return;
 		}
-		Com_sprintf( level.voteString, sizeof( level.voteString ), "%s %i", arg1, n );
+		Com_sprintf( level.voteString, sizeof( level.voteString ), "%s %.3f", arg1, tl );
 	}
 	else if ( !Q_stricmp( arg1, "fraglimit" ) )
 	{

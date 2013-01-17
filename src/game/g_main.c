@@ -2242,7 +2242,7 @@ void CheckExitRules( void ) {
 	{
 		if ( ScoreIsTied() ) {
 			// always wait for sudden death
-			if ((g_gametype.integer != GT_DUEL) || !timelimit.integer)
+			if ((g_gametype.integer != GT_DUEL) || !timelimit.value)
 			{
 				if (g_gametype.integer != GT_POWERDUEL)
 				{
@@ -2254,8 +2254,8 @@ void CheckExitRules( void ) {
 
 	if (g_gametype.integer != GT_SIEGE)
 	{
-		if ( timelimit.integer && !level.warmupTime ) {
-			if ( level.time - level.startTime >= timelimit.integer*60000 ) {
+		if ( timelimit.value > 0.0f && !level.warmupTime ) {
+			if ( level.time - level.startTime >= timelimit.value*60000 ) {
 //				trap_SendServerCommand( -1, "print \"Timelimit hit.\n\"");
 				trap_SendServerCommand( -1, va("print \"%s.\n\"",G_GetStringEdString("MP_SVGAME", "TIMELIMIT_HIT")));
 				if (d_powerDuelPrint.integer)
