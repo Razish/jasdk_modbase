@@ -351,70 +351,87 @@ in a gentity/centity/whatever the hell you want
 ===============
 */
 
-void BG_ParseField( BG_field_t *l_fields, const char *key, const char *value, byte *ent )
+static int spawncmp( const void *a, const void *b ) {
+	return Q_stricmp( (const char *)a, ((BG_field_t*)b)->name );
+}
+
+void BG_ParseField( BG_field_t *l_fields, int numFields, const char *key, const char *value, byte *ent )
 {
-	BG_field_t	*f;
-	byte	*b;
-	float	v;
-	vec3_t	vec;
+	BG_field_t *f;
+	byte *b;
+	float v;
+	vec3_t vec;
 
-	for ( f=l_fields ; f->name ; f++ ) {
-		if ( !Q_stricmp(f->name, key) ) {
-			// found it
-			b = (byte *)ent;
+	f = (BG_field_t *)bsearch( key, l_fields, numFields, sizeof( BG_field_t ), spawncmp );
+	if ( f )
+	{// found it
+		b = (byte *)ent;
 
-			switch( f->type ) {
-			case F_LSTRING:
+		switch( f->type ) {
+		case F_LSTRING:
 #ifdef QAGAME
-				*(char **)(b+f->ofs) = G_NewString (value);
+			*(char **)(b+f->ofs) = G_NewString (value);
 #else
-				*(char **)(b+f->ofs) = CG_NewString (value);
+			*(char **)(b+f->ofs) = CG_NewString (value);
 #endif
-				break;
-			case F_VECTOR:
-				sscanf (value, "%f %f %f", &vec[0], &vec[1], &vec[2]);
+			break;
+		case F_VECTOR:
+			//Raz: unsafe sscanf usage
+			/* basejka code
+			sscanf (value, "%f %f %f", &vec[0], &vec[1], &vec[2]);
+			((float *)(b+f->ofs))[0] = vec[0];
+			((float *)(b+f->ofs))[1] = vec[1];
+			((float *)(b+f->ofs))[2] = vec[2];
+			*/
+			if ( sscanf( value, "%f %f %f", &vec[0], &vec[1], &vec[2] ) == 3 )
+			{
 				((float *)(b+f->ofs))[0] = vec[0];
 				((float *)(b+f->ofs))[1] = vec[1];
 				((float *)(b+f->ofs))[2] = vec[2];
-				break;
-			case F_INT:
-				*(int *)(b+f->ofs) = atoi(value);
-				break;
-			case F_FLOAT:
-				*(float *)(b+f->ofs) = atof(value);
-				break;
-			case F_ANGLEHACK:
-				v = atof(value);
-				((float *)(b+f->ofs))[0] = 0;
-				((float *)(b+f->ofs))[1] = v;
-				((float *)(b+f->ofs))[2] = 0;
-				break;
-#ifdef QAGAME
-			case F_PARM1:
-			case F_PARM2:
-			case F_PARM3:
-			case F_PARM4:
-			case F_PARM5:
-			case F_PARM6:
-			case F_PARM7:
-			case F_PARM8:
-			case F_PARM9:
-			case F_PARM10:
-			case F_PARM11:
-			case F_PARM12:
-			case F_PARM13:
-			case F_PARM14:
-			case F_PARM15:
-			case F_PARM16:
-				Q3_SetParm( ((gentity_t *)(ent))->s.number, (f->type - F_PARM1), (char *) value );
-				break;
-#endif
-			default:
-			case F_IGNORE:
-				break;
 			}
-			return;
+			else
+			{
+				Com_Printf( "BG_ParseField: F_VECTOR (%s:%s) with incorrect amount of arguments. Using null vector\n", key, value );
+				((float *)(b+f->ofs))[0] = ((float *)(b+f->ofs))[1] = ((float *)(b+f->ofs))[2] = 0.0f;
+			}
+			break;
+		case F_INT:
+			*(int *)(b+f->ofs) = atoi(value);
+			break;
+		case F_FLOAT:
+			*(float *)(b+f->ofs) = atof(value);
+			break;
+		case F_ANGLEHACK:
+			v = atof(value);
+			((float *)(b+f->ofs))[0] = 0;
+			((float *)(b+f->ofs))[1] = v;
+			((float *)(b+f->ofs))[2] = 0;
+			break;
+#ifdef QAGAME
+		case F_PARM1:
+		case F_PARM2:
+		case F_PARM3:
+		case F_PARM4:
+		case F_PARM5:
+		case F_PARM6:
+		case F_PARM7:
+		case F_PARM8:
+		case F_PARM9:
+		case F_PARM10:
+		case F_PARM11:
+		case F_PARM12:
+		case F_PARM13:
+		case F_PARM14:
+		case F_PARM15:
+		case F_PARM16:
+			Q3_SetParm( ((gentity_t *)(ent))->s.number, (f->type - F_PARM1), (char *) value );
+			break;
+#endif
+		default:
+		case F_IGNORE:
+			break;
 		}
+		return;
 	}
 }
 

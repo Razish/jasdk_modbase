@@ -3394,19 +3394,19 @@ typedef struct cgSpawnEnt_s
 //spawn fields for our cgame "entity"
 BG_field_t cg_spawnFields[] =
 {
-	{"classname", CGFOFS(classname), F_LSTRING},
-	{"origin", CGFOFS(origin), F_VECTOR},
-	{"angles", CGFOFS(angles), F_VECTOR},
-	{"angle", CGFOFS(angle), F_FLOAT},
-	{"modelscale", CGFOFS(fScale), F_FLOAT},
-	{"modelscale_vec", CGFOFS(scale), F_VECTOR},
-	{"model", CGFOFS(model), F_LSTRING},
-	{"mins", CGFOFS(mins), F_VECTOR},
-	{"maxs", CGFOFS(maxs), F_VECTOR},
-	{"zoffset", CGFOFS(zoffset), F_FLOAT},
-	{"onlyfoghere", CGFOFS(onlyFogHere), F_INT},
-	{"fogstart", CGFOFS(fogstart), F_FLOAT},
-	{"radarrange", CGFOFS(radarrange), F_FLOAT},
+	{ "angle",			CGFOFS( angle ),		F_FLOAT },
+	{ "angles",			CGFOFS( angles ),		F_VECTOR },
+	{ "classname",		CGFOFS( classname ),	F_LSTRING },
+	{ "fogstart",		CGFOFS( fogstart ),		F_FLOAT },
+	{ "maxs",			CGFOFS( maxs ),			F_VECTOR },
+	{ "mins",			CGFOFS( mins ),			F_VECTOR },
+	{ "model",			CGFOFS( model ),		F_LSTRING },
+	{ "modelscale",		CGFOFS( fScale ),		F_FLOAT },
+	{ "modelscale_vec",	CGFOFS( scale ),		F_VECTOR },
+	{ "onlyfoghere",	CGFOFS( onlyFogHere ),	F_INT },
+	{ "origin",			CGFOFS( origin ),		F_VECTOR },
+	{ "radarrange",		CGFOFS( radarrange ),	F_FLOAT },
+	{ "zoffset",		CGFOFS( zoffset ),		F_FLOAT },
 	{NULL}
 };
 
@@ -3601,7 +3601,7 @@ CG_SpawnCGameEntFromVars
 See if we should do something for this ent cgame-side -rww
 ==============
 */
-void BG_ParseField( BG_field_t *l_fields, const char *key, const char *value, byte *ent );
+void BG_ParseField( BG_field_t *l_fields, int numFields, const char *key, const char *value, byte *ent );
 
 extern float cg_linearFogOverride; //cg_view.c
 extern float cg_radarRange;//cg_draw.c
@@ -3614,7 +3614,7 @@ void CG_SpawnCGameEntFromVars(void)
 
 	for (i = 0; i < cg_numSpawnVars; i++)
 	{ //shove all this stuff into our data structure used specifically for getting spawn info
-		BG_ParseField( cg_spawnFields, cg_spawnVars[i][0], cg_spawnVars[i][1], (byte *)&ent );
+		BG_ParseField( cg_spawnFields, ARRAY_LEN( cg_spawnFields ), cg_spawnVars[i][0], cg_spawnVars[i][1], (byte *)&ent );
 	}
 
 	if (ent.classname && ent.classname[0])
