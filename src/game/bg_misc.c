@@ -351,7 +351,7 @@ in a gentity/centity/whatever the hell you want
 ===============
 */
 
-static int spawncmp( const void *a, const void *b ) {
+static int fieldcmp( const void *a, const void *b ) {
 	return Q_stricmp( (const char *)a, ((BG_field_t*)b)->name );
 }
 
@@ -362,7 +362,7 @@ void BG_ParseField( BG_field_t *l_fields, int numFields, const char *key, const 
 	float v;
 	vec3_t vec;
 
-	f = (BG_field_t *)bsearch( key, l_fields, numFields, sizeof( BG_field_t ), spawncmp );
+	f = (BG_field_t *)bsearch( key, l_fields, numFields, sizeof( BG_field_t ), fieldcmp );
 	if ( f )
 	{// found it
 		b = (byte *)ent;
