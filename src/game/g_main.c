@@ -1605,14 +1605,6 @@ void BeginIntermission( void ) {
 	level.intermissiontime = level.time;
 	FindIntermissionPoint();
 
-	/*
-	if (g_singlePlayer.integer) {
-		trap_Cvar_Set("ui_singlePlayerActive", "0");
-		UpdateTournamentInfo();
-	}
-	*/
-	//what the? Well, I don't want this to happen.
-
 	// move all clients to the intermission point
 	for (i=0 ; i< level.maxclients ; i++) {
 		client = g_entities + i;
