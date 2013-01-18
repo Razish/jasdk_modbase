@@ -1571,6 +1571,10 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		DEBUGNAME("EV_TAUNT");
 		{
 			int soundIndex = 0;
+
+			if ( cg_noTaunt.integer )
+				break;
+
 			if ( cgs.gametype != GT_DUEL
 				&& cgs.gametype != GT_POWERDUEL
 				&& es->eventParm == TAUNT_TAUNT )

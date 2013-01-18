@@ -837,7 +837,7 @@ vmCvar_t	cg_cameraOrbitDelay;
 vmCvar_t	cg_timescaleFadeEnd;
 vmCvar_t	cg_timescaleFadeSpeed;
 vmCvar_t	cg_timescale;
-//vmCvar_t	cg_noTaunt;
+vmCvar_t	cg_noTaunt;
 vmCvar_t	cg_noProjectileTrail;
 //vmCvar_t	cg_trueLightning;
 /*
@@ -1026,7 +1026,7 @@ static cvarTable_t cvarTable[] = { // bk001129
 
 	{ &pmove_fixed, "pmove_fixed", "0", 0},
 	{ &pmove_msec, "pmove_msec", "8", 0},
-//	{ &cg_noTaunt, "cg_noTaunt", "0", CVAR_ARCHIVE},
+	{ &cg_noTaunt, "cg_noTaunt", "0", CVAR_ARCHIVE},
 	{ &cg_noProjectileTrail, "cg_noProjectileTrail", "0", CVAR_ARCHIVE},
 //	{ &cg_trueLightning, "cg_trueLightning", "0.0", CVAR_ARCHIVE},
 	{ &cg_showVehBounds, "cg_showVehBounds", "0", 0},
