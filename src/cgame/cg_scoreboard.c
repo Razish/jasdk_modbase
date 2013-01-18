@@ -305,7 +305,7 @@ qboolean CG_DrawOldScoreboard( void ) {
 	int topBorderSize, bottomBorderSize;
 
 	// don't draw amuthing if the menu or console is up
-	if ( cg_paused.integer ) {
+	if ( cl_paused.integer ) {
 		cg.deferredPlayerLoading = 0;
 		return qfalse;
 	}

@@ -466,7 +466,7 @@ void CG_Draw3DModel( float x, float y, float w, float h, qhandle_t model, void *
 	refdef_t		refdef;
 	refEntity_t		ent;
 
-	if ( !cg_draw3dIcons.integer || !cg_drawIcons.integer ) {
+	if ( !cg_draw3DIcons.integer || !cg_drawIcons.integer ) {
 		return;
 	}
 
@@ -541,7 +541,7 @@ void CG_DrawFlagModel( float x, float y, float w, float h, int team, qboolean fo
 	vec3_t			mins, maxs;
 	qhandle_t		handle;
 
-	if ( !force2D && cg_draw3dIcons.integer ) {
+	if ( !force2D && cg_draw3DIcons.integer ) {
 
 		//Raz: need to adjust the coords only for 3d models
 		//		2d icons use virtual screen coords
@@ -4276,7 +4276,7 @@ static void CG_DrawLagometer( void ) {
 
 	trap_R_SetColor( NULL );
 
-	if ( cg_nopredict.integer || cg_synchronousClients.integer ) {
+	if ( cg_noPredict.integer || g_synchronousClients.integer ) {
 		CG_DrawBigString( ax, ay, "snc", 1.0 );
 	}
 
@@ -4385,7 +4385,7 @@ static void CG_DrawCenterString( void ) {
 		return;
 	}
 
-	color = CG_FadeColor( cg.centerPrintTime, 1000 * cg_centertime.value );
+	color = CG_FadeColor( cg.centerPrintTime, 1000 * cg_centerTime.value );
 	if ( !color ) {
 		return;
 	}
@@ -8258,7 +8258,7 @@ static void CG_Draw2D( void ) {
 	CG_DrawLagometer();
 	
 
-	if (!cg_paused.integer) {
+	if (!cl_paused.integer) {
 		CG_DrawBracketedEntities();
 		CG_DrawUpperRight();
 	}

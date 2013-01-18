@@ -112,8 +112,6 @@ vec4_t colorTable[CT_MAX] =
 
 int cgWeatherOverride = 0;
 
-int forceModelModificationCount = -1;
-
 void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum );
 void CG_Shutdown( void );
 
@@ -691,365 +689,53 @@ weaponInfo_t		cg_weapons[MAX_WEAPONS];
 itemInfo_t			cg_items[MAX_ITEMS];
 
 
-vmCvar_t	cg_centertime;
-vmCvar_t	cg_runpitch;
-vmCvar_t	cg_runroll;
-vmCvar_t	cg_bobup;
-vmCvar_t	cg_bobpitch;
-vmCvar_t	cg_bobroll;
-//vmCvar_t	cg_swingSpeed;
-vmCvar_t	cg_shadows;
-vmCvar_t	cg_renderToTextureFX;
-vmCvar_t	cg_drawTimer;
-vmCvar_t	cg_drawFPS;
-vmCvar_t	cg_drawSnapshot;
-vmCvar_t	cg_draw3dIcons;
-vmCvar_t	cg_drawIcons;
-vmCvar_t	cg_drawAmmoWarning;
-vmCvar_t	cg_drawCrosshair;
-vmCvar_t	cg_drawCrosshairNames;
-vmCvar_t	cg_drawRadar;
-vmCvar_t	cg_drawVehLeadIndicator;
-vmCvar_t	cg_dynamicCrosshair;
-vmCvar_t	cg_dynamicCrosshairPrecision;
-vmCvar_t	cg_drawRewards;
-vmCvar_t	cg_drawScores;
-vmCvar_t	cg_crosshairSize;
-vmCvar_t	cg_crosshairX;
-vmCvar_t	cg_crosshairY;
-vmCvar_t	cg_crosshairHealth;
-vmCvar_t	cg_draw2D;
-vmCvar_t	cg_drawStatus;
-vmCvar_t	cg_animSpeed;
-vmCvar_t	cg_debugAnim;
-vmCvar_t	cg_debugSaber;
-vmCvar_t	cg_debugPosition;
-vmCvar_t	cg_debugEvents;
-vmCvar_t	cg_errorDecay;
-vmCvar_t	cg_nopredict;
-vmCvar_t	cg_noPlayerAnims;
-vmCvar_t	cg_showmiss;
-vmCvar_t	cg_showVehMiss;
-vmCvar_t	cg_footsteps;
-vmCvar_t	cg_addMarks;
-vmCvar_t	cg_viewsize;
-vmCvar_t	cg_drawGun;
-vmCvar_t	cg_gun_frame;
-vmCvar_t	cg_gun_x;
-vmCvar_t	cg_gun_y;
-vmCvar_t	cg_gun_z;
-vmCvar_t	cg_autoswitch;
-//vmCvar_t	cg_ignore;
-vmCvar_t	cg_simpleItems;
-vmCvar_t	cg_fov;
-vmCvar_t	cg_zoomFov;
+static void CG_SVRunningChange( void ) {
+	cgs.localServer = sv_running.integer;
+}
 
-//vmCvar_t	cg_swingAngles;
+static void CG_ForceModelChange( void ) {
+	int i;
 
-vmCvar_t	cg_oldPainSounds;
+	for ( i=0; i<MAX_CLIENTS; i++ ) {
+		const char *clientInfo;
+		void *oldGhoul2;
 
-vmCvar_t	cg_ragDoll;
+		clientInfo = CG_ConfigString( CS_PLAYERS+i );
+		if ( !VALIDSTRING( clientInfo ) )
+			continue;
 
-vmCvar_t	cg_jumpSounds;
+		oldGhoul2 = cgs.clientinfo[i].ghoul2Model;
+		CG_NewClientInfo( i, qtrue );
+	}
+}
 
-vmCvar_t	cg_autoMap;
-vmCvar_t	cg_autoMapX;
-vmCvar_t	cg_autoMapY;
-vmCvar_t	cg_autoMapW;
-vmCvar_t	cg_autoMapH;
-
-vmCvar_t	bg_fighterAltControl;
-
-vmCvar_t	cg_chatBox;
-vmCvar_t	cg_chatBoxHeight;
-
-vmCvar_t	cg_saberModelTraceEffect;
-
-vmCvar_t	cg_saberClientVisualCompensation;
-
-vmCvar_t	cg_g2TraceLod;
-
-vmCvar_t	cg_fpls;
-
-vmCvar_t	cg_ghoul2Marks;
-
-vmCvar_t	cg_optvehtrace;
-
-vmCvar_t	cg_saberDynamicMarks;
-vmCvar_t	cg_saberDynamicMarkTime;
-
-vmCvar_t	cg_saberContact;
-vmCvar_t	cg_saberTrail;
-
-vmCvar_t	cg_duelHeadAngles;
-
-vmCvar_t	cg_speedTrail;
-vmCvar_t	cg_auraShell;
-
-vmCvar_t	cg_repeaterOrb;
-
-vmCvar_t	cg_animBlend;
-
-vmCvar_t	cg_dismember;
-
-vmCvar_t	cg_thirdPersonSpecialCam;
-
-vmCvar_t	cg_thirdPerson;
-vmCvar_t	cg_thirdPersonRange;
-vmCvar_t	cg_thirdPersonAngle;
-vmCvar_t	cg_thirdPersonPitchOffset;
-vmCvar_t	cg_thirdPersonVertOffset;
-vmCvar_t	cg_thirdPersonCameraDamp;
-vmCvar_t	cg_thirdPersonTargetDamp;
-
-vmCvar_t	cg_thirdPersonAlpha;
-vmCvar_t	cg_thirdPersonHorzOffset;
-
-vmCvar_t	cg_stereoSeparation;
-vmCvar_t	cg_lagometer;
-vmCvar_t	cg_drawEnemyInfo;
-vmCvar_t	cg_synchronousClients;
-vmCvar_t 	cg_stats;
-vmCvar_t 	cg_buildScript;
-vmCvar_t 	cg_forceModel;
-vmCvar_t	cg_paused;
-vmCvar_t	cg_blood;
-vmCvar_t	cg_predictItems;
-vmCvar_t	cg_deferPlayers;
-vmCvar_t	cg_drawTeamOverlay;
-vmCvar_t	cg_teamOverlayUserinfo;
-vmCvar_t	cg_drawFriend;
-vmCvar_t	cg_teamChatsOnly;
-vmCvar_t	cg_hudFiles;
-vmCvar_t 	cg_scorePlum;
-vmCvar_t 	cg_smoothClients;
-
-vmCvar_t	pmove_fixed;
-//vmCvar_t	cg_pmove_fixed;
-vmCvar_t	pmove_msec;
-// nmckenzie: DUEL_HEALTH
-vmCvar_t	g_showDuelHealths;
-
-vmCvar_t	cg_pmove_msec;
-vmCvar_t	cg_cameraMode;
-vmCvar_t	cg_cameraOrbit;
-vmCvar_t	cg_cameraOrbitDelay;
-vmCvar_t	cg_timescaleFadeEnd;
-vmCvar_t	cg_timescaleFadeSpeed;
-vmCvar_t	cg_timescale;
-vmCvar_t	cg_noTaunt;
-vmCvar_t	cg_noProjectileTrail;
-//vmCvar_t	cg_trueLightning;
-/*
-Ghoul2 Insert Start
-*/
-vmCvar_t	cg_debugBB;
-/*
-Ghoul2 Insert End
-*/
-//vmCvar_t 	cg_redTeamName;
-//vmCvar_t 	cg_blueTeamName;
-vmCvar_t	cg_currentSelectedPlayer;
-//vmCvar_t	cg_currentSelectedPlayerName;
-//vmCvar_t	cg_singlePlayerActive;
-//vmCvar_t	cg_recordSPDemo;
-//vmCvar_t	cg_recordSPDemoName;
-vmCvar_t	cg_showVehBounds;
-
-vmCvar_t	ui_myteam;
-
-vmCvar_t	cg_snapshotTimeout;
-
-#define XCVAR_DECL
-	#include "cg_xcvar.h"
-#undef XCVAR_DECL
+static void CG_TeamOverlayChange( void ) {
+	// If team overlay is on, ask for updates from the server.  If its off,
+	// let the server know so we don't receive it
+	if ( cg_drawTeamOverlay.integer > 0 && cgs.gametype >= GT_SINGLE_PLAYER)
+		trap_Cvar_Set( "teamoverlay", "1" );
+	else
+		trap_Cvar_Set( "teamoverlay", "0" );
+}
 
 typedef struct {
 	vmCvar_t	*vmCvar;
 	char		*cvarName;
 	char		*defaultString;
+	void		(*update)( void );
 	int			cvarFlags;
 } cvarTable_t;
 
-static cvarTable_t cvarTable[] = { // bk001129
-//	{ &cg_ignore, "cg_ignore", "0", 0 },	// used for debugging
-	{ &cg_autoswitch, "cg_autoswitch", "1", CVAR_ARCHIVE },
-	{ &cg_drawGun, "cg_drawGun", "1", CVAR_ARCHIVE },
-	{ &cg_zoomFov, "cg_zoomfov", "40.0", CVAR_ARCHIVE },
-	{ &cg_fov, "cg_fov", "80", CVAR_ARCHIVE },
-	{ &cg_viewsize, "cg_viewsize", "100", CVAR_ARCHIVE },
-	{ &cg_stereoSeparation, "cg_stereoSeparation", "0.4", CVAR_ARCHIVE  },
-	{ &cg_shadows, "cg_shadows", "1", CVAR_ARCHIVE  },
-	{ &cg_renderToTextureFX, "cg_renderToTextureFX", "1", CVAR_ARCHIVE  },
-	{ &cg_draw2D, "cg_draw2D", "1", CVAR_ARCHIVE  },
-	{ &cg_drawStatus, "cg_drawStatus", "1", CVAR_ARCHIVE  },
-	{ &cg_drawTimer, "cg_drawTimer", "0", CVAR_ARCHIVE  },
-	{ &cg_drawFPS, "cg_drawFPS", "0", CVAR_ARCHIVE  },
-	{ &cg_drawSnapshot, "cg_drawSnapshot", "0", CVAR_ARCHIVE  },
-	{ &cg_draw3dIcons, "cg_draw3dIcons", "1", CVAR_ARCHIVE  },
-	{ &cg_drawIcons, "cg_drawIcons", "1", CVAR_ARCHIVE  },
-	{ &cg_drawAmmoWarning, "cg_drawAmmoWarning", "0", CVAR_ARCHIVE  },
-	{ &cg_drawEnemyInfo, "cg_drawEnemyInfo", "1", CVAR_ARCHIVE  },
-	{ &cg_drawCrosshair, "cg_drawCrosshair", "1", CVAR_ARCHIVE },
-	{ &cg_drawCrosshairNames, "cg_drawCrosshairNames", "1", CVAR_ARCHIVE },
-	{ &cg_drawRadar, "cg_drawRadar", "1", CVAR_ARCHIVE },
-	{ &cg_drawVehLeadIndicator, "cg_drawVehLeadIndicator", "1", CVAR_ARCHIVE },
-	{ &cg_drawScores,		  "cg_drawScores", "1", CVAR_ARCHIVE },
-	{ &cg_dynamicCrosshair, "cg_dynamicCrosshair", "1", CVAR_ARCHIVE },
-	//Enables ghoul2 traces for crosshair traces.. more precise when pointing at others, but slower.
-	//And if the server doesn't have g2 col enabled, it won't match up the same.
-	{ &cg_dynamicCrosshairPrecision, "cg_dynamicCrosshairPrecision", "1", CVAR_ARCHIVE },
-	{ &cg_drawRewards, "cg_drawRewards", "1", CVAR_ARCHIVE },
-	{ &cg_crosshairSize, "cg_crosshairSize", "24", CVAR_ARCHIVE },
-	{ &cg_crosshairHealth, "cg_crosshairHealth", "0", CVAR_ARCHIVE },
-	{ &cg_crosshairX, "cg_crosshairX", "0", CVAR_ARCHIVE },
-	{ &cg_crosshairY, "cg_crosshairY", "0", CVAR_ARCHIVE },
-	{ &cg_simpleItems, "cg_simpleItems", "0", CVAR_ARCHIVE },
-	{ &cg_addMarks, "cg_marks", "1", CVAR_ARCHIVE },
-	{ &cg_lagometer, "cg_lagometer", "0", CVAR_ARCHIVE },
-	{ &cg_gun_x, "cg_gunX", "0", CVAR_ARCHIVE },
-	{ &cg_gun_y, "cg_gunY", "0", CVAR_ARCHIVE },
-	{ &cg_gun_z, "cg_gunZ", "0", CVAR_ARCHIVE },
-	{ &cg_centertime, "cg_centertime", "3", CVAR_ARCHIVE },
-	{ &cg_runpitch, "cg_runpitch", "0.002", CVAR_ARCHIVE},
-	{ &cg_runroll, "cg_runroll", "0.005", CVAR_ARCHIVE },
-	{ &cg_bobup , "cg_bobup", "0.005", CVAR_ARCHIVE },
-	{ &cg_bobpitch, "cg_bobpitch", "0.002", CVAR_ARCHIVE },
-	{ &cg_bobroll, "cg_bobroll", "0.002", CVAR_ARCHIVE },
-	//{ &cg_swingSpeed, "cg_swingSpeed", "0.3", CVAR_CHEAT },
-	{ &cg_animSpeed, "cg_animspeed", "1", CVAR_CHEAT },
-	{ &cg_debugAnim, "cg_debuganim", "0", CVAR_CHEAT },
-	{ &cg_debugSaber, "cg_debugsaber", "0", CVAR_CHEAT },
-	{ &cg_debugPosition, "cg_debugposition", "0", CVAR_CHEAT },
-	{ &cg_debugEvents, "cg_debugevents", "0", CVAR_CHEAT },
-	{ &cg_errorDecay, "cg_errordecay", "100", 0 },
-	{ &cg_nopredict, "cg_nopredict", "0", CVAR_ARCHIVE },
-	{ &cg_noPlayerAnims, "cg_noplayeranims", "0", CVAR_CHEAT },
-	{ &cg_showmiss, "cg_showmiss", "0", 0 },
-	{ &cg_showVehMiss, "cg_showVehMiss", "0", 0 },
-	{ &cg_footsteps, "cg_footsteps", "3", CVAR_ARCHIVE },
-//	{ &cg_swingAngles, "cg_swingAngles", "1", 0 },
+#define XCVAR_DECL
+	#include "cg_xcvar.h"
+#undef XCVAR_DECL
 
-	{ &cg_oldPainSounds, "cg_oldPainSounds", "0", CVAR_ARCHIVE },
-
-	{ &cg_ragDoll, "broadsword", "0", CVAR_ARCHIVE },
-
-	{ &cg_jumpSounds, "cg_jumpSounds", "0", CVAR_ARCHIVE },
-
-	{ &cg_autoMap, "r_autoMap", "0", CVAR_ARCHIVE },
-	{ &cg_autoMapX, "r_autoMapX", "496", CVAR_ARCHIVE },
-	{ &cg_autoMapY, "r_autoMapY", "32", CVAR_ARCHIVE },
-	{ &cg_autoMapW, "r_autoMapW", "128", CVAR_ARCHIVE },
-	{ &cg_autoMapH, "r_autoMapH", "128", CVAR_ARCHIVE },
-
-	{ &bg_fighterAltControl, "bg_fighterAltControl", "0", CVAR_SERVERINFO },
-
-	{ &cg_chatBox, "cg_chatBox", "10000", CVAR_ARCHIVE },
-	{ &cg_chatBoxHeight, "cg_chatBoxHeight", "350", CVAR_ARCHIVE },
-
-	{ &cg_saberModelTraceEffect, "cg_saberModelTraceEffect", "0", 0 },
-
-	//allows us to trace between server frames on the client to see if we're visually
-	//hitting the last entity we detected a hit on from the server.
-	{ &cg_saberClientVisualCompensation, "cg_saberClientVisualCompensation", "1", 0 },
-
-	{ &cg_g2TraceLod, "cg_g2TraceLod", "2", 0 },
-
-	{ &cg_fpls, "cg_fpls", "0", 0 },
-
-	{ &cg_ghoul2Marks, "cg_ghoul2Marks", "16", 0 },
-
-	{ &cg_optvehtrace, "com_optvehtrace", "0", 0 },
-
-	{ &cg_saberDynamicMarks, "cg_saberDynamicMarks", "0", 0 },
-	{ &cg_saberDynamicMarkTime, "cg_saberDynamicMarkTime", "60000", 0 },
-
-	{ &cg_saberContact, "cg_saberContact", "1", 0 },
-	{ &cg_saberTrail, "cg_saberTrail", "1", CVAR_ARCHIVE },
-
-	{ &cg_duelHeadAngles, "cg_duelHeadAngles", "0", 0 },
-
-	{ &cg_speedTrail, "cg_speedTrail", "1", CVAR_ARCHIVE },
-	{ &cg_auraShell, "cg_auraShell", "1", CVAR_ARCHIVE },
-
-	{ &cg_repeaterOrb, "cg_repeaterOrb", "0", CVAR_ARCHIVE },
-
-	{ &cg_animBlend, "cg_animBlend", "1", 0 },
-
-	{ &cg_dismember, "cg_dismember", "0", CVAR_ARCHIVE },
-
-	{ &cg_thirdPersonSpecialCam, "cg_thirdPersonSpecialCam", "0", 0 },
-
-	{ &cg_thirdPerson, "cg_thirdPerson", "0", CVAR_ARCHIVE },
-	{ &cg_thirdPersonRange, "cg_thirdPersonRange", "80", CVAR_ARCHIVE },
-	{ &cg_thirdPersonAngle, "cg_thirdPersonAngle", "0", CVAR_ARCHIVE },
-	{ &cg_thirdPersonPitchOffset, "cg_thirdPersonPitchOffset", "0", CVAR_ARCHIVE },
-	{ &cg_thirdPersonVertOffset, "cg_thirdPersonVertOffset", "16", CVAR_ARCHIVE },
-	{ &cg_thirdPersonCameraDamp, "cg_thirdPersonCameraDamp", "0.3", 0 },
-	{ &cg_thirdPersonTargetDamp, "cg_thirdPersonTargetDamp", "0.5", CVAR_ARCHIVE },
-	
-	{ &cg_thirdPersonHorzOffset, "cg_thirdPersonHorzOffset", "0", CVAR_CHEAT },
-	{ &cg_thirdPersonAlpha,	"cg_thirdPersonAlpha",	"1.0", CVAR_CHEAT },
-
-	{ &cg_forceModel, "cg_forceModel", "0", CVAR_ARCHIVE  },
-	{ &cg_predictItems, "cg_predictItems", "1", CVAR_ARCHIVE },
-	{ &cg_deferPlayers, "cg_deferPlayers", "1", CVAR_ARCHIVE },
-	{ &cg_drawTeamOverlay, "cg_drawTeamOverlay", "0", CVAR_ARCHIVE },
-	{ &cg_teamOverlayUserinfo, "teamoverlay", "0", CVAR_ROM | CVAR_USERINFO },
-	{ &cg_stats, "cg_stats", "0", 0 },
-	{ &cg_drawFriend, "cg_drawFriend", "1", CVAR_ARCHIVE },
-	{ &cg_teamChatsOnly, "cg_teamChatsOnly", "0", CVAR_ARCHIVE },
-	// the following variables are created in other parts of the system,
-	// but we also reference them here
-	{ &cg_buildScript, "com_buildScript", "0", 0 },	// force loading of all possible data amd error on failures
-	{ &cg_paused, "cl_paused", "0", CVAR_ROM },
-	{ &cg_blood, "com_blood", "1", CVAR_ARCHIVE },
-	{ &cg_synchronousClients, "g_synchronousClients", "0", 0 },	// communicated by systeminfo
-
-//	{ &cg_redTeamName, "g_redteam", DEFAULT_REDTEAM_NAME, CVAR_ARCHIVE | CVAR_SERVERINFO | CVAR_USERINFO },
-//	{ &cg_blueTeamName, "g_blueteam", DEFAULT_BLUETEAM_NAME, CVAR_ARCHIVE | CVAR_SERVERINFO | CVAR_USERINFO },
-	{ &cg_currentSelectedPlayer, "cg_currentSelectedPlayer", "0", CVAR_ARCHIVE},
-//	{ &cg_currentSelectedPlayerName, "cg_currentSelectedPlayerName", "", CVAR_ARCHIVE},
-//	{ &cg_singlePlayerActive, "ui_singlePlayerActive", "0", CVAR_USERINFO},
-//	{ &cg_recordSPDemo, "ui_recordSPDemo", "0", CVAR_ARCHIVE},
-//	{ &cg_recordSPDemoName, "ui_recordSPDemoName", "", CVAR_ARCHIVE},
-
-	{ &cg_cameraOrbit, "cg_cameraOrbit", "0", CVAR_CHEAT},
-	{ &cg_cameraOrbitDelay, "cg_cameraOrbitDelay", "50", CVAR_ARCHIVE},
-	{ &cg_timescaleFadeEnd, "cg_timescaleFadeEnd", "1", 0},
-	{ &cg_timescaleFadeSpeed, "cg_timescaleFadeSpeed", "0", 0},
-	{ &cg_timescale, "timescale", "1", 0},
-	{ &cg_scorePlum, "cg_scorePlums", "1",  CVAR_ARCHIVE},
-	{ &cg_hudFiles, "cg_hudFiles", "ui/jahud.txt", CVAR_ARCHIVE},
-	{ &cg_smoothClients, "cg_smoothClients", "1",  CVAR_ARCHIVE},
-	{ &cg_cameraMode, "com_cameraMode", "0", CVAR_CHEAT},
-
-	{ &pmove_fixed, "pmove_fixed", "0", 0},
-	{ &pmove_msec, "pmove_msec", "8", 0},
-	{ &cg_noTaunt, "cg_noTaunt", "0", CVAR_ARCHIVE},
-	{ &cg_noProjectileTrail, "cg_noProjectileTrail", "0", CVAR_ARCHIVE},
-//	{ &cg_trueLightning, "cg_trueLightning", "0.0", CVAR_ARCHIVE},
-	{ &cg_showVehBounds, "cg_showVehBounds", "0", 0},
-
-	{ &ui_myteam, "ui_myteam", "0", CVAR_ROM|CVAR_INTERNAL},
-	{ &cg_snapshotTimeout, "cg_snapshotTimeout", "10", CVAR_ARCHIVE },
-
-//	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
-/*
-Ghoul2 Insert Start
-*/
-	{ &cg_debugBB, "debugBB", "0", 0},
-/*
-Ghoul2 Insert End
-*/
-
+static cvarTable_t cvarTable[] = {
 	#define XCVAR_LIST
 		#include "cg_xcvar.h"
 	#undef XCVAR_LIST
-
 };
-
-static int  cvarTableSize = sizeof( cvarTable ) / sizeof( cvarTable[0] );
+static int cvarTableSize = ARRAY_LEN( cvarTable );
 
 /*
 =================
@@ -1059,90 +745,11 @@ CG_RegisterCvars
 void CG_RegisterCvars( void ) {
 	int			i;
 	cvarTable_t	*cv;
-	char		var[MAX_TOKEN_CHARS];
 
-	for ( i = 0, cv = cvarTable ; i < cvarTableSize ; i++, cv++ ) {
-		trap_Cvar_Register( cv->vmCvar, cv->cvarName,
-			cv->defaultString, cv->cvarFlags );
-	}
-
-	// see if we are also running the server on this machine
-	trap_Cvar_VariableStringBuffer( "sv_running", var, sizeof( var ) );
-	cgs.localServer = atoi( var );
-
-	forceModelModificationCount = cg_forceModel.modificationCount;
-
-	trap_Cvar_Register(NULL, "model", DEFAULT_MODEL, CVAR_USERINFO | CVAR_ARCHIVE );
-	trap_Cvar_Register(NULL, "forcepowers", DEFAULT_FORCEPOWERS, CVAR_USERINFO | CVAR_ARCHIVE );
-
-	// Cvars uses for transferring data between client and server
-	trap_Cvar_Register(NULL, "ui_about_gametype",		"0", CVAR_ROM|CVAR_INTERNAL );
-	trap_Cvar_Register(NULL, "ui_about_fraglimit",		"0", CVAR_ROM|CVAR_INTERNAL );
-	trap_Cvar_Register(NULL, "ui_about_capturelimit",	"0", CVAR_ROM|CVAR_INTERNAL );
-	trap_Cvar_Register(NULL, "ui_about_duellimit",		"0", CVAR_ROM|CVAR_INTERNAL );
-	trap_Cvar_Register(NULL, "ui_about_timelimit",		"0", CVAR_ROM|CVAR_INTERNAL );
-	trap_Cvar_Register(NULL, "ui_about_maxclients",		"0", CVAR_ROM|CVAR_INTERNAL );
-	trap_Cvar_Register(NULL, "ui_about_dmflags",		"0", CVAR_ROM|CVAR_INTERNAL );
-	trap_Cvar_Register(NULL, "ui_about_mapname",		"0", CVAR_ROM|CVAR_INTERNAL );
-	trap_Cvar_Register(NULL, "ui_about_hostname",		"0", CVAR_ROM|CVAR_INTERNAL );
-	trap_Cvar_Register(NULL, "ui_about_needpass",		"0", CVAR_ROM|CVAR_INTERNAL );
-	trap_Cvar_Register(NULL, "ui_about_botminplayers",	"0", CVAR_ROM|CVAR_INTERNAL );
-
-	trap_Cvar_Register(NULL, "ui_tm1_cnt", "0", CVAR_ROM | CVAR_INTERNAL );
-	trap_Cvar_Register(NULL, "ui_tm2_cnt", "0", CVAR_ROM | CVAR_INTERNAL );
-	trap_Cvar_Register(NULL, "ui_tm3_cnt", "0", CVAR_ROM | CVAR_INTERNAL );
-
-	trap_Cvar_Register(NULL, "ui_tm1_c0_cnt", "0", CVAR_ROM | CVAR_INTERNAL );
-	trap_Cvar_Register(NULL, "ui_tm1_c1_cnt", "0", CVAR_ROM | CVAR_INTERNAL );
-	trap_Cvar_Register(NULL, "ui_tm1_c2_cnt", "0", CVAR_ROM | CVAR_INTERNAL );
-	trap_Cvar_Register(NULL, "ui_tm1_c3_cnt", "0", CVAR_ROM | CVAR_INTERNAL );
-	trap_Cvar_Register(NULL, "ui_tm1_c4_cnt", "0", CVAR_ROM | CVAR_INTERNAL );
-	trap_Cvar_Register(NULL, "ui_tm1_c5_cnt", "0", CVAR_ROM | CVAR_INTERNAL );
-
-	trap_Cvar_Register(NULL, "ui_tm2_c0_cnt", "0", CVAR_ROM | CVAR_INTERNAL );
-	trap_Cvar_Register(NULL, "ui_tm2_c1_cnt", "0", CVAR_ROM | CVAR_INTERNAL );
-	trap_Cvar_Register(NULL, "ui_tm2_c2_cnt", "0", CVAR_ROM | CVAR_INTERNAL );
-	trap_Cvar_Register(NULL, "ui_tm2_c3_cnt", "0", CVAR_ROM | CVAR_INTERNAL );
-	trap_Cvar_Register(NULL, "ui_tm2_c4_cnt", "0", CVAR_ROM | CVAR_INTERNAL );
-	trap_Cvar_Register(NULL, "ui_tm2_c5_cnt", "0", CVAR_ROM | CVAR_INTERNAL );
-
-}
-
-/*																																			
-===================
-CG_SetWeatherOverride
-===================
-*/
-#if 0
-void CG_SetWeatherOverride(int contents)
-{
-	if (contents != cgWeatherOverride)
-	{ //only do the trap call if we aren't already set to this
-		trap_R_WeatherContentsOverride(contents);
-	}
-	cgWeatherOverride = contents; //keep track of it
-}
-#endif
-
-/*																																			
-===================
-CG_ForceModelChange
-===================
-*/
-static void CG_ForceModelChange( void ) {
-	int		i;
-
-	for (i=0 ; i<MAX_CLIENTS ; i++) {
-		const char		*clientInfo;
-		void	*oldGhoul2;
-
-		clientInfo = CG_ConfigString( CS_PLAYERS+i );
-		if ( !clientInfo[0] ) {
-			continue;
-		}
-
-		oldGhoul2 = cgs.clientinfo[i].ghoul2Model;
-		CG_NewClientInfo( i, qtrue);
+	for ( i=0, cv=cvarTable; i<cvarTableSize; i++, cv++ ) {
+		trap_Cvar_Register( cv->vmCvar, cv->cvarName, cv->defaultString, cv->cvarFlags );
+		if ( cv->update )
+			cv->update();
 	}
 }
 
@@ -1154,50 +761,33 @@ CG_UpdateCvars
 void CG_UpdateCvars( void ) {
 	int			i;
 	cvarTable_t	*cv;
-	static int drawTeamOverlayModificationCount = -1;
 
-	for ( i = 0, cv = cvarTable ; i < cvarTableSize ; i++, cv++ ) {
-		trap_Cvar_Update( cv->vmCvar );
-	}
-
-	// check for modications here
-
-	// If team overlay is on, ask for updates from the server.  If its off,
-	// let the server know so we don't receive it
-	if ( drawTeamOverlayModificationCount != cg_drawTeamOverlay.modificationCount ) {
-		drawTeamOverlayModificationCount = cg_drawTeamOverlay.modificationCount;
-
-		if ( cg_drawTeamOverlay.integer > 0 && cgs.gametype >= GT_SINGLE_PLAYER) {
-			trap_Cvar_Set( "teamoverlay", "1" );
-		} else {
-			trap_Cvar_Set( "teamoverlay", "0" );
+	for ( i=0, cv=cvarTable; i<cvarTableSize; i++, cv++ ) {
+		if ( cv->vmCvar ) {
+			int modCount = cv->vmCvar->modificationCount;
+			trap_Cvar_Update( cv->vmCvar );
+			if ( cv->vmCvar->modificationCount > modCount ) {
+				if ( cv->update )
+					cv->update();
+			}
 		}
-	}
-
-	// if force model changed
-	if ( forceModelModificationCount != cg_forceModel.modificationCount ) {
-		forceModelModificationCount = cg_forceModel.modificationCount;
-		CG_ForceModelChange();
 	}
 }
 
 int CG_CrosshairPlayer( void ) {
-	if ( cg.time > ( cg.crosshairClientTime + 1000 ) ) {
+	if ( cg.time > (cg.crosshairClientTime + 1000) )
 		return -1;
-	}
 
-	if (cg.crosshairClientNum >= MAX_CLIENTS)
-	{
+	if ( cg.crosshairClientNum >= MAX_CLIENTS )
 		return -1;
-	}
 
 	return cg.crosshairClientNum;
 }
 
 int CG_LastAttacker( void ) {
-	if ( !cg.attackerTime ) {
+	if ( !cg.attackerTime )
 		return -1;
-	}
+
 	return cg.snap->ps.persistant[PERS_ATTACKER];
 }
 
@@ -1594,7 +1184,7 @@ static void CG_RegisterSounds( void ) {
 	trap_S_RegisterSound("sound/weapons/force/jump.mp3"); //PDSOUND_FORCEJUMP
 	trap_S_RegisterSound("sound/weapons/force/grip.mp3"); //PDSOUND_FORCEGRIP
 
-	if ( cgs.gametype >= GT_TEAM || cg_buildScript.integer ) {
+	if ( cgs.gametype >= GT_TEAM || com_buildScript.integer ) {
 
 #ifdef JK2AWARDS
 		cgs.media.captureAwardSound = trap_S_RegisterSound( "sound/teamplay/flagcapture_yourteam.wav" );
@@ -1606,13 +1196,13 @@ static void CG_RegisterSounds( void ) {
 		cgs.media.redScoredSound = trap_S_RegisterSound( "sound/chars/protocol/misc/40MOM044");
 		cgs.media.blueScoredSound = trap_S_RegisterSound( "sound/chars/protocol/misc/40MOM043" );
 
-		if ( cgs.gametype == GT_CTF || cg_buildScript.integer ) {
+		if ( cgs.gametype == GT_CTF || com_buildScript.integer ) {
 			cgs.media.redFlagReturnedSound = trap_S_RegisterSound( "sound/chars/protocol/misc/40MOM042" );
 			cgs.media.blueFlagReturnedSound = trap_S_RegisterSound( "sound/chars/protocol/misc/40MOM041" );
 			cgs.media.redTookFlagSound = trap_S_RegisterSound( "sound/chars/protocol/misc/40MOM040" );
 			cgs.media.blueTookFlagSound = trap_S_RegisterSound( "sound/chars/protocol/misc/40MOM039" );
 		}
-		if ( cgs.gametype == GT_CTY /*|| cg_buildScript.integer*/ ) {
+		if ( cgs.gametype == GT_CTY /*|| com_buildScript.integer*/ ) {
 			cgs.media.redYsalReturnedSound = trap_S_RegisterSound( "sound/chars/protocol/misc/40MOM050" );
 			cgs.media.blueYsalReturnedSound = trap_S_RegisterSound( "sound/chars/protocol/misc/40MOM049" );
 			cgs.media.redTookYsalSound = trap_S_RegisterSound( "sound/chars/protocol/misc/40MOM048" );
@@ -1626,7 +1216,7 @@ static void CG_RegisterSounds( void ) {
 	cgs.media.dramaticFailure = trap_S_RegisterSound("music/badsmall.mp3");
 
 	//PRECACHE ALL MUSIC HERE (don't need to precache normally because it's streamed off the disk)
-	if (cg_buildScript.integer)
+	if (com_buildScript.integer)
 	{
 		trap_S_StartBackgroundTrack( "music/mp/duel.mp3", "music/mp/duel.mp3", qfalse );
 	}
@@ -1673,7 +1263,7 @@ static void CG_RegisterSounds( void ) {
 
 	cgs.media.disruptorShader			= trap_R_RegisterShader( "gfx/effects/burn");
 
-	if (cg_buildScript.integer)
+	if (com_buildScript.integer)
 	{
 		trap_R_RegisterShader( "gfx/effects/turretflashdie" );
 	}
@@ -1764,7 +1354,7 @@ static void CG_RegisterSounds( void ) {
 	Q_strncpyz(items, CG_ConfigString(CS_ITEMS), sizeof(items));
 
 	for ( i = 1 ; i < bg_numItems ; i++ ) {
-		if ( items[ i ] == '1' || cg_buildScript.integer ) {
+		if ( items[ i ] == '1' || com_buildScript.integer ) {
 			CG_RegisterItemSounds( i );
 		}
 	}
@@ -2075,7 +1665,7 @@ static void CG_RegisterGraphics( void ) {
 
 	cgs.media.itemHoloModel = trap_R_RegisterModel("models/map_objects/mp/holo.md3");
 
-	if (cgs.gametype == GT_HOLOCRON || cg_buildScript.integer)
+	if (cgs.gametype == GT_HOLOCRON || com_buildScript.integer)
 	{
 		for ( i=0; i < NUM_FORCE_POWERS; i++ )
 		{
@@ -2087,8 +1677,8 @@ static void CG_RegisterGraphics( void ) {
 		}
 	}
 
-	if ( cgs.gametype == GT_CTF || cgs.gametype == GT_CTY || cg_buildScript.integer ) {
-		if (cg_buildScript.integer)
+	if ( cgs.gametype == GT_CTF || cgs.gametype == GT_CTY || com_buildScript.integer ) {
+		if (com_buildScript.integer)
 		{
 			trap_R_RegisterModel( "models/flags/r_flag.md3" );
 			trap_R_RegisterModel( "models/flags/b_flag.md3" );
@@ -2126,7 +1716,7 @@ static void CG_RegisterGraphics( void ) {
 		cgs.media.neutralFlagBaseModel = trap_R_RegisterModel( "models/mapobjects/flagbase/ntrl_base.md3" );
 	}
 
-	if ( cgs.gametype >= GT_TEAM || cg_buildScript.integer ) {
+	if ( cgs.gametype >= GT_TEAM || com_buildScript.integer ) {
 		cgs.media.teamRedShader = trap_R_RegisterShader( "sprites/team_red" );
 		cgs.media.teamBlueShader = trap_R_RegisterShader( "sprites/team_blue" );
 		//cgs.media.redQuadShader = trap_R_RegisterShader("powerups/blueflag" );
@@ -2137,7 +1727,7 @@ static void CG_RegisterGraphics( void ) {
 		cgs.media.teamRedShader = trap_R_RegisterShader( "sprites/team_red" );
 	}
 
-	if (cgs.gametype == GT_POWERDUEL || cg_buildScript.integer)
+	if (cgs.gametype == GT_POWERDUEL || com_buildScript.integer)
 	{
 		cgs.media.powerDuelAllyShader = trap_R_RegisterShader("gfx/mp/pduel_icon_double");//trap_R_RegisterShader("gfx/mp/pduel_gameicon_ally");
 	}
@@ -2209,7 +1799,7 @@ Ghoul2 Insert End
 	Q_strncpyz(items, CG_ConfigString(CS_ITEMS), sizeof(items));
 
 	for ( i = 1 ; i < bg_numItems ; i++ ) {
-		if ( items[ i ] == '1' || cg_buildScript.integer ) {
+		if ( items[ i ] == '1' || com_buildScript.integer ) {
 			CG_LoadingItem( i );
 			CG_RegisterItemVisuals( i );
 		}

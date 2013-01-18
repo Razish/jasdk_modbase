@@ -588,11 +588,11 @@ static void CG_ItemPickup( int itemNum ) {
 		// 2 == automatically switch to best weapon, safe or otherwise
 		// 3 == if not saber, automatically switch to best weapon, safe or otherwise
 
-		if (0 == cg_autoswitch.integer)
+		if (0 == cg_autoSwitch.integer)
 		{
 			// don't switch
 		}
-		else if ( cg_autoswitch.integer == 1)
+		else if ( cg_autoSwitch.integer == 1)
 		{ //only autoselect if not explosive ("safe")
 			if (bg_itemlist[itemNum].giTag != WP_TRIP_MINE &&
 				bg_itemlist[itemNum].giTag != WP_DET_PACK &&
@@ -608,7 +608,7 @@ static void CG_ItemPickup( int itemNum ) {
 				cg.weaponSelect = bg_itemlist[itemNum].giTag;
 			}
 		}
-		else if ( cg_autoswitch.integer == 2)
+		else if ( cg_autoSwitch.integer == 2)
 		{ //autoselect if better
 			if (bg_itemlist[itemNum].giTag > cg.snap->ps.weapon &&
 				cg.snap->ps.weapon != WP_SABER)
@@ -1470,7 +1470,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		}
 		// if we are interpolating, we don't need to smooth steps
 		if ( cg.demoPlayback || (cg.snap->ps.pm_flags & PMF_FOLLOW) ||
-			cg_nopredict.integer || cg_synchronousClients.integer ) {
+			cg_noPredict.integer || g_synchronousClients.integer ) {
 			break;
 		}
 		// check for stepping up before a previous step is completed

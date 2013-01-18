@@ -265,7 +265,7 @@ void CG_CheckChangedPredictableEvents( playerState_t *ps ) {
 
 				cg.predictableEvents[ i & (MAX_PREDICTED_EVENTS-1) ] = event;
 
-				if ( cg_showmiss.integer ) {
+				if ( cg_showMiss.integer ) {
 					CG_Printf("WARNING: changed predicted event\n");
 				}
 			}

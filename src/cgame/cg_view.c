@@ -150,9 +150,9 @@ static void CG_AddTestModel (void) {
 
 		// allow the position to be adjusted
 		for (i=0 ; i<3 ; i++) {
-			cg.testModelEntity.origin[i] += cg.refdef.viewaxis[0][i] * cg_gun_x.value;
-			cg.testModelEntity.origin[i] += cg.refdef.viewaxis[1][i] * cg_gun_y.value;
-			cg.testModelEntity.origin[i] += cg.refdef.viewaxis[2][i] * cg_gun_z.value;
+			cg.testModelEntity.origin[i] += cg.refdef.viewaxis[0][i] * cg_gunX.value;
+			cg.testModelEntity.origin[i] += cg.refdef.viewaxis[1][i] * cg_gunY.value;
+			cg.testModelEntity.origin[i] += cg.refdef.viewaxis[2][i] * cg_gunZ.value;
 		}
 	}
 
@@ -974,21 +974,21 @@ static void CG_OffsetFirstPersonView( void ) {
 	VectorCopy( cg.predictedPlayerState.velocity, predictedVelocity );
 
 	delta = DotProduct ( predictedVelocity, cg.refdef.viewaxis[0]);
-	angles[PITCH] += delta * cg_runpitch.value;
+	angles[PITCH] += delta * cg_runPitch.value;
 	
 	delta = DotProduct ( predictedVelocity, cg.refdef.viewaxis[1]);
-	angles[ROLL] -= delta * cg_runroll.value;
+	angles[ROLL] -= delta * cg_runRoll.value;
 
 	// add angles based on bob
 
 	// make sure the bob is visible even at low speeds
 	speed = cg.xyspeed > 200 ? cg.xyspeed : 200;
 
-	delta = cg.bobfracsin * cg_bobpitch.value * speed;
+	delta = cg.bobfracsin * cg_bobPitch.value * speed;
 	if (cg.predictedPlayerState.pm_flags & PMF_DUCKED)
 		delta *= 3;		// crouching
 	angles[PITCH] += delta;
-	delta = cg.bobfracsin * cg_bobroll.value * speed;
+	delta = cg.bobfracsin * cg_bobRoll.value * speed;
 	if (cg.predictedPlayerState.pm_flags & PMF_DUCKED)
 		delta *= 3;		// crouching accentuates roll
 	if (cg.bobcycle & 1)
@@ -1008,7 +1008,7 @@ static void CG_OffsetFirstPersonView( void ) {
 	}
 
 	// add bob height
-	bob = cg.bobfracsin * cg.xyspeed * cg_bobup.value;
+	bob = cg.bobfracsin * cg.xyspeed * cg_bobUp.value;
 	if (bob > 6) {
 		bob = 6;
 	}
@@ -1412,7 +1412,7 @@ static qboolean CG_ThirdPersonActionCam(void)
 	vec3_t desiredAngles;
 	vec3_t desiredPos;
 	vec3_t v;
-	const float smoothFactor = 0.1f*cg_timescale.value;
+	const float smoothFactor = 0.1f*timescale.value;
 	int i;
 
 	if (!cent->ghoul2)
@@ -2281,7 +2281,7 @@ void CG_DrawAutoMap(void)
 	float			hScale, vScale;
 	float			x, y, w, h;
 
-	if (!cg_autoMap.integer)
+	if (!r_autoMap.integer)
 	{ //don't do anything then
 		return;
 	}
@@ -2367,10 +2367,10 @@ void CG_DrawAutoMap(void)
 	hScale = vWidth/640.0f;
 	vScale = vHeight/480.0f;
 
-	x = cg_autoMapX.value;
-	y = cg_autoMapY.value;
-	w = cg_autoMapW.value;
-	h = cg_autoMapH.value;
+	x = r_autoMapX.value;
+	y = r_autoMapY.value;
+	w = r_autoMapW.value;
+	h = r_autoMapH.value;
 
 	refdef.x = x*hScale;
 	refdef.y = y*vScale;
@@ -2722,19 +2722,19 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 		cg.oldTime = cg.time;
 		CG_AddLagometerFrameInfo();
 	}
-	if (cg_timescale.value != cg_timescaleFadeEnd.value) {
-		if (cg_timescale.value < cg_timescaleFadeEnd.value) {
-			cg_timescale.value += cg_timescaleFadeSpeed.value * ((float)cg.frametime) / 1000;
-			if (cg_timescale.value > cg_timescaleFadeEnd.value)
-				cg_timescale.value = cg_timescaleFadeEnd.value;
+	if (timescale.value != cg_timescaleFadeEnd.value) {
+		if (timescale.value < cg_timescaleFadeEnd.value) {
+			timescale.value += cg_timescaleFadeSpeed.value * ((float)cg.frametime) / 1000;
+			if (timescale.value > cg_timescaleFadeEnd.value)
+				timescale.value = cg_timescaleFadeEnd.value;
 		}
 		else {
-			cg_timescale.value -= cg_timescaleFadeSpeed.value * ((float)cg.frametime) / 1000;
-			if (cg_timescale.value < cg_timescaleFadeEnd.value)
-				cg_timescale.value = cg_timescaleFadeEnd.value;
+			timescale.value -= cg_timescaleFadeSpeed.value * ((float)cg.frametime) / 1000;
+			if (timescale.value < cg_timescaleFadeEnd.value)
+				timescale.value = cg_timescaleFadeEnd.value;
 		}
 		if (cg_timescaleFadeSpeed.value) {
-			trap_Cvar_Set("timescale", va("%f", cg_timescale.value));
+			trap_Cvar_Set("timescale", va("%f", timescale.value));
 		}
 	}
 

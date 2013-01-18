@@ -401,11 +401,8 @@ void FX_DrawPortableShield(centity_t *cent)
 	vec3_t			start, end, normal;
 	localEntity_t	*le;
 	qhandle_t		shader;
-	char			buf[1024];
 
-	trap_Cvar_VariableStringBuffer("cl_paused", buf, sizeof(buf));
-
-	if (atoi(buf))
+	if ( cl_paused.integer )
 	{ //rww - fix to keep from rendering repeatedly while HUD menu is up
 		return;
 	}
@@ -692,7 +689,7 @@ void CG_Disintegration(centity_t *cent, refEntity_t *ent)
 	ent->customShader = 0;
 	trap_R_AddRefEntityToScene( ent );
 
-	if ( cg.time - ent->endTime < 1000 && (cg_timescale.value * cg_timescale.value * random()) > 0.05f )
+	if ( cg.time - ent->endTime < 1000 && (timescale.value * timescale.value * random()) > 0.05f )
 	{
 		vec3_t fxOrg, fxDir;
 		mdxaBone_t	boltMatrix;
@@ -921,7 +918,7 @@ static void CG_General( centity_t *cent ) {
 	{
 		if (cent->currentState.groundEntityNum >= ENTITYNUM_WORLD)
 		{
-			float smoothFactor = 0.5f*cg_timescale.value;
+			float smoothFactor = 0.5f*timescale.value;
 			int k = 0;
 			vec3_t posDif;
 
@@ -1008,7 +1005,7 @@ static void CG_General( centity_t *cent ) {
 	{ //special case for client limbs
 		centity_t *clEnt;
 		int dismember_settings = cg_dismember.integer;
-		float smoothFactor = 0.5f*cg_timescale.value;
+		float smoothFactor = 0.5f*timescale.value;
 		int k = 0;
 		vec3_t posDif;
 		
@@ -1823,7 +1820,7 @@ Ghoul2 Insert End
 Ghoul2 Insert Start
 */
 
-	if (cg_debugBB.integer)
+	if (debugBB.integer)
 	{
 		CG_CreateBBRefEnts(s1, cent->lerpOrigin);
 	}

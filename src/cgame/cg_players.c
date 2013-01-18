@@ -242,7 +242,7 @@ sfxHandle_t	CG_CustomSound( int clientNum, const char *soundName ) {
 		}
 	}
 
-    if (cgs.gametype >= GT_TEAM || cg_buildScript.integer)
+    if (cgs.gametype >= GT_TEAM || com_buildScript.integer)
 	{ //siege only
 		//Raz: Fixed potential buffer overrun of bg_customSiegeSoundNames
 		for (i = 0; i < MAX_CUSTOM_SIEGE_SOUNDS; i++)
@@ -257,7 +257,7 @@ sfxHandle_t	CG_CustomSound( int clientNum, const char *soundName ) {
 
     if (cgs.gametype == GT_DUEL
 		|| cgs.gametype == GT_POWERDUEL
-		|| cg_buildScript.integer)
+		|| com_buildScript.integer)
 	{ //Duel only
 		for (i = 0; i < MAX_CUSTOM_SOUNDS; i++)
 		{
@@ -275,11 +275,11 @@ sfxHandle_t	CG_CustomSound( int clientNum, const char *soundName ) {
 		{
 			return ci->sounds[i];
 		}
-		else if ( (cgs.gametype >= GT_TEAM || cg_buildScript.integer) && i < numCSiegeSounds && !strcmp( lSoundName, bg_customSiegeSoundNames[i] ) )
+		else if ( (cgs.gametype >= GT_TEAM || com_buildScript.integer) && i < numCSiegeSounds && !strcmp( lSoundName, bg_customSiegeSoundNames[i] ) )
 		{ //siege only
 			return ci->siegeSounds[i];
 		}
-		else if ( (cgs.gametype == GT_DUEL || cgs.gametype == GT_POWERDUEL || cg_buildScript.integer) && i < numCDuelSounds && !strcmp( lSoundName, cg_customDuelSoundNames[i] ) )
+		else if ( (cgs.gametype == GT_DUEL || cgs.gametype == GT_POWERDUEL || com_buildScript.integer) && i < numCDuelSounds && !strcmp( lSoundName, cg_customDuelSoundNames[i] ) )
 		{ //siege only
 			return ci->duelSounds[i];
 		}
@@ -909,7 +909,7 @@ void CG_LoadCISounds(clientInfo_t *ci, qboolean modelloaded)
 		}
 	}
 
-	if (cgs.gametype >= GT_TEAM || cg_buildScript.integer)
+	if (cgs.gametype >= GT_TEAM || com_buildScript.integer)
 	{ //load the siege sounds then
 		for ( i = 0 ; i < MAX_CUSTOM_SIEGE_SOUNDS; i++ )
 		{
@@ -953,7 +953,7 @@ void CG_LoadCISounds(clientInfo_t *ci, qboolean modelloaded)
 
 	if (cgs.gametype == GT_DUEL
 		||cgs.gametype == GT_POWERDUEL
-		|| cg_buildScript.integer)
+		|| com_buildScript.integer)
 	{ //load the Duel sounds then
 		for ( i = 0 ; i < MAX_CUSTOM_DUEL_SOUNDS; i++ )
 		{
@@ -1821,7 +1821,7 @@ void CG_NewClientInfo( int clientNum, qboolean entitiesInitialized ) {
 		{ //rww - don't defer your own client info ever
 			CG_LoadClientInfo( &newInfo );
 		}
-		else if (  cg_deferPlayers.integer && cgs.gametype != GT_SIEGE && !cg_buildScript.integer && !cg.loading ) {
+		else if (  cg_deferPlayers.integer && cgs.gametype != GT_SIEGE && !com_buildScript.integer && !cg.loading ) {
 			// keep whatever they had if it won't violate team skins
 			CG_SetDeferredClientInfo( &newInfo );
 		} else {
@@ -3504,7 +3504,7 @@ qboolean CG_RagDoll(centity_t *cent, vec3_t forcedAngles)
 	qboolean inSomething = qfalse;
 	int ragAnim;//BOTH_DEAD1; //BOTH_DEATH1;
 
-	if (!cg_ragDoll.integer)
+	if (!broadsword.integer)
 	{
 		return qfalse;
 	}
@@ -3543,7 +3543,7 @@ qboolean CG_RagDoll(centity_t *cent, vec3_t forcedAngles)
 			}
 		}
 
-		if (cg_ragDoll.integer > 1)
+		if (broadsword.integer > 1)
 		{
 			inSomething = qtrue;
 		}
@@ -4032,7 +4032,7 @@ static void CG_G2SetHeadAnim( centity_t *cent, int anim )
 	int	animFlags = BONE_ANIM_OVERRIDE ;//| BONE_ANIM_BLEND;
 	// animSpeed is 1.0 if the frameLerp (ms/frame) is 50 (20 fps).
 //	float		timeScaleMod = (cg_timescale.value&&gent&&gent->s.clientNum==0&&!player_locked&&!MatrixMode&&gent->client->ps.forcePowersActive&(1<<FP_SPEED))?(1.0/cg_timescale.value):1.0;
-	const float		timeScaleMod = (cg_timescale.value)?(1.0/cg_timescale.value):1.0;
+	const float		timeScaleMod = (timescale.value)?(1.0/timescale.value):1.0;
 	float animSpeed = 50.0f / animations[anim].frameLerp * timeScaleMod;
 	int	firstFrame;
 	int	lastFrame;
@@ -5488,7 +5488,7 @@ void CG_CreateSaberMarks( vec3_t start, vec3_t end, vec3_t normal )
 
 	float	radius = 0.65f;
 
-	if ( !cg_addMarks.integer ) 
+	if ( !cg_marks.integer ) 
 	{
 		return;
 	}
@@ -5673,7 +5673,7 @@ qboolean CG_G2TraceCollide(trace_t *tr, vec3_t const mins, vec3_t const maxs, co
 		angles[ROLL] = angles[PITCH] = 0;
 		angles[YAW] = g2Hit->lerpAngles[YAW];
 
-		if (cg_optvehtrace.integer &&
+		if (com_optvehtrace.integer &&
 			g2Hit->currentState.eType == ET_NPC &&
 			g2Hit->currentState.NPC_class == CLASS_VEHICLE &&
 			g2Hit->m_pVehicle)
@@ -8882,7 +8882,7 @@ void CG_Player( centity_t *cent ) {
 				renderfx = RF_THIRD_PERSON;			// only draw in mirrors
 			}
 		} else {
-			if (cg_cameraMode.integer) {
+			if (com_cameraMode.integer) {
 				iwantout = 1;
 
 				
