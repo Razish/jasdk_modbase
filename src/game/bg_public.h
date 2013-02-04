@@ -1198,67 +1198,6 @@ typedef enum {
 							// this avoids having to set eFlags and eventNum
 } entityType_t;
 
-
-
-
-//
-// fields are needed for spawning from the entity string
-//
-//I moved these from g_spawn.c because the entity parsing stuff is semi-shared now -rww
-#undef _GAME_SIDE
-
-#ifdef QAGAME
-#define _GAME_SIDE
-#elif defined CGAME
-#define _GAME_SIDE
-#endif
-
-#ifdef _GAME_SIDE
-typedef enum {
-	F_INT, 
-	F_FLOAT,
-	F_LSTRING,			// string on disk, pointer in memory, TAG_LEVEL
-	F_VECTOR,
-	F_ANGLEHACK,
-	F_ENTITY,			// index on disk, pointer in memory
-	F_ITEM,				// index on disk, pointer in memory
-	F_CLIENT,			// index on disk, pointer in memory
-	F_PARM1,			// Special case for parms
-	F_PARM2,			// Special case for parms
-	F_PARM3,			// Special case for parms
-	F_PARM4,			// Special case for parms
-	F_PARM5,			// Special case for parms
-	F_PARM6,			// Special case for parms
-	F_PARM7,			// Special case for parms
-	F_PARM8,			// Special case for parms
-	F_PARM9,			// Special case for parms
-	F_PARM10,			// Special case for parms
-	F_PARM11,			// Special case for parms
-	F_PARM12,			// Special case for parms
-	F_PARM13,			// Special case for parms
-	F_PARM14,			// Special case for parms
-	F_PARM15,			// Special case for parms
-	F_PARM16,			// Special case for parms
-	F_IGNORE
-} fieldtype_t;
-
-
-
-
-typedef struct
-{
-	char	*name;
-	int		ofs;
-	fieldtype_t	type;
-} BG_field_t;
-
-
-
-#endif
-
-
-
-
 // Okay, here lies the much-dreaded Pat-created FSM movement chart...  Heretic II strikes again!
 // Why am I inflicting this on you?  Well, it's better than hardcoded states.
 // Ideally this will be replaced with an external file or more sophisticated move-picker
