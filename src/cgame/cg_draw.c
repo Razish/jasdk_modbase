@@ -8446,6 +8446,54 @@ static void CG_Draw2D( void ) {
 	CG_ChatBox_DrawStrings();
 }
 
+qboolean CG_CullPointAndRadius( const vec3_t pt, vec_t radius);
+void CG_DrawMiscStaticModels( void ) {
+	int i, j;
+	refEntity_t ent;
+	vec3_t cullorg;
+	vec3_t diff;
+
+	memset( &ent, 0, sizeof( ent ) );
+
+	ent.reType = RT_MODEL;
+	ent.frame = 0;
+	ent.nonNormalizedAxes = qtrue;
+	
+	// static models don't project shadows
+	ent.renderfx = RF_NOSHADOW;
+	
+	for( i = 0; i < cgs.numMiscStaticModels; i++ ) {
+		VectorCopy(cgs.miscStaticModels[i].org, cullorg);
+		cullorg[2] += 1.0f;
+
+		if ( cgs.miscStaticModels[i].zoffset ) {
+			cullorg[2] += cgs.miscStaticModels[i].zoffset;
+		}
+		if( cgs.miscStaticModels[i].radius ) {
+			if( CG_CullPointAndRadius( cullorg, cgs.miscStaticModels[i].radius ) ) {
+ 				continue;
+			}
+		}
+
+		if( !trap_R_inPVS( cg.refdef.vieworg, cullorg, cg.refdef.areamask ) ) {
+			continue;
+		}
+
+		VectorCopy( cgs.miscStaticModels[i].org, ent.origin );
+		VectorCopy( cgs.miscStaticModels[i].org, ent.oldorigin );
+		VectorCopy( cgs.miscStaticModels[i].org, ent.lightingOrigin );
+
+		for( j = 0; j < 3; j++ ) {
+			VectorCopy( cgs.miscStaticModels[i].axes[j], ent.axis[j] );
+		}
+		ent.hModel = cgs.miscStaticModels[i].model;
+
+		VectorSubtract(ent.origin, cg.refdef.vieworg, diff);
+		if (VectorLength(diff)-(cgs.miscStaticModels[i].radius) <= cg.distanceCull) {
+			trap_R_AddRefEntityToScene( &ent );
+		}
+	}
+}
 
 static void CG_DrawTourneyScoreboard() {
 }
@@ -8500,6 +8548,8 @@ void CG_DrawActive( stereoFrame_t stereoView ) {
 	}
 
 	cg.refdef.rdflags |= RDF_DRAWSKYBOX;
+
+	CG_DrawMiscStaticModels();
 
 	// draw 3D view
 	trap_R_RenderScene( &cg.refdef );

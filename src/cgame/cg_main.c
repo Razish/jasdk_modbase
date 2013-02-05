@@ -130,16 +130,6 @@ static int	CG_RagCallback(int callType);
 static void C_GetBoltPos(void);
 static void C_ImpactMark(void);
 
-#define MAX_MISC_ENTS	4000
-
-//static refEntity_t	*MiscEnts = 0;
-//static float		*Radius = 0;
-static refEntity_t	MiscEnts[MAX_MISC_ENTS]; //statically allocated for now.
-static float		Radius[MAX_MISC_ENTS];
-static float		zOffset[MAX_MISC_ENTS]; //some models need a z offset for culling, because of stupid wrong model origins
-
-static int			NumMiscEnts = 0;
-
 extern autoMapInput_t cg_autoMapInput; //cg_view.c
 extern int cg_autoMapInputTime;
 extern vec3_t cg_autoMapAngle;
@@ -571,78 +561,42 @@ static void C_ImpactMark(void)
 
 void CG_MiscEnt(void)
 {
-	int			modelIndex;
-	refEntity_t	*RefEnt;
-	TCGMiscEnt	*data = (TCGMiscEnt *)cg.sharedBuffer;
-	vec3_t		mins, maxs;
-	float		*radius, *zOff;
+	int i;
+	int modelIndex;
+	TCGMiscEnt *data = (TCGMiscEnt *)cg.sharedBuffer;
+	cg_staticmodel_t *staticmodel;
 
-	if (NumMiscEnts >= MAX_MISC_ENTS)
-	{
-		return;
+	if( cgs.numMiscStaticModels >= MAX_STATIC_MODELS ) {
+		CG_Error( "^1MAX_STATIC_MODELS(%i) hit", MAX_STATIC_MODELS );
 	}
-	
-	radius = &Radius[NumMiscEnts];
-	zOff = &zOffset[NumMiscEnts];
-	RefEnt = &MiscEnts[NumMiscEnts++];
 
 	modelIndex = trap_R_RegisterModel(data->mModel);
-	if (modelIndex == 0)
-	{
-		Com_Error(ERR_DROP, "client_model has invalid model definition");
+	if (modelIndex == 0) {
+		CG_Error( "client_model failed to load model '%s'", data->mModel );
 		return;
 	}
 
-	*zOff = 0;
+	staticmodel = &cgs.miscStaticModels[cgs.numMiscStaticModels++];
+	staticmodel->model = modelIndex;
+	AnglesToAxis( data->mAngles, staticmodel->axes );
+	for ( i = 0; i < 3; i++ ) {
+		VectorScale( staticmodel->axes[i], data->mScale[i], staticmodel->axes[i] );
+	}
 
-	memset(RefEnt, 0, sizeof(refEntity_t));
-	RefEnt->reType = RT_MODEL;
-	RefEnt->hModel = modelIndex;
-	RefEnt->frame = 0;
-	trap_R_ModelBounds(modelIndex, mins, maxs);
-	VectorCopy(data->mScale, RefEnt->modelScale);
-	VectorCopy(data->mOrigin, RefEnt->origin);
+	VectorCopy( data->mOrigin, staticmodel->org );
+	staticmodel->zoffset = 0.f;
 
-	VectorScaleVector(mins, data->mScale, mins);
-	VectorScaleVector(maxs, data->mScale, maxs);
-	*radius = Distance(mins, maxs);
+	if( staticmodel->model ) {
+		vec3_t mins, maxs;
 
-	AnglesToAxis( data->mAngles, RefEnt->axis );
-	ScaleModelAxis(RefEnt);
-}
+		trap_R_ModelBounds( staticmodel->model, mins, maxs );
 
-void CG_DrawMiscEnts(void)
-{
-	int			i;
-	refEntity_t	*RefEnt;
-	float		*radius, *zOff;
-	vec3_t		difference;
-	vec3_t		cullOrigin;
+		VectorScaleVector(mins, data->mScale, mins);
+		VectorScaleVector(maxs, data->mScale, maxs);
 
-	RefEnt = MiscEnts;
-	radius = Radius;
-	zOff = zOffset;
-	for(i=0;i<NumMiscEnts;i++)
-	{
-		VectorCopy(RefEnt->origin, cullOrigin);
-		cullOrigin[2] += 1.0f;
-
-		if (*zOff)
-		{
-			cullOrigin[2] += *zOff;
-		}
-
-		if (cg.snap && trap_R_inPVS(cg.refdef.vieworg, cullOrigin, cg.snap->areamask))
-		{
-			VectorSubtract(RefEnt->origin, cg.refdef.vieworg, difference);
-			if (VectorLength(difference)-(*radius) <= cg.distanceCull)
-			{
-				trap_R_AddRefEntityToScene(RefEnt);
-			}
-		}
-		RefEnt++;
-		radius++;
-		zOff++;
+		staticmodel->radius = RadiusFromBounds( mins, maxs );
+	} else {
+		staticmodel->radius = 0;
 	}
 }
 
@@ -2883,394 +2837,6 @@ void CG_TransitionPermanent(void)
 	}
 }
 
-
-//this is a 32k custom pool for parsing ents, it can get reset between ent parsing
-//so we don't need a whole lot of memory -rww
-#define MAX_CGSTRPOOL_SIZE		32768
-static int cg_strPoolSize = 0;
-static byte cg_strPool[MAX_CGSTRPOOL_SIZE];
-
-char *CG_StrPool_Alloc(int size)
-{
-	char *giveThemThis;
-
-	if (cg_strPoolSize+size >= MAX_CGSTRPOOL_SIZE)
-	{
-		Com_Error(ERR_DROP, "You exceeded the cgame string pool size. Bad programmer!\n");
-	}
-
-	giveThemThis = (char *) &cg_strPool[cg_strPoolSize];
-	cg_strPoolSize += size;
-
-	//memset it for them, just to be nice.
-	memset(giveThemThis, 0, size);
-
-	return giveThemThis;
-}
-
-void CG_StrPool_Reset(void)
-{
-	cg_strPoolSize = 0;
-}
-
-/*
-=============
-CG_NewString
-
-Builds a copy of the string, translating \n to real linefeeds
-so message texts can be multi-line
-=============
-*/
-char *CG_NewString( const char *string )
-{
-	char	*newb, *new_p;
-	int		i,l;
-	
-	l = strlen(string) + 1;
-
-	newb = CG_StrPool_Alloc( l );
-
-	new_p = newb;
-
-	// turn \n into a real linefeed
-	for ( i=0 ; i< l ; i++ ) {
-		if (string[i] == '\\' && i < l-1) {
-			if (string[i+1] == 'n') {
-				*new_p++ = '\n';
-				i++;
-			} else {
-				*new_p++ = '\\';
-			}
-		} else {
-			*new_p++ = string[i];
-		}
-		/*old code
-		if (string[i] == '\\' && i < l-1) {
-			i++;
-			if (string[i] == 'n') {
-				*new_p++ = '\n';
-			} else {
-				*new_p++ = '\\';
-			}
-		} else {
-			*new_p++ = string[i];
-		}
-		*/
-	}
-	
-	return newb;
-}
-
-//data to grab our spawn info into
-typedef struct cgSpawnEnt_s
-{
-	char		*classname;
-	vec3_t		origin;
-	vec3_t		angles;
-	float		angle;
-	vec3_t		scale;
-	float		fScale;
-	vec3_t		mins;
-	vec3_t		maxs;
-	char		*model;
-	float		zoffset;
-	int			onlyFogHere;
-	float		fogstart;
-	float		radarrange;
-} cgSpawnEnt_t;
-
-#define	CGFOFS(x) ((int)&(((cgSpawnEnt_t *)0)->x))
-
-//spawn fields for our cgame "entity"
-BG_field_t cg_spawnFields[] =
-{
-	{ "angle",			CGFOFS( angle ),		F_FLOAT },
-	{ "angles",			CGFOFS( angles ),		F_VECTOR },
-	{ "classname",		CGFOFS( classname ),	F_LSTRING },
-	{ "fogstart",		CGFOFS( fogstart ),		F_FLOAT },
-	{ "maxs",			CGFOFS( maxs ),			F_VECTOR },
-	{ "mins",			CGFOFS( mins ),			F_VECTOR },
-	{ "model",			CGFOFS( model ),		F_LSTRING },
-	{ "modelscale",		CGFOFS( fScale ),		F_FLOAT },
-	{ "modelscale_vec",	CGFOFS( scale ),		F_VECTOR },
-	{ "onlyfoghere",	CGFOFS( onlyFogHere ),	F_INT },
-	{ "origin",			CGFOFS( origin ),		F_VECTOR },
-	{ "radarrange",		CGFOFS( radarrange ),	F_FLOAT },
-	{ "zoffset",		CGFOFS( zoffset ),		F_FLOAT },
-	{NULL}
-};
-
-static int cg_numSpawnVars;
-static int cg_numSpawnVarChars;
-static char *cg_spawnVars[MAX_SPAWN_VARS][2];
-static char cg_spawnVarChars[MAX_SPAWN_VARS_CHARS];
-
-//get some info from the skyportal ent on the map
-qboolean cg_noFogOutsidePortal = qfalse;
-void CG_CreateSkyPortalFromSpawnEnt(cgSpawnEnt_t *ent)
-{
-	if (ent->onlyFogHere)
-	{ //only globally fog INSIDE the sky portal
-		cg_noFogOutsidePortal = qtrue;
-	}
-}
-
-//create a skybox portal orientation entity. there -should- only
-//be one of these things per level. if there's more than one the
-//next will just stomp over the last. -rww
-qboolean cg_skyOri = qfalse;
-vec3_t cg_skyOriPos;
-float cg_skyOriScale = 0.0f;
-void CG_CreateSkyOriFromSpawnEnt(cgSpawnEnt_t *ent)
-{
-    cg_skyOri = qtrue;
-	VectorCopy(ent->origin, cg_skyOriPos);
-	cg_skyOriScale = ent->fScale;
-}
-
-//get brush box extents, note this does not care about bsp instances.
-void CG_CreateBrushEntData(cgSpawnEnt_t *ent)
-{
-	trap_R_ModelBounds(trap_R_RegisterModel(ent->model), ent->mins, ent->maxs);
-}
-
-void CG_CreateWeatherZoneFromSpawnEnt(cgSpawnEnt_t *ent)
-{
-	CG_CreateBrushEntData(ent);
-	trap_WE_AddWeatherZone(ent->mins, ent->maxs);
-}
-
-//create a new cgame-only model
-void CG_CreateModelFromSpawnEnt(cgSpawnEnt_t *ent)
-{
-	int			modelIndex;
-	refEntity_t	*RefEnt;
-	vec3_t		mins, maxs;
-	float		*radius;
-	float		*zOff;
-
-	if (NumMiscEnts >= MAX_MISC_ENTS)
-	{
-		Com_Error(ERR_DROP, "Too many misc_model_static's on level, ask a programmer to raise the limit (currently %i), or take some out.", MAX_MISC_ENTS);
-		return;
-	}
-	
-	if (!ent || !ent->model || !ent->model[0])
-	{
-		Com_Error(ERR_DROP, "misc_model_static with no model.");
-		return;
-	}
-
-	radius = &Radius[NumMiscEnts];
-	zOff = &zOffset[NumMiscEnts];
-	RefEnt = &MiscEnts[NumMiscEnts++];
-
-	modelIndex = trap_R_RegisterModel(ent->model);
-	if (modelIndex == 0)
-	{
-		Com_Error(ERR_DROP, "misc_model_static failed to load model '%s'",ent->model);
-		return;
-	}
-
-	memset(RefEnt, 0, sizeof(refEntity_t));
-	RefEnt->reType = RT_MODEL;
-	RefEnt->hModel = modelIndex;
-	RefEnt->frame = 0;
-	trap_R_ModelBounds(modelIndex, mins, maxs);
-	VectorCopy(ent->scale, RefEnt->modelScale);
-	if (ent->fScale)
-	{ //use same scale on each axis then
-		RefEnt->modelScale[0] = RefEnt->modelScale[1] = RefEnt->modelScale[2] = ent->fScale;
-	}
-	VectorCopy(ent->origin, RefEnt->origin);
-	VectorCopy(ent->origin, RefEnt->lightingOrigin);
-
-	VectorScaleVector(mins, RefEnt->modelScale, mins);
-	VectorScaleVector(maxs, RefEnt->modelScale, maxs);
-	*radius = Distance(mins, maxs);
-	*zOff = ent->zoffset;
-
-	if (ent->angle)
-	{ //only yaw supplied...
-		ent->angles[YAW] = ent->angle;
-	}
-
-	AnglesToAxis( ent->angles, RefEnt->axis );
-	ScaleModelAxis(RefEnt);
-}
-
-/*
-====================
-CG_AddSpawnVarToken
-====================
-*/
-char *CG_AddSpawnVarToken( const char *string )
-{
-	int		l;
-	char	*dest;
-
-	l = strlen( string );
-	if ( cg_numSpawnVarChars + l + 1 > MAX_SPAWN_VARS_CHARS ) {
-		CG_Error( "CG_AddSpawnVarToken: MAX_SPAWN_VARS" );
-	}
-
-	dest = cg_spawnVarChars + cg_numSpawnVarChars;
-	memcpy( dest, string, l+1 );
-
-	cg_numSpawnVarChars += l + 1;
-
-	return dest;
-}
-
-/*
-====================
-CG_ParseSpawnVars
-
-cgame version of G_ParseSpawnVars, for ents that don't really
-need to take up an entity slot (e.g. static models) -rww
-====================
-*/
-qboolean CG_ParseSpawnVars( void )
-{
-	char		keyname[MAX_TOKEN_CHARS];
-	char		com_token[MAX_TOKEN_CHARS];
-
-	cg_numSpawnVars = 0;
-	cg_numSpawnVarChars = 0;
-
-	// parse the opening brace
-	if ( !trap_GetEntityToken( com_token, sizeof( com_token ) ) ) {
-		// end of spawn string
-		return qfalse;
-	}
-	if ( com_token[0] != '{' ) {
-		CG_Error( "CG_ParseSpawnVars: found %s when expecting {",com_token );
-	}
-
-	// go through all the key / value pairs
-	while ( 1 )
-	{	
-		// parse key
-		if ( !trap_GetEntityToken( keyname, sizeof( keyname ) ) )
-		{
-			CG_Error( "CG_ParseSpawnVars: EOF without closing brace" );
-		}
-
-		if ( keyname[0] == '}' )
-		{
-			break;
-		}
-		
-		// parse value	
-		if ( !trap_GetEntityToken( com_token, sizeof( com_token ) ) )
-		{ //this happens on mike's test level, I don't know why. Fixme?
-			//CG_Error( "CG_ParseSpawnVars: EOF without closing brace" );
-			break;
-		}
-
-		if ( com_token[0] == '}' )
-		{
-			CG_Error( "CG_ParseSpawnVars: closing brace without data" );
-		}
-		if ( cg_numSpawnVars == MAX_SPAWN_VARS )
-		{
-			CG_Error( "CG_ParseSpawnVars: MAX_SPAWN_VARS" );
-		}
-		cg_spawnVars[ cg_numSpawnVars ][0] = CG_AddSpawnVarToken( keyname );
-		cg_spawnVars[ cg_numSpawnVars ][1] = CG_AddSpawnVarToken( com_token );
-		cg_numSpawnVars++;
-	}
-
-	return qtrue;
-}
-
-/*
-==============
-CG_SpawnCGameEntFromVars
-
-See if we should do something for this ent cgame-side -rww
-==============
-*/
-void BG_ParseField( BG_field_t *l_fields, int numFields, const char *key, const char *value, byte *ent );
-
-extern float cg_linearFogOverride; //cg_view.c
-extern float cg_radarRange;//cg_draw.c
-void CG_SpawnCGameEntFromVars(void)
-{
-	int i;
-	cgSpawnEnt_t ent;
-
-	memset(&ent, 0, sizeof(cgSpawnEnt_t));
-
-	for (i = 0; i < cg_numSpawnVars; i++)
-	{ //shove all this stuff into our data structure used specifically for getting spawn info
-		BG_ParseField( cg_spawnFields, ARRAY_LEN( cg_spawnFields ), cg_spawnVars[i][0], cg_spawnVars[i][1], (byte *)&ent );
-	}
-
-	if (ent.classname && ent.classname[0])
-	{ //we'll just stricmp this bastard, since there aren't all that many cgame-only things, and they all have special handling
-		if (!Q_stricmp(ent.classname, "worldspawn"))
-		{ //I'd like some info off this guy
-            if (ent.fogstart)
-			{ //linear fog method
-				cg_linearFogOverride = ent.fogstart;
-			}
-			//get radarRange off of worldspawn
-            if (ent.radarrange)
-			{ //linear fog method
-				cg_radarRange = ent.radarrange;
-			}
-		}
-		else if (!Q_stricmp(ent.classname, "misc_model_static"))
-		{ //we've got us a static model
-            CG_CreateModelFromSpawnEnt(&ent);			
-		}
-		else if (!Q_stricmp(ent.classname, "misc_skyportal_orient"))
-		{ //a sky portal orientation point
-            CG_CreateSkyOriFromSpawnEnt(&ent);            
-		}
-		else if (!Q_stricmp(ent.classname, "misc_skyportal"))
-		{ //might as well parse this thing cgame side for the extra info I want out of it
-			CG_CreateSkyPortalFromSpawnEnt(&ent);            
-		}
-		else if (!Q_stricmp(ent.classname, "misc_weather_zone"))
-		{ //might as well parse this thing cgame side for the extra info I want out of it
-			CG_CreateWeatherZoneFromSpawnEnt(&ent);
-		}
-	}
-
-	//reset the string pool for the next entity, if there is one
-    CG_StrPool_Reset();
-}
-
-/*
-==============
-CG_SpawnCGameOnlyEnts
-
-Parses entity string data for cgame-only entities, that we can throw away on
-the server and never even bother sending. -rww
-==============
-*/
-void CG_SpawnCGameOnlyEnts(void)
-{
-	//make sure it is reset
-	trap_GetEntityToken(NULL, -1);
-
-	if (!CG_ParseSpawnVars())
-	{ //first one is gonna be the world spawn
-		CG_Error("no entities for cgame parse");
-	}
-	else
-	{ //parse the world spawn info we want
-		CG_SpawnCGameEntFromVars();
-	}
-
-	while(CG_ParseSpawnVars())
-	{ //now run through the whole list, and look for things we care about cgame-side
-		CG_SpawnCGameEntFromVars();
-	}		
-}
-
 /*
 Ghoul2 Insert End
 */
@@ -3517,8 +3083,7 @@ Ghoul2 Insert End
 
 	trap_R_GetDistanceCull(&cg.distanceCull);
 
-	//now get all the cgame only cents
-	CG_SpawnCGameOnlyEnts();
+	CG_ParseEntitiesFromString();
 
 	//Raz: warn for poor settings
 	trap_Cvar_VariableStringBuffer( "rate", buf, sizeof( buf ) );
