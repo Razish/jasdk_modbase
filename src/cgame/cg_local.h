@@ -999,6 +999,12 @@ Ghoul2 Insert End
 #if 0
 	int					snapshotTimeoutTime;
 #endif
+
+	qboolean spawning;
+	int	numSpawnVars;
+	char *spawnVars[MAX_SPAWN_VARS][2];	// key / value pairs
+	int numSpawnVarChars;
+	char spawnVarChars[MAX_SPAWN_VARS_CHARS];
 	
 } cg_t;
 
@@ -1497,6 +1503,15 @@ typedef struct
 	fxHandle_t acidSplash;
 } cgEffects_t;
 
+#define MAX_STATIC_MODELS 4000
+
+typedef struct cg_staticmodel_s {
+	qhandle_t		model;
+	vec3_t			org;
+	vec3_t			axes[3];
+	vec_t			radius;
+	float			zoffset;
+} cg_staticmodel_t;
 
 // The client game static (cgs) structure hold everything
 // loaded or calculated from the gamestate.  It will NOT
@@ -1594,6 +1609,9 @@ typedef struct {
 	// effects
 	cgEffects_t		effects;
 
+	int					numMiscStaticModels;
+	cg_staticmodel_t	miscStaticModels[MAX_STATIC_MODELS];
+
 } cgs_t;
 
 typedef struct siegeExtended_s
@@ -1628,8 +1646,6 @@ extern	markPoly_t		cg_markPolys[MAX_MARK_POLYS];
 //
 // cg_main.c
 //
-void CG_DrawMiscEnts(void);
-
 const char *CG_ConfigString( int index );
 const char *CG_Argv( int arg );
 
@@ -1911,6 +1927,17 @@ void CG_LoadingString( const char *s );
 void CG_LoadingItem( int itemNum );
 void CG_LoadingClient( int clientNum );
 void CG_DrawInformation( void );
+
+//
+// cg_spawn.c
+//
+qboolean	CG_SpawnString( const char *key, const char *defaultString, char **out );
+// spawn string returns a temporary reference, you must CopyString() if you want to keep it
+qboolean	CG_SpawnFloat( const char *key, const char *defaultString, float *out );
+qboolean	CG_SpawnInt( const char *key, const char *defaultString, int *out );
+qboolean	CG_SpawnBoolean( const char *key, const char *defaultString, qboolean *out );
+qboolean	CG_SpawnVector( const char *key, const char *defaultString, float *out );
+void		CG_ParseEntitiesFromString( void );
 
 //
 // cg_scoreboard.c

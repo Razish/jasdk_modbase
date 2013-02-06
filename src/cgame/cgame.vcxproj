@@ -184,6 +184,7 @@
     <ClCompile Include="cg_scoreboard.c" />
     <ClCompile Include="cg_servercmds.c" />
     <ClCompile Include="cg_snapshot.c" />
+	<ClCompile Include="cg_spawn.c" />
     <ClCompile Include="cg_strap.c" />
     <ClCompile Include="cg_syscalls.c" />
     <ClCompile Include="cg_turret.c" />
