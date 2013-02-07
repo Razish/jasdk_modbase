@@ -3671,12 +3671,6 @@ void G_RunFrame( int levelTime ) {
 	// for tracking changes
 	CheckCvars();
 
-	if (g_listEntity.integer) {
-		for (i = 0; i < MAX_GENTITIES; i++) {
-			G_Printf("%4i: %s\n", i, g_entities[i].classname);
-		}
-		trap_Cvar_Set("g_listEntity", "0");
-	}
 #ifdef _G_FRAME_PERFANAL
 	iTimer_GameChecks = trap_PrecisionTimer_End(timer_GameChecks);
 #endif
