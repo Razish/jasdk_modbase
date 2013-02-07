@@ -309,14 +309,6 @@ float FloatSwap( const float *f );
 	#define	PATH_SEP '/'
 	#define RAND_MAX 2147483647
 
-	// bk001205 - try
-	#ifdef Q3_STATIC
-		#define	GAME_HARD_LINKED
-		#define	CGAME_HARD_LINKED
-		#define	UI_HARD_LINKED
-		#define	BOTLIB_HARD_LINKED
-	#endif
-
 	#if !idppc
 		inline static short BigShort( short l ) { return ShortSwap( l ); }
 		#define LittleShort

@@ -248,7 +248,7 @@ void QDECL G_Printf( const char *fmt, ... ) {
 	Q_vsnprintf (text, sizeof( text ), fmt, argptr);
 	va_end (argptr);
 
-	trap_Printf( text );
+	trap_Print( text );
 }
 
 void QDECL G_Error( const char *fmt, ... ) {
@@ -733,9 +733,6 @@ void G_ShutdownGame( int restart ) {
 
 //===================================================================
 
-#ifndef GAME_HARD_LINKED
-// this is only here so the functions in q_shared.c and bg_*.c can link
-
 void QDECL Com_Error ( int level, const char *error, ... ) {
 	va_list		argptr;
 	char		text[1024];
@@ -744,7 +741,7 @@ void QDECL Com_Error ( int level, const char *error, ... ) {
 	Q_vsnprintf (text, sizeof( text ), error, argptr);
 	va_end (argptr);
 
-	G_Error( "%s", text);
+	trap_Error(text);
 }
 
 void QDECL Com_Printf( const char *msg, ... ) {
@@ -755,10 +752,8 @@ void QDECL Com_Printf( const char *msg, ... ) {
 	Q_vsnprintf (text, sizeof( text ), msg, argptr);
 	va_end (argptr);
 
-	G_Printf ("%s", text);
+	trap_Print(text);
 }
-
-#endif
 
 /*
 ========================================================================

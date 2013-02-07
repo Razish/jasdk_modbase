@@ -767,9 +767,6 @@ void QDECL CG_Error( const char *msg, ... ) {
 	trap_Error( text );
 }
 
-#ifndef CGAME_HARD_LINKED
-// this is only here so the functions in q_shared.c and bg_*.c can link (FIXME)
-
 void QDECL Com_Error( int level, const char *error, ... ) {
 	va_list		argptr;
 	char		text[1024] = {0};
@@ -778,7 +775,7 @@ void QDECL Com_Error( int level, const char *error, ... ) {
 	Q_vsnprintf( text, sizeof( text ), error, argptr );
 	va_end( argptr );
 
-	CG_Error( "%s", text);
+	trap_Error(text);
 }
 
 void QDECL Com_Printf( const char *msg, ... ) {
@@ -789,10 +786,8 @@ void QDECL Com_Printf( const char *msg, ... ) {
 	Q_vsnprintf( text, sizeof( text ), msg, argptr );
 	va_end( argptr );
 
-	CG_Printf ("%s", text);
+	trap_Print(text);
 }
-
-#endif
 
 /*
 ================
@@ -2617,22 +2612,25 @@ void CG_LoadMenus(const char *menuFile)
 
 	len = trap_FS_FOpenFile( menuFile, &f, FS_READ );
 
-	if ( !f ) 
+	if ( !f )
 	{
-		trap_Print( va( S_COLOR_RED "menu file not found: %s, using default\n", menuFile ) );
+		if( Q_isanumber( menuFile ) ) // cg_hudFiles 1
+			trap_Print( S_COLOR_GREEN "hud menu file skipped, using default\n" );
+		else
+			CG_Printf( S_COLOR_YELLOW "hud menu file not found: %s, using default\n", menuFile );
 
 		len = trap_FS_FOpenFile( "ui/jahud.txt", &f, FS_READ );
-		if (!f) 
+		if (!f)
 		{
-			trap_Print( va( S_COLOR_RED "default menu file not found: ui/hud.txt, unable to continue!\n", menuFile ) );
+			trap_FS_FCloseFile( f );
+			CG_Error( S_COLOR_RED "default hud menu file not found: ui/jahud.txt, unable to continue!" );
 		}
 	}
 
 	if ( len >= MAX_MENUDEFFILE ) 
 	{
-		trap_Print( va( S_COLOR_RED "menu file too large: %s is %i, max allowed is %i\n", menuFile, len, MAX_MENUDEFFILE ) );
 		trap_FS_FCloseFile( f );
-		return;
+		CG_Error( S_COLOR_RED "menu file too large: %s is %i, max allowed is %i", menuFile, len, MAX_MENUDEFFILE );
 	}
 
 	trap_FS_Read( buf, len, f );
