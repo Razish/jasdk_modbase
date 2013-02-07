@@ -974,16 +974,9 @@ void _UI_Refresh( int realtime )
 	} 
 	// draw cursor
 	UI_SetColor( NULL );
-	/* Raz: Don't draw cursor on loading screens
-	if (Menu_Count() > 0) {
-		UI_DrawHandlePic( uiInfo.uiDC.cursorx, uiInfo.uiDC.cursory, 48, 48, uiInfo.uiDC.Assets.cursor);
-	}
-	*/
-	{
-		uiClientState_t	cstate;
-		trap_GetClientState( &cstate );
-		if ( cstate.connState <= CA_DISCONNECTED || cstate.connState >= CA_ACTIVE )
-			UI_DrawHandlePic( (float)uiInfo.uiDC.cursorx, (float)uiInfo.uiDC.cursory, 40.0f, 40.0f, uiInfo.uiDC.Assets.cursor);
+	if (Menu_Count() > 0 && (trap_Key_GetCatcher() & KEYCATCH_UI)) {
+		UI_DrawHandlePic( (float)uiInfo.uiDC.cursorx, (float)uiInfo.uiDC.cursory, 40.0f, 40.0f, uiInfo.uiDC.Assets.cursor);
+		//UI_DrawHandlePic( uiInfo.uiDC.cursorx, uiInfo.uiDC.cursory, 48, 48, uiInfo.uiDC.Assets.cursor);
 	}
 
 #ifndef NDEBUG
