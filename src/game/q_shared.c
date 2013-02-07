@@ -829,6 +829,23 @@ int Q_isalpha( int c )
 	return ( 0 );
 }
 
+qboolean Q_isanumber( const char *s )
+{
+	char *p;
+
+	if( *s == '\0' )
+		return qfalse;
+
+	strtod( s, &p );
+
+	return *p == '\0';
+}
+
+qboolean Q_isintegral( float f )
+{
+	return (int)f == f;
+}
+
 char* Q_strrchr( const char* string, int c )
 {
 	char cc = c;
