@@ -313,8 +313,8 @@ void G_LoadArenas( void ) {
 		strcat(filename, dirptr);
 		G_LoadArenasFromFile(filename);
 	}
-//	trap_Printf( va( "%i arenas parsed\n", g_numArenas ) );
-	trap_Printf( va( "%i arenas parsed\n", g_numArenas ) );
+//	trap_Print( va( "%i arenas parsed\n", g_numArenas ) );
+	trap_Print( va( "%i arenas parsed\n", g_numArenas ) );
 	
 	for( n = 0; n < g_numArenas; n++ ) {
 		Info_SetValueForKey( g_arenaInfos[n], "num", va( "%i", n ) );
@@ -1257,7 +1257,7 @@ static void G_LoadBots( void ) {
 		strcat(filename, dirptr);
 		G_LoadBotsFromFile(filename);
 	}
-//	trap_Printf( va( "%i bots parsed\n", g_numBots ) );
+//	trap_Print( va( "%i bots parsed\n", g_numBots ) );
 }
 
 
@@ -1269,7 +1269,7 @@ G_GetBotInfoByNumber
 */
 char *G_GetBotInfoByNumber( int num ) {
 	if( num < 0 || num >= g_numBots ) {
-		trap_Printf( va( S_COLOR_RED "Invalid bot number: %i\n", num ) );
+		trap_Print( va( S_COLOR_RED "Invalid bot number: %i\n", num ) );
 		return NULL;
 	}
 	return g_botInfos[num];
