@@ -3358,9 +3358,9 @@ command_t commands[] = {
 //	{ "teamtask",			Cmd_TeamTask_f,				CMD_NOINTERMISSION },
 	{ "teamvote",			Cmd_TeamVote_f,				CMD_NOINTERMISSION },
 	{ "tell",				Cmd_Tell_f,					0 },
-	{ "thedestroyer",		Cmd_TheDestroyer_f,			CMD_CHEAT|CMD_ALIVE },
+	{ "thedestroyer",		Cmd_TheDestroyer_f,			CMD_CHEAT|CMD_ALIVE|CMD_NOINTERMISSION },
 	{ "t_use",				Cmd_TargetUse_f,			CMD_CHEAT|CMD_ALIVE },
-	{ "voice_cmd",			Cmd_VoiceCommand_f,			0 },
+	{ "voice_cmd",			Cmd_VoiceCommand_f,			CMD_NOINTERMISSION },
 	{ "vote",				Cmd_Vote_f,					CMD_NOINTERMISSION },
 	{ "where",				Cmd_Where_f,				CMD_NOINTERMISSION },
 };

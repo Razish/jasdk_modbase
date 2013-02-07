@@ -5,17 +5,11 @@
 // this file is only included when building a dll
 // g_syscalls.asm is included instead when building a qvm
 
-static int (QDECL *Q_syscall)( int arg, ... ) = (int (QDECL *)( int, ...))-1;
+static intptr_t (QDECL *Q_syscall)( intptr_t arg, ... ) = (intptr_t (QDECL *)( intptr_t, ...))-1;
 
-#if defined(__linux__) && !defined(__GCC__)
-extern "C" {
-#endif
-void dllEntry( int (QDECL *syscallptr)( int arg,... ) ) {
+Q_EXPORT_C Q_EXPORT void dllEntry( intptr_t (QDECL *syscallptr)( intptr_t arg,... ) ) {
 	Q_syscall = syscallptr;
 }
-#if defined(__linux__) && !defined(__GCC__)
-}
-#endif
 
 int PASSFLOAT( float x ) {
 	float	floatTemp;
@@ -23,12 +17,14 @@ int PASSFLOAT( float x ) {
 	return *(int *)&floatTemp;
 }
 
-void	trap_Printf( const char *fmt ) {
+void	trap_Print( const char *fmt ) {
 	Q_syscall( G_PRINT, fmt );
 }
 
 void	trap_Error( const char *fmt ) {
 	Q_syscall( G_ERROR, fmt );
+	// shut up GCC warning about returning functions, because we know better
+	exit(1);
 }
 
 int		trap_Milliseconds( void ) {

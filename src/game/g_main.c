@@ -50,10 +50,7 @@ This is the only way control passes into the module.
 This must be the very first function compiled into the .q3vm file
 ================
 */
-#if defined(__linux__) && !defined(__GCC__)
-extern "C" {
-#endif
-int vmMain( int command, int arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, int arg7, int arg8, int arg9, int arg10, int arg11  ) {
+Q_EXPORT_C Q_EXPORT intptr_t vmMain( int command, int arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, int arg7, int arg8, int arg9, int arg10, int arg11  ) {
 	switch ( command ) {
 	case GAME_INIT:
 		G_InitGame( arg0, arg1, arg2 );
@@ -235,10 +232,6 @@ int vmMain( int command, int arg0, int arg1, int arg2, int arg3, int arg4, int a
 
 	return -1;
 }
-#if defined(__linux__) && !defined(__GCC__)
-}
-#endif
-
 
 void QDECL G_Printf( const char *fmt, ... ) {
 	va_list		argptr;
@@ -248,7 +241,7 @@ void QDECL G_Printf( const char *fmt, ... ) {
 	Q_vsnprintf (text, sizeof( text ), fmt, argptr);
 	va_end (argptr);
 
-	trap_Printf( text );
+	trap_Print( text );
 }
 
 void QDECL G_Error( const char *fmt, ... ) {
@@ -733,9 +726,6 @@ void G_ShutdownGame( int restart ) {
 
 //===================================================================
 
-#ifndef GAME_HARD_LINKED
-// this is only here so the functions in q_shared.c and bg_*.c can link
-
 void QDECL Com_Error ( int level, const char *error, ... ) {
 	va_list		argptr;
 	char		text[1024];
@@ -744,7 +734,7 @@ void QDECL Com_Error ( int level, const char *error, ... ) {
 	Q_vsnprintf (text, sizeof( text ), error, argptr);
 	va_end (argptr);
 
-	G_Error( "%s", text);
+	trap_Error(text);
 }
 
 void QDECL Com_Printf( const char *msg, ... ) {
@@ -755,10 +745,8 @@ void QDECL Com_Printf( const char *msg, ... ) {
 	Q_vsnprintf (text, sizeof( text ), msg, argptr);
 	va_end (argptr);
 
-	G_Printf ("%s", text);
+	trap_Print(text);
 }
-
-#endif
 
 /*
 ========================================================================
@@ -3676,12 +3664,6 @@ void G_RunFrame( int levelTime ) {
 	// for tracking changes
 	CheckCvars();
 
-	if (g_listEntity.integer) {
-		for (i = 0; i < MAX_GENTITIES; i++) {
-			G_Printf("%4i: %s\n", i, g_entities[i].classname);
-		}
-		trap_Cvar_Set("g_listEntity", "0");
-	}
 #ifdef _G_FRAME_PERFANAL
 	iTimer_GameChecks = trap_PrecisionTimer_End(timer_GameChecks);
 #endif
