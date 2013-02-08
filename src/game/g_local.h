@@ -1530,7 +1530,7 @@ extern	gentity_t		g_entities[MAX_GENTITIES];
 	#include "g_xcvar.h"
 #undef XCVAR_PROTO
 
-void	trap_Printf( const char *fmt );
+void	trap_Print( const char *fmt );
 void	trap_Error( const char *fmt );
 int		trap_Milliseconds( void );
 void	trap_PrecisionTimer_Start(void **theNewTimer);

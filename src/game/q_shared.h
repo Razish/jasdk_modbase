@@ -125,6 +125,29 @@ extern int g_G2AllocServer;
 
 #endif // Q3_VM
 
+//Ignore __attribute__ on non-gcc platforms
+#ifndef __GNUC__
+	#ifndef __attribute__
+		#define __attribute__(x)
+	#endif
+#endif
+
+#if (defined _MSC_VER)
+	#define Q_EXPORT __declspec(dllexport)
+#elif (defined __SUNPRO_C)
+	#define Q_EXPORT __global
+#elif ((__GNUC__ >= 3) && (!__EMX__) && (!sun))
+	#define Q_EXPORT __attribute__((visibility("default")))
+#else
+	#define Q_EXPORT
+#endif
+
+#if defined(__linux__) && !defined(__GCC__)
+#define Q_EXPORT_C extern "C"
+#else
+#define Q_EXPORT_C
+#endif
+
 // this is the define for determining if we have an asm version of a C function
 #if (defined(_M_IX86) || defined(__i386__)) && !defined(__sun__) && !defined(__LCC__)
 	#define id386	1
@@ -308,14 +331,6 @@ float FloatSwap( const float *f );
 
 	#define	PATH_SEP '/'
 	#define RAND_MAX 2147483647
-
-	// bk001205 - try
-	#ifdef Q3_STATIC
-		#define	GAME_HARD_LINKED
-		#define	CGAME_HARD_LINKED
-		#define	UI_HARD_LINKED
-		#define	BOTLIB_HARD_LINKED
-	#endif
 
 	#if !idppc
 		inline static short BigShort( short l ) { return ShortSwap( l ); }
@@ -1551,6 +1566,9 @@ int Q_isprint( int c );
 int Q_islower( int c );
 int Q_isupper( int c );
 int Q_isalpha( int c );
+
+qboolean Q_isanumber( const char *s );
+qboolean Q_isintegral( float f );
 
 // portable case insensitive compare
 int		Q_stricmp (const char *s1, const char *s2);
