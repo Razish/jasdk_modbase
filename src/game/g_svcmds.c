@@ -272,8 +272,8 @@ void	Svcmd_EntityList_f (void) {
 	int			e;
 	gentity_t		*check;
 
-	check = g_entities+1;
-	for (e = 1; e < level.num_entities ; e++, check++) {
+	check = g_entities;
+	for (e = 0; e < level.num_entities ; e++, check++) {
 		if ( !check->inuse ) {
 			continue;
 		}
@@ -290,6 +290,12 @@ void	Svcmd_EntityList_f (void) {
 			break;
 		case ET_MISSILE:
 			G_Printf("ET_MISSILE          ");
+			break;
+		case ET_SPECIAL:
+			G_Printf("ET_SPECIAL          ");
+			break;
+		case ET_HOLOCRON:
+			G_Printf("ET_HOLOCRON         ");
 			break;
 		case ET_MOVER:
 			G_Printf("ET_MOVER            ");
@@ -315,8 +321,17 @@ void	Svcmd_EntityList_f (void) {
 		case ET_NPC:
 			G_Printf("ET_NPC              ");
 			break;
+		case ET_BODY:
+			G_Printf("ET_BODY             ");
+			break;
+		case ET_TERRAIN:
+			G_Printf("ET_TERRAIN          ");
+			break;
+		case ET_FX:
+			G_Printf("ET_FX               ");
+			break;
 		default:
-			G_Printf("%3i                 ", check->s.eType);
+			G_Printf("%-3i                ", check->s.eType);
 			break;
 		}
 
