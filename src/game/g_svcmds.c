@@ -5,7 +5,6 @@
 
 #include "g_local.h"
 
-
 /*
 ==============================================================================
 
@@ -220,14 +219,13 @@ void Svcmd_AddIP_f (void)
 	char		str[MAX_TOKEN_CHARS];
 
 	if ( trap_Argc() < 2 ) {
-		G_Printf("Usage:  addip <ip-mask>\n");
+		G_Printf("Usage: addip <ip-mask>\n");
 		return;
 	}
 
 	trap_Argv( 1, str, sizeof( str ) );
 
 	AddIP( str );
-
 }
 
 /*
@@ -242,7 +240,7 @@ void Svcmd_RemoveIP_f (void)
 	char		str[MAX_TOKEN_CHARS];
 
 	if ( trap_Argc() < 2 ) {
-		G_Printf("Usage:  sv removeip <ip-mask>\n");
+		G_Printf("Usage: removeip <ip-mask>\n");
 		return;
 	}
 
@@ -329,40 +327,41 @@ void	Svcmd_EntityList_f (void) {
 	}
 }
 
+qboolean StringIsInteger( const char *s );
+/*
+===================
+ClientForString
+===================
+*/
 gclient_t	*ClientForString( const char *s ) {
 	gclient_t	*cl;
-	int			i;
 	int			idnum;
+	char		cleanName[MAX_STRING_CHARS];
 
-	// numeric values are just slot numbers
-	if ( s[0] >= '0' && s[0] <= '9' ) {
+	// numeric values could be slot numbers
+	if ( StringIsInteger( s ) ) {
 		idnum = atoi( s );
-		if ( idnum < 0 || idnum >= level.maxclients ) {
-			Com_Printf( "Bad client slot: %i\n", idnum );
-			return NULL;
+		if ( idnum >= 0 && idnum < level.maxclients ) {
+			cl = &level.clients[idnum];
+			if ( cl->pers.connected == CON_CONNECTED ) {
+				return cl;
+			}
 		}
-
-		cl = &level.clients[idnum];
-		if ( cl->pers.connected == CON_DISCONNECTED ) {
-			G_Printf( "Client %i is not connected\n", idnum );
-			return NULL;
-		}
-		return cl;
 	}
 
 	// check for a name match
-	for ( i=0 ; i < level.maxclients ; i++ ) {
-		cl = &level.clients[i];
-		if ( cl->pers.connected == CON_DISCONNECTED ) {
+	for ( idnum=0,cl=level.clients ; idnum < level.maxclients ; idnum++,cl++ ) {
+		if ( cl->pers.connected != CON_CONNECTED ) {
 			continue;
 		}
-		if ( !Q_stricmp( cl->pers.netname, s ) ) {
+		Q_strncpyz(cleanName, cl->pers.netname, sizeof(cleanName));
+		Q_CleanStr(cleanName);
+		if ( !Q_stricmp( cleanName, s ) ) {
 			return cl;
 		}
 	}
 
 	G_Printf( "User %s is not on the server\n", s );
-
 	return NULL;
 }
 
@@ -376,6 +375,11 @@ forceteam <player> <team>
 void	Svcmd_ForceTeam_f( void ) {
 	gclient_t	*cl;
 	char		str[MAX_TOKEN_CHARS];
+
+	if ( trap_Argc() < 3 ) {
+		G_Printf("Usage: forceteam <player> <team>\n");
+		return;
+	}
 
 	// find the player
 	trap_Argv( 1, str, sizeof( str ) );
@@ -427,11 +431,6 @@ qboolean	ConsoleCommand( void ) {
 		return qtrue;
 	}
 
-/*	if (Q_stricmp (cmd, "abort_podium") == 0) {
-		Svcmd_AbortPodium_f();
-		return qtrue;
-	}
-*/
 	if (Q_stricmp (cmd, "addip") == 0) {
 		Svcmd_AddIP_f();
 		return qtrue;
