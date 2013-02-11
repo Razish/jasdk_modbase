@@ -1717,7 +1717,8 @@ static void Cmd_Tell_f( gentity_t *ent ) {
 	char		*p;
 	char		arg[MAX_TOKEN_CHARS];
 
-	if ( trap_Argc () < 2 ) {
+	if ( trap_Argc () < 3 ) {
+		trap_SendServerCommand( ent-g_entities, "print \"Usage: tell <player id> <message>\n\"" );
 		return;
 	}
 
@@ -1728,7 +1729,7 @@ static void Cmd_Tell_f( gentity_t *ent ) {
 	}
 
 	target = &g_entities[targetNum];
-	if ( !target || !target->inuse || !target->client ) {
+	if ( !target->inuse || !target->client ) {
 		return;
 	}
 
