@@ -2016,7 +2016,7 @@ qboolean ClientUserinfoChanged( int clientNum ) {
 
 	// check for local client
 	s = Info_ValueForKey( userinfo, "ip" );
-	if ( !strcmp( s, "localhost" ) )
+	if ( !strcmp( s, "localhost" ) && !(ent->r.svFlags & SVF_BOT) )
 		client->pers.localClient = qtrue;
 
 	// check the item prediction
