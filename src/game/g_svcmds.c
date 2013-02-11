@@ -5,7 +5,6 @@
 
 #include "g_local.h"
 
-
 /*
 ==============================================================================
 
@@ -220,14 +219,13 @@ void Svcmd_AddIP_f (void)
 	char		str[MAX_TOKEN_CHARS];
 
 	if ( trap_Argc() < 2 ) {
-		G_Printf("Usage:  addip <ip-mask>\n");
+		G_Printf("Usage: addip <ip-mask>\n");
 		return;
 	}
 
 	trap_Argv( 1, str, sizeof( str ) );
 
 	AddIP( str );
-
 }
 
 /*
@@ -242,7 +240,7 @@ void Svcmd_RemoveIP_f (void)
 	char		str[MAX_TOKEN_CHARS];
 
 	if ( trap_Argc() < 2 ) {
-		G_Printf("Usage:  sv removeip <ip-mask>\n");
+		G_Printf("Usage: removeip <ip-mask>\n");
 		return;
 	}
 
@@ -274,8 +272,8 @@ void	Svcmd_EntityList_f (void) {
 	int			e;
 	gentity_t		*check;
 
-	check = g_entities+1;
-	for (e = 1; e < level.num_entities ; e++, check++) {
+	check = g_entities;
+	for (e = 0; e < level.num_entities ; e++, check++) {
 		if ( !check->inuse ) {
 			continue;
 		}
@@ -292,6 +290,12 @@ void	Svcmd_EntityList_f (void) {
 			break;
 		case ET_MISSILE:
 			G_Printf("ET_MISSILE          ");
+			break;
+		case ET_SPECIAL:
+			G_Printf("ET_SPECIAL          ");
+			break;
+		case ET_HOLOCRON:
+			G_Printf("ET_HOLOCRON         ");
 			break;
 		case ET_MOVER:
 			G_Printf("ET_MOVER            ");
@@ -317,8 +321,17 @@ void	Svcmd_EntityList_f (void) {
 		case ET_NPC:
 			G_Printf("ET_NPC              ");
 			break;
+		case ET_BODY:
+			G_Printf("ET_BODY             ");
+			break;
+		case ET_TERRAIN:
+			G_Printf("ET_TERRAIN          ");
+			break;
+		case ET_FX:
+			G_Printf("ET_FX               ");
+			break;
 		default:
-			G_Printf("%3i                 ", check->s.eType);
+			G_Printf("%-3i                ", check->s.eType);
 			break;
 		}
 
@@ -329,40 +342,41 @@ void	Svcmd_EntityList_f (void) {
 	}
 }
 
+qboolean StringIsInteger( const char *s );
+/*
+===================
+ClientForString
+===================
+*/
 gclient_t	*ClientForString( const char *s ) {
 	gclient_t	*cl;
-	int			i;
 	int			idnum;
+	char		cleanName[MAX_STRING_CHARS];
 
-	// numeric values are just slot numbers
-	if ( s[0] >= '0' && s[0] <= '9' ) {
+	// numeric values could be slot numbers
+	if ( StringIsInteger( s ) ) {
 		idnum = atoi( s );
-		if ( idnum < 0 || idnum >= level.maxclients ) {
-			Com_Printf( "Bad client slot: %i\n", idnum );
-			return NULL;
+		if ( idnum >= 0 && idnum < level.maxclients ) {
+			cl = &level.clients[idnum];
+			if ( cl->pers.connected == CON_CONNECTED ) {
+				return cl;
+			}
 		}
-
-		cl = &level.clients[idnum];
-		if ( cl->pers.connected == CON_DISCONNECTED ) {
-			G_Printf( "Client %i is not connected\n", idnum );
-			return NULL;
-		}
-		return cl;
 	}
 
 	// check for a name match
-	for ( i=0 ; i < level.maxclients ; i++ ) {
-		cl = &level.clients[i];
-		if ( cl->pers.connected == CON_DISCONNECTED ) {
+	for ( idnum=0,cl=level.clients ; idnum < level.maxclients ; idnum++,cl++ ) {
+		if ( cl->pers.connected != CON_CONNECTED ) {
 			continue;
 		}
-		if ( !Q_stricmp( cl->pers.netname, s ) ) {
+		Q_strncpyz(cleanName, cl->pers.netname, sizeof(cleanName));
+		Q_CleanStr(cleanName);
+		if ( !Q_stricmp( cleanName, s ) ) {
 			return cl;
 		}
 	}
 
 	G_Printf( "User %s is not on the server\n", s );
-
 	return NULL;
 }
 
@@ -376,6 +390,11 @@ forceteam <player> <team>
 void	Svcmd_ForceTeam_f( void ) {
 	gclient_t	*cl;
 	char		str[MAX_TOKEN_CHARS];
+
+	if ( trap_Argc() < 3 ) {
+		G_Printf("Usage: forceteam <player> <team>\n");
+		return;
+	}
 
 	// find the player
 	trap_Argv( 1, str, sizeof( str ) );
@@ -427,11 +446,6 @@ qboolean	ConsoleCommand( void ) {
 		return qtrue;
 	}
 
-/*	if (Q_stricmp (cmd, "abort_podium") == 0) {
-		Svcmd_AbortPodium_f();
-		return qtrue;
-	}
-*/
 	if (Q_stricmp (cmd, "addip") == 0) {
 		Svcmd_AddIP_f();
 		return qtrue;

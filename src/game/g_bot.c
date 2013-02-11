@@ -23,7 +23,6 @@ typedef struct {
 	int		spawnTime;
 } botSpawnQueue_t;
 
-//static int			botBeginDelay = 0;  // bk001206 - unused, init
 static botSpawnQueue_t	botSpawnQueue[BOT_SPAWN_QUEUE_DEPTH];
 
 vmCvar_t bot_minplayers;
@@ -33,12 +32,11 @@ extern gentity_t	*podium2;
 extern gentity_t	*podium3;
 
 float trap_Cvar_VariableValue( const char *var_name ) {
-	char buf[128];
+	char buf[MAX_CVAR_VALUE_STRING];
 
 	trap_Cvar_VariableStringBuffer(var_name, buf, sizeof(buf));
 	return atof(buf);
 }
-
 
 /*
 ===============
@@ -314,7 +312,6 @@ void G_LoadArenas( void ) {
 		G_LoadArenasFromFile(filename);
 	}
 //	trap_Print( va( "%i arenas parsed\n", g_numArenas ) );
-	trap_Print( va( "%i arenas parsed\n", g_numArenas ) );
 	
 	for( n = 0; n < g_numArenas; n++ ) {
 		Info_SetValueForKey( g_arenaInfos[n], "num", va( "%i", n ) );
@@ -358,7 +355,6 @@ void G_LoadArenas( void ) {
 #endif
 
 }
-
 
 /*
 ===============
@@ -754,7 +750,6 @@ void G_CheckBotSpawn( void ) {
 	}
 }
 
-
 /*
 ===============
 AddBotToSpawnQueue
@@ -775,7 +770,6 @@ static void AddBotToSpawnQueue( int clientNum, int delay ) {
 	ClientBegin( clientNum, qfalse );
 }
 
-
 /*
 ===============
 G_RemoveQueuedBotBegin
@@ -794,7 +788,6 @@ void G_RemoveQueuedBotBegin( int clientNum ) {
 		}
 	}
 }
-
 
 /*
 ===============
@@ -819,7 +812,6 @@ qboolean G_BotConnect( int clientNum, qboolean restart ) {
 	return qtrue;
 }
 
-
 /*
 ===============
 G_AddBot
@@ -831,6 +823,15 @@ static void G_AddBot( const char *name, float skill, const char *team, int delay
 	char			userinfo[MAX_INFO_STRING] = {0},
 					*botinfo = NULL, *key = NULL, *s = NULL, *botname = NULL, *model = NULL;
 
+	// have the server allocate a client slot
+	clientNum = trap_BotAllocateClient();
+	if ( clientNum == -1 ) {
+//		G_Printf( S_COLOR_RED "Unable to add bot.  All player slots are in use.\n" );
+//		G_Printf( S_COLOR_RED "Start server with more 'open' slots.\n" );
+		trap_SendServerCommand( -1, va("print \"%s\n\"", G_GetStringEdString("MP_SVGAME", "UNABLE_TO_ADD_BOT")));
+		return;
+	}
+
 	// get the botinfo from bots.txt
 	botinfo = G_GetBotInfoByName( name );
 	if ( !botinfo ) {
@@ -840,15 +841,6 @@ static void G_AddBot( const char *name, float skill, const char *team, int delay
 
 	// create the bot's userinfo
 	userinfo[0] = '\0';
-
-	// have the server allocate a client slot
-	clientNum = trap_BotAllocateClient();
-	if ( clientNum == -1 ) {
-//		G_Printf( S_COLOR_RED "Unable to add bot.  All player slots are in use.\n" );
-//		G_Printf( S_COLOR_RED "Start server with more 'open' slots.\n" );
-		trap_SendServerCommand( -1, va("print \"%s\n\"", G_GetStringEdString("MP_SVGAME", "UNABLE_TO_ADD_BOT")));
-		return;
-	}
 
 	botname = Info_ValueForKey( botinfo, "funname" );
 	if( !botname[0] )
@@ -1037,7 +1029,6 @@ static void G_AddBot( const char *name, float skill, const char *team, int delay
 	}
 }
 
-
 /*
 ===============
 Svcmd_AddBot_f
@@ -1190,7 +1181,6 @@ static void G_SpawnBots( char *botList, int baseDelay ) {
 }
 #endif
 
-
 /*
 ===============
 G_LoadBotsFromFile
@@ -1260,8 +1250,6 @@ static void G_LoadBots( void ) {
 //	trap_Print( va( "%i bots parsed\n", g_numBots ) );
 }
 
-
-
 /*
 ===============
 G_GetBotInfoByNumber
@@ -1269,12 +1257,11 @@ G_GetBotInfoByNumber
 */
 char *G_GetBotInfoByNumber( int num ) {
 	if( num < 0 || num >= g_numBots ) {
-		trap_Print( va( S_COLOR_RED "Invalid bot number: %i\n", num ) );
+		G_Printf( S_COLOR_RED "Invalid bot number: %i\n", num );
 		return NULL;
 	}
 	return g_botInfos[num];
 }
-
 
 /*
 ===============
@@ -1304,7 +1291,7 @@ void LoadPath_ThisLevel(void);
 G_InitBots
 ===============
 */
-void G_InitBots( qboolean restart ) {
+void G_InitBots( void ) {
 	G_LoadBots();
 	G_LoadArenas();
 
