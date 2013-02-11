@@ -1418,7 +1418,7 @@ void UpdateTournamentInfo( void );
 //
 // g_bot.c
 //
-void G_InitBots( qboolean restart );
+void G_InitBots( void );
 char *G_GetBotInfoByNumber( int num );
 char *G_GetBotInfoByName( const char *name );
 void G_CheckBotSpawn( void );

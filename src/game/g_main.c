@@ -578,7 +578,7 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	if ( trap_Cvar_VariableIntegerValue( "bot_enable" ) ) {
 		BotAISetup( restart );
 		BotAILoadMap( restart );
-		G_InitBots( restart );
+		G_InitBots( );
 	} else {
 		//JAC: We still want to load arenas even if bot_enable is off so that
 		//		g_autoMapCycle can work let alone any other code that relies on
