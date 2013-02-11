@@ -67,6 +67,15 @@ static qboolean StringToFilter (char *s, ipFilter_t *f)
 	{
 		if (*s < '0' || *s > '9')
 		{
+			if (*s == '*') // 'match any'
+			{
+				// b[i] and m[i] to 0
+				s++;
+				if (!*s)
+					break;
+				s++;
+				continue;
+			}
 			G_Printf( "Bad filter address: %s\n", s );
 			return qfalse;
 		}
@@ -78,8 +87,7 @@ static qboolean StringToFilter (char *s, ipFilter_t *f)
 		}
 		num[j] = 0;
 		b[i] = atoi(num);
-		if (b[i] != 0)
-			m[i] = 255;
+		m[i] = 255;
 
 		if (!*s)
 			break;
@@ -100,21 +108,40 @@ UpdateIPBans
 static void UpdateIPBans (void)
 {
 	byte	b[4];
-	int		i;
-	char	iplist[MAX_INFO_STRING];
+	byte	m[4];
+	int		i, j;
+	char	iplist_final[MAX_CVAR_VALUE_STRING];
+	char	ip[NET_ADDRSTRMAXLEN];
 
-	*iplist = 0;
+	*iplist_final = 0;
 	for (i = 0 ; i < numIPFilters ; i++)
 	{
 		if (ipFilters[i].compare == 0xffffffff)
 			continue;
 
 		*(unsigned *)b = ipFilters[i].compare;
-		Com_sprintf( iplist + strlen(iplist), sizeof(iplist) - strlen(iplist), 
-			"%i.%i.%i.%i ", b[0], b[1], b[2], b[3]);
+		*(unsigned *)m = ipFilters[i].mask;
+		*ip = 0;
+		for (j = 0 ; j < 4 ; j++)
+		{
+			if (m[j]!=255)
+				Q_strcat(ip, sizeof(ip), "*");
+			else
+				Q_strcat(ip, sizeof(ip), va("%i", b[j]));
+			Q_strcat(ip, sizeof(ip), (j<3) ? "." : " ");
+		}
+		if (strlen(iplist_final)+strlen(ip) < MAX_CVAR_VALUE_STRING)
+		{
+			Q_strcat( iplist_final, sizeof(iplist_final), ip);
+		}
+		else
+		{
+			Com_Printf("g_banIPs overflowed at MAX_CVAR_VALUE_STRING\n");
+			break;
+		}
 	}
 
-	trap_Cvar_Set( "g_banIPs", iplist );
+	trap_Cvar_Set( "g_banIPs", iplist_final );
 }
 
 /*
@@ -124,20 +151,15 @@ G_FilterPacket
 */
 qboolean G_FilterPacket (char *from)
 {
-	byte			m[4];// = {'\0','\0','\0','\0'};
-	int				i = 0;
+	int				i;
 	unsigned int	in;
-	char			*p;
-
-	while (i < 4)
-	{
-		m[i] = 0;
-		i++;
-	}
+	byte m[4];
+	char *p;
 
 	i = 0;
 	p = from;
 	while (*p && i < 4) {
+		m[i] = 0;
 		while (*p >= '0' && *p <= '9') {
 			m[i] = m[i]*10 + (*p - '0');
 			p++;
@@ -207,7 +229,6 @@ void G_ProcessIPBans(void)
 		t = s;
 	}
 }
-
 
 /*
 =================
