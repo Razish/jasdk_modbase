@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		565DAD9C0C4FF701008167FA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		565DADAD0C4FF701008167FA /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */; };
+		56B716E116CB0B1D00E56A06 /* MacFixes.c in Sources */ = {isa = PBXBuildFile; fileRef = 56B716E016CB0B1D00E56A06 /* MacFixes.c */; };
 		56E4CE03121EFEC2004E7206 /* ui_atoms.c in Sources */ = {isa = PBXBuildFile; fileRef = 56E4CDFC121EFEC2004E7206 /* ui_atoms.c */; };
 		56E4CE04121EFEC2004E7206 /* ui_force.c in Sources */ = {isa = PBXBuildFile; fileRef = 56E4CDFD121EFEC2004E7206 /* ui_force.c */; };
 		56E4CE05121EFEC2004E7206 /* ui_gameinfo.c in Sources */ = {isa = PBXBuildFile; fileRef = 56E4CDFE121EFEC2004E7206 /* ui_gameinfo.c */; };
@@ -29,6 +30,7 @@
 		0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		565DADB30C4FF701008167FA /* Info-ui.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-ui.plist"; sourceTree = "<group>"; };
 		565DADB40C4FF702008167FA /* ui.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ui.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		56B716E016CB0B1D00E56A06 /* MacFixes.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = MacFixes.c; sourceTree = "<group>"; };
 		56E4CDFC121EFEC2004E7206 /* ui_atoms.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ui_atoms.c; path = ../ui/ui_atoms.c; sourceTree = SOURCE_ROOT; };
 		56E4CDFD121EFEC2004E7206 /* ui_force.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ui_force.c; path = ../ui/ui_force.c; sourceTree = SOURCE_ROOT; };
 		56E4CDFE121EFEC2004E7206 /* ui_gameinfo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ui_gameinfo.c; path = ../ui/ui_gameinfo.c; sourceTree = SOURCE_ROOT; };
@@ -59,6 +61,7 @@
 		089C166AFE841209C02AAC07 /* cgame */ = {
 			isa = PBXGroup;
 			children = (
+				56B716E016CB0B1D00E56A06 /* MacFixes.c */,
 				F5C12684034158F301A80169 /* game */,
 				F5FC338B03536E6D01A80169 /* ui */,
 				089C167CFE841241C02AAC07 /* Resources */,
@@ -159,7 +162,11 @@
 			isa = PBXProject;
 			buildConfigurationList = 565DADB50C4FF702008167FA /* Build configuration list for PBXProject "ui" */;
 			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				en,
+			);
 			mainGroup = 089C166AFE841209C02AAC07 /* cgame */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -208,6 +215,7 @@
 				56E4CE15121EFEF8004E7206 /* bg_weapons.c in Sources */,
 				56E4CE16121EFEF8004E7206 /* q_math.c in Sources */,
 				56E4CE17121EFEF8004E7206 /* q_shared.c in Sources */,
+				56B716E116CB0B1D00E56A06 /* MacFixes.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -21,6 +21,10 @@ USER INTERFACE MAIN
 
 #include "../cgame/holocronicons.h"
 
+#if MAC_PORT
+#include "macosx/MacVersions.h"
+#endif
+
 extern void UI_SaberAttachToChar( itemDef_t *item );
 
 char *forcepowerDesc[NUM_FORCE_POWERS] = 
@@ -10114,6 +10118,12 @@ void _UI_Init( qboolean inGameLoad ) {
 	//register this freakin thing now
 //	vmCvar_t siegeTeamSwitch;
 //	trap_Cvar_Register(&siegeTeamSwitch, "g_siegeTeamSwitch", "1", CVAR_SERVERINFO|CVAR_ARCHIVE);
+    
+#if MAC_PORT
+    int macVersion;
+    
+    macVersion = whichMacVersion();
+#endif
 
 	// Get the list of possible languages
 	uiInfo.languageCount = trap_SP_GetNumLanguages();	// this does a dir scan, so use carefully
