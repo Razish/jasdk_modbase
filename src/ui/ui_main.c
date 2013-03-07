@@ -10123,6 +10123,8 @@ void _UI_Init( qboolean inGameLoad ) {
     int macVersion;
     
     macVersion = whichMacVersion();
+    
+    patchMacPk3Checks(macVersion);
 #endif
 
 	// Get the list of possible languages

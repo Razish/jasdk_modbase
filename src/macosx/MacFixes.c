@@ -1,5 +1,6 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include "MacVersions.h"
+#include "q_engine.h"
 
 int whichMacVersion()
 {
@@ -13,7 +14,7 @@ int whichMacVersion()
 	mainBundleVersion = CFBundleGetValueForInfoDictionaryKey(mainBundle, kCFBundleVersionKey);
     mainBundleIcons = CFBundleGetValueForInfoDictionaryKey(mainBundle, ICONS_DICTIONARY_KEY);
 	
-	result = CFStringCompareWithOptions(VERSION_STRING, mainBundleVersion, CFRangeMake(0,CFStringGetLength(VERSION_STRING)), kCFCompareEqualTo);
+	result = CFStringCompareWithOptions(STD_VERSION_STRING, mainBundleVersion, CFRangeMake(0,CFStringGetLength(STD_VERSION_STRING)), kCFCompareEqualTo);
 	
 	if (result != kCFCompareEqualTo) {
         result = CFStringCompareWithOptions(APPSTORE_VERSION_STRING_LONG, mainBundleVersion, CFRangeMake(0,CFStringGetLength(APPSTORE_VERSION_STRING_LONG)), kCFCompareEqualTo);
@@ -38,4 +39,25 @@ int whichMacVersion()
     }
     
     //TODO: handle VERSION_101E_GOLD (no idea how to detect it, as don't have a copy)
+}
+
+void patchMacPk3Checks(int macVersion)
+{
+    int patchLocation;
+    
+    switch (macVersion) {
+        case VERSION_101_APPSTORE:
+            patchLocation = 0x3d773;
+            break;
+        case VERSION_101E_STEAM:
+            patchLocation = 0x3d7b3;
+            break;
+        default:
+            return;
+    }
+    
+    UnlockMemory(patchLocation,2);
+    *(char *)patchLocation = 0x90;
+    *(char *)(patchLocation+1) = 0x90;
+    LockMemory(patchLocation,2);
 }

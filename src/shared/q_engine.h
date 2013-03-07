@@ -1,5 +1,9 @@
 #pragma once
 
+#if MAC_PORT
+#include "q_shared.h"
+#endif 
+
 // Cross-platform (Linux & Windows) Asm defines
 
 #if defined(_WIN32) && !defined(MINGW32)

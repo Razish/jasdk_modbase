@@ -1,7 +1,7 @@
 #define DIG_DL_EX_STRING CFSTR("Jedi Academy MP (NoCD)")//Old Digital Download Executable file
 #define EX_STRING CFSTR("Jedi Academy MP")//Others Executable file
 
-#define VERSION_STRING CFSTR("1.0.3e")//Bundle version and Bundle versions string, short (for all but app store version)
+#define STD_VERSION_STRING CFSTR("1.0.3e")//Bundle version and Bundle versions string, short (for all but app store version)
 #define APPSTORE_VERSION_STRING CFSTR("1.01")//Bundle versions string, short (app store)
 #define APPSTORE_VERSION_STRING_LONG CFSTR("109339")//Bundle version (app store)
 
@@ -24,3 +24,4 @@ enum {
 };
 
 extern int whichMacVersion();
+extern void patchMacPk3Checks(int macVersion);
