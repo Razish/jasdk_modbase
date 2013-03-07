@@ -9,7 +9,7 @@
 #define APPSTORE_ICONS_FILE CFSTR("AppIcon.icns")//Icon file for app store
 #define ICONS_FILE CFSTR("Icon_MP")//Icon file for rest
 
-#define ICONS_DICTIONARY_KEY CFSTR("Icon file")
+#define ICONS_DICTIONARY_KEY CFSTR("CFBundleIconFile")
 
 #define BUILD_NUMBER 9467//AspyrBuildNumber for all but app store (when missing)
 

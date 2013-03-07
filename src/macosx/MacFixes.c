@@ -1,6 +1,7 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include "MacVersions.h"
 #include "q_engine.h"
+#include "q_shared.h"
 
 int whichMacVersion()
 {
@@ -10,15 +11,35 @@ int whichMacVersion()
 	CFComparisonResult result;
 	
 	mainBundle = CFBundleGetMainBundle();
+    if(!mainBundle){
+        Com_Printf("Mac Version Check Error: No Main Bundle\n");
+        return VERSION_ERR;
+    }
+    
 	mainBundleExecutableName = CFBundleGetValueForInfoDictionaryKey(mainBundle, kCFBundleExecutableKey);
+    if (!mainBundleExecutableName){
+        Com_Printf("Mac Version Check Error: No Main Executable Name\n");
+        return VERSION_ERR;
+    }
+    
 	mainBundleVersion = CFBundleGetValueForInfoDictionaryKey(mainBundle, kCFBundleVersionKey);
+    if (!mainBundleVersion){
+        Com_Printf("Mac Version Check Error: No Bundle Version\n");
+        return VERSION_ERR;
+    }
+    
     mainBundleIcons = CFBundleGetValueForInfoDictionaryKey(mainBundle, ICONS_DICTIONARY_KEY);
+    if (!mainBundleIcons){
+        Com_Printf("Mac Version Check Error: No Icons File\n");
+        return VERSION_ERR;
+    }
 	
 	result = CFStringCompareWithOptions(STD_VERSION_STRING, mainBundleVersion, CFRangeMake(0,CFStringGetLength(STD_VERSION_STRING)), kCFCompareEqualTo);
 	
 	if (result != kCFCompareEqualTo) {
         result = CFStringCompareWithOptions(APPSTORE_VERSION_STRING_LONG, mainBundleVersion, CFRangeMake(0,CFStringGetLength(APPSTORE_VERSION_STRING_LONG)), kCFCompareEqualTo);
         if (result != kCFCompareEqualTo) {
+            Com_Printf("Mac Version Check Error: Unknown Version\n");
             return VERSION_ERR;//wrong version and not app store!
         }
         return VERSION_101_APPSTORE;//app store version!
@@ -56,8 +77,10 @@ void patchMacPk3Checks(int macVersion)
             return;
     }
     
+    Com_Printf("Patching Mac .pk3 checks...\n");
     UnlockMemory(patchLocation,2);
     *(char *)patchLocation = 0x90;
     *(char *)(patchLocation+1) = 0x90;
     LockMemory(patchLocation,2);
+    Com_Printf("...DONE\n");
 }
