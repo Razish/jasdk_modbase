@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5619DBC517086CE800216736 /* cg_spawn.c in Sources */ = {isa = PBXBuildFile; fileRef = 5619DBC417086CE800216736 /* cg_spawn.c */; };
 		565DADD50C4FF78D008167FA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		565DAE0C0C4FF78D008167FA /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */; };
 		56E4CE2B121EFF36004E7206 /* Info-cgame.plist in Resources */ = {isa = PBXBuildFile; fileRef = 56E4CE2A121EFF36004E7206 /* Info-cgame.plist */; };
@@ -66,6 +67,7 @@
 /* Begin PBXFileReference section */
 		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
+		5619DBC417086CE800216736 /* cg_spawn.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cg_spawn.c; path = ../cgame/cg_spawn.c; sourceTree = "<group>"; };
 		565DAE130C4FF78D008167FA /* cgame.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = cgame.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		56E4CE2A121EFF36004E7206 /* Info-cgame.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-cgame.plist"; sourceTree = "<group>"; };
 		56E4CE2D121EFF71004E7206 /* cg_consolecmds.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cg_consolecmds.c; path = ../cgame/cg_consolecmds.c; sourceTree = SOURCE_ROOT; };
@@ -166,6 +168,7 @@
 		08FB77AFFE84173DC02AAC07 /* cgame */ = {
 			isa = PBXGroup;
 			children = (
+				5619DBC417086CE800216736 /* cg_spawn.c */,
 				56E4CE2D121EFF71004E7206 /* cg_consolecmds.c */,
 				56E4CE2E121EFF71004E7206 /* cg_draw.c */,
 				56E4CE2F121EFF71004E7206 /* cg_drawtools.c */,
@@ -265,6 +268,7 @@
 				565DADD60C4FF78D008167FA /* Sources */,
 				565DAE0B0C4FF78D008167FA /* Frameworks */,
 				565DAE0D0C4FF78D008167FA /* Rez */,
+				5624ECC21708D45F0073EE68 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -282,7 +286,11 @@
 			isa = PBXProject;
 			buildConfigurationList = 565DAE140C4FF78E008167FA /* Build configuration list for PBXProject "cgame" */;
 			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				en,
+			);
 			mainGroup = 089C166AFE841209C02AAC07 /* cgame */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -313,6 +321,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXRezBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		5624ECC21708D45F0073EE68 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"$BUILT_PRODUCTS_DIR\"\nzip -r9 cgame.zip cgame.bundle\nmv cgame.zip cgame\nzip -r9 cgame.pk3 cgame\nif [ $JKJAAPPSTORE = \"0\" ]; then\n    mv cgame.pk3 \"$USER_LIBRARY_DIR/Application Support/$JKJANAME/$JKJAMODNAME/cgame.pk3\"\nelse\n    mv cgame.pk3 \"$USER_LIBRARY_DIR/Containers/com.aspyr.jediacademy.appstore/Data/Library/Application Support/$JKJANAME/$JKJAMODNAME/cgame.pk3\"\nfi";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		565DADD60C4FF78D008167FA /* Sources */ = {
@@ -370,6 +394,7 @@
 				56E4CE92121EFFA3004E7206 /* SpeederNPC.c in Sources */,
 				56E4CE93121EFFA3004E7206 /* WalkerNPC.c in Sources */,
 				56E4CE95121EFFB3004E7206 /* ui_shared.c in Sources */,
+				5619DBC517086CE800216736 /* cg_spawn.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -400,6 +425,9 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "Info-cgame.plist";
+				JKJAAPPSTORE = 0;
+				JKJAMODNAME = base;
+				JKJANAME = "Jedi Academy MP";
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -425,6 +453,9 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "Info-cgame.plist";
+				JKJAAPPSTORE = 0;
+				JKJAMODNAME = base;
+				JKJANAME = "Jedi Academy MP";
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -478,6 +509,9 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "Info-cgame.plist";
+				JKJAAPPSTORE = 0;
+				JKJAMODNAME = base;
+				JKJANAME = "Jedi Academy MP";
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";

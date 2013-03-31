@@ -148,6 +148,7 @@
 				565DAD9D0C4FF701008167FA /* Sources */,
 				565DADAC0C4FF701008167FA /* Frameworks */,
 				565DADAE0C4FF701008167FA /* Rez */,
+				5624ECC41708D7AB0073EE68 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -200,6 +201,22 @@
 		};
 /* End PBXRezBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		5624ECC41708D7AB0073EE68 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"$BUILT_PRODUCTS_DIR\"\nzip -r9 ui.zip ui.bundle\nmv ui.zip ui\nzip -r9 ui.pk3 ui\nif [ $JKJAAPPSTORE = \"0\" ]; then\nmv ui.pk3 \"$USER_LIBRARY_DIR/Application Support/$JKJANAME/$JKJAMODNAME/ui.pk3\"\nelse\nmv ui.pk3 \"$USER_LIBRARY_DIR/Containers/com.aspyr.jediacademy.appstore/Data/Library/Application Support/$JKJANAME/$JKJAMODNAME/ui.pk3\"\nfi";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		565DAD9D0C4FF701008167FA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -250,6 +267,9 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "Info-ui.plist";
+				JKJAAPPSTORE = 0;
+				JKJAMODNAME = base;
+				JKJANAME = "Jedi Academy MP";
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -275,6 +295,9 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "Info-ui.plist";
+				JKJAAPPSTORE = 0;
+				JKJAMODNAME = base;
+				JKJANAME = "Jedi Academy MP";
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -326,6 +349,9 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "Info-ui.plist";
+				JKJAAPPSTORE = 0;
+				JKJAMODNAME = base;
+				JKJANAME = "Jedi Academy MP";
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";

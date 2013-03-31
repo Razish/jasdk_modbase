@@ -366,6 +366,7 @@
 				565DAD150C4FF414008167FA /* Sources */,
 				565DAD6F0C4FF414008167FA /* Frameworks */,
 				565DAD710C4FF414008167FA /* Rez */,
+				5624ECC31708D72E0073EE68 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -383,7 +384,11 @@
 			isa = PBXProject;
 			buildConfigurationList = 565DAD790C4FF416008167FA /* Build configuration list for PBXProject "game" */;
 			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				en,
+			);
 			mainGroup = 089C166AFE841209C02AAC07 /* cgame */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -413,6 +418,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXRezBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		5624ECC31708D72E0073EE68 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"$BUILT_PRODUCTS_DIR\"\nzip -r9 jampgame.zip jampgame.bundle\nmv jampgame.zip jampgame\nzip -r9 jampgame.pk3 jampgame\nif [ $JKJAAPPSTORE = \"0\" ]; then\nmv jampgame.pk3 \"$USER_LIBRARY_DIR/Application Support/$JKJANAME/$JKJAMODNAME/jampgame.pk3\"\nelse\nmv jampgame.pk3 \"$USER_LIBRARY_DIR/Containers/com.aspyr.jediacademy.appstore/Data/Library/Application Support/$JKJANAME/$JKJAMODNAME/jampgame.pk3\"\nfi";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		565DAD150C4FF414008167FA /* Sources */ = {
@@ -538,6 +559,9 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "Info-game.plist";
+				JKJAAPPSTORE = 0;
+				JKJAMODNAME = base;
+				JKJANAME = "Jedi Academy MP";
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -563,6 +587,9 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "Info-game.plist";
+				JKJAAPPSTORE = 0;
+				JKJAMODNAME = base;
+				JKJANAME = "Jedi Academy MP";
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -612,6 +639,9 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "Info-game.plist";
+				JKJAAPPSTORE = 0;
+				JKJAMODNAME = base;
+				JKJANAME = "Jedi Academy MP";
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
